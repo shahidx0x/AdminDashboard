@@ -10,8 +10,7 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router";
+import { useSelector } from "react-redux";
 import {
   Badge,
   Button,
@@ -20,15 +19,13 @@ import {
   InputPicker,
   Loader,
   Message,
-  Modal,
   Placeholder,
   SelectPicker,
   Uploader,
   useToaster,
 } from "rsuite";
-import { getUsers, getUsersByEmail, updateUser } from "../../api/Services";
-import { Loading } from "../../components/Loading";
-import { logOut } from "../../redux/slices/user.slices";
+import { getUsers, getUsersByEmail, updateUser } from "../../api/UserServices";
+import { config } from "../../configs/api.config";
 
 function previewFile(file, callback) {
   const reader = new FileReader();
@@ -43,20 +40,11 @@ function Users() {
   const [page, setPage] = useState(1);
   const [inputValue, setInputValue] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [expire, setExpire] = useState(false);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const { data, status, refetch, error } = useQuery(
     ["users", page, user.jwt],
     getUsers
   );
-
-  useEffect(() => {
-    if (error?.response?.status === 401) {
-      setExpire(true);
-    }
-  }, [error]);
 
   const mutation = useMutation(getUsersByEmail);
 
@@ -102,27 +90,6 @@ function Users() {
 
   return (
     <>
-      {expire && (
-        <Modal open={open}>
-          <Modal.Header>
-            <Modal.Title>Session Expired !</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <p className="font-bold text-2xl">Please login again !</p>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              className="bg-indigo-400 text-white w-36"
-              onClick={() => {
-                dispatch(logOut());
-                navigate("/");
-              }}
-            >
-              OK
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      )}
       <Toaster />
       <div className="w-full sm:px-6">
         <div className="px-4 md:px-10 py-4 md:py-7 bg-gray-100 rounded-tl-lg rounded-tr-lg">
@@ -173,13 +140,13 @@ function Users() {
               </tr>
             </thead>
             <tbody className="w-full">
-              {status === "loading" ? (
-                <Loading />
-              ) : (
-                displayedData?.map((user, index) => (
-                  <User key={index} props={user} userRefetch={refetch()} />
-                ))
-              )}
+              {status === "loading"
+                ? Array(4)
+                    .fill()
+                    .map((index) => <TableRowPlaceHolder key={index} />)
+                : displayedData?.map((user, index) => (
+                    <User key={index} props={user} userRefetch={refetch()} />
+                  ))}
             </tbody>
           </table>
         </div>
@@ -293,7 +260,6 @@ function User({ props, userRefetch }) {
     formState: { errors },
   } = useForm();
   const onSubmit = (data) => {
-    console.log(uploadResponse.fileUrl);
     if (uploadResponse.fileUrl !== "") {
       data.profilePicture = uploadResponse.fileUrl;
     } else {
@@ -549,7 +515,7 @@ function User({ props, userRefetch }) {
                 <Uploader
                   fileListVisible={false}
                   listType="picture"
-                  action="https://rest.app.gobd.xyz/upload"
+                  action={`${config.endpoints.host}/upload`}
                   onUpload={(file) => {
                     setUploading(true);
                     previewFile(file.blobFile, (value) => {
@@ -732,6 +698,91 @@ function User({ props, userRefetch }) {
           </Drawer.Body>
         </form>
       </Drawer>
+    </>
+  );
+}
+
+function TableRowPlaceHolder() {
+  return (
+    <>
+      <tr className="h-20 text-sm leading-none text-gray-800 bg-white hover:bg-gray-100 border-b border-t border-gray-100">
+        <td className="pl-4 cursor-pointer">
+          <div className="flex items-center">
+            <div className="w-10 h-10">
+              <IdInfoIcon className="text-4xl mt-1" />
+            </div>
+            <div className="pl-2">
+              <p className="font-medium font-mono">
+                <Placeholder.Paragraph className="w-full" />
+              </p>
+            </div>
+          </div>
+        </td>
+        <td className="pl-4 cursor-pointer">
+          <div className="flex items-center">
+            <div className="w-10 h-10">
+              <Placeholder.Paragraph />
+            </div>
+            <div className="pl-4">
+              <p className="font-bold">
+                <Placeholder.Paragraph />
+              </p>
+              <p className="text-xs leading-3 text-gray-600 pt-2 flex gap-1">
+                <EmailFillIcon className="font-bold" />
+                <p>
+                  <Placeholder.Paragraph />
+                </p>
+              </p>
+            </div>
+          </div>
+        </td>
+        <td className="pl-12">
+          <p className="text-sm font-bold font-mono leading-none text-gray-800">
+            <Placeholder.Paragraph />
+          </p>
+          <p>
+            <Placeholder.Paragraph />
+          </p>
+        </td>
+        <td className="pl-12">
+          <p className="font-bold">
+            <Placeholder.Paragraph />
+          </p>
+          <p className="flex gap-2">
+            <EmailIcon className="text-md" />
+
+            <p>
+              <Placeholder.Paragraph />
+            </p>
+          </p>
+        </td>
+        <td className="pl-10 ">
+          <div className="flex gap-2">
+            <PhoneIcon color="indigo" className="-mt-1" />
+            <p className="font-bold font-mono">
+              <Placeholder.Paragraph />
+            </p>
+          </div>
+        </td>
+        <td className="pl-20">
+          <p className="font-medium">
+            <Placeholder.Paragraph />
+          </p>
+        </td>
+        <td className="pl-12">
+          <p className="font-medium">
+            <Placeholder.Paragraph />
+          </p>
+        </td>
+        <td className="pl-14">
+          <p className="flex justify-center">
+            <Placeholder.Paragraph />
+          </p>
+        </td>
+        <td className="px-3 2xl:px-0">
+          <Placeholder.Paragraph />
+        </td>
+      </tr>
     </>
   );
 }

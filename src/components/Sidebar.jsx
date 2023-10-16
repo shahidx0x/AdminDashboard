@@ -42,7 +42,7 @@ export default function SideNavigation() {
     <div>
       <Sidebar
         collapsed={vis}
-        width="250px"
+        width="300px"
         collapsedWidth="80px"
         className="h-screen"
       >

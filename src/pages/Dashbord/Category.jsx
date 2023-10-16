@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-
 import ArrowRightLineIcon from "@rsuite/icons/ArrowRightLine";
 import EditIcon from "@rsuite/icons/Edit";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
+import { Link } from "react-router-dom";
 import {
   Button,
   Drawer,
@@ -17,7 +17,10 @@ import {
   Uploader,
   useToaster,
 } from "rsuite";
-import { createBrand, getBrands } from "../../api/BrandServices";
+import {
+  createCategory,
+  getCategoryByBrandId,
+} from "../../api/CategoryService";
 import { CardPlaceHolder } from "../../components/CardPlaceHolder";
 import { config } from "../../configs/api.config";
 
@@ -29,7 +32,7 @@ function previewFile(file, callback) {
   reader.readAsDataURL(file);
 }
 
-function Brands() {
+export default function Category() {
   const user = useSelector((state) => state.user.user);
   const [page, setPage] = useState(1);
   const [inputValue, setInputValue] = useState("");
@@ -41,56 +44,54 @@ function Brands() {
   const [uploading, setUploading] = useState(false);
   const [fileInfo, setFileInfo] = useState(null);
   const [uploadResponse, setUploadResponse] = useState({ fileUrl: "" });
+  const params = useParams();
 
   const { data, status, refetch, error } = useQuery(
-    ["brands", page, user.jwt],
-    getBrands
+    ["category", page, user.jwt, params.brand_id],
+    getCategoryByBrandId
   );
+
   const {
     register,
     control,
     handleSubmit,
     formState: { errors },
   } = useForm();
-
-  const mutation = useMutation(createBrand);
-
+  const mutation = useMutation(createCategory);
   const onSubmit = (data) => {
+    data.brand_id = params.brand_id;
     if (uploadResponse.fileUrl !== "") {
-      data.brand_image = uploadResponse.fileUrl;
+      data.image = uploadResponse.fileUrl;
     } else {
-      data.brand_image = "";
+      data.image = "";
     }
     mutation.mutate(
       { data: data, token: user.jwt },
       {
         onSuccess: (data) => {
           toaster.push(
-            <Message type="success">Brand added successfully</Message>
+            <Message type="success">Category added successfully</Message>
           );
         },
         onError: (error) => {
           console.log(error);
-          toaster.push(<Message type="error">Update failed !</Message>);
+          toaster.push(<Message type="error">Category Add failed !</Message>);
         },
       }
     );
     refetch();
   };
-
   const handleLoadMore = () => {
     setPage((prevPage) => {
-      if (prevPage < data?.data?.meta?.total_page) {
+      if (prevPage < data?.meta?.total_page) {
         return prevPage + 1;
       }
       return prevPage;
     });
-    refetch();
   };
 
   const handleLoadPrevious = () => {
     setPage((prevPage) => Math.max(prevPage - 1, 1));
-    refetch();
   };
 
   return (
@@ -99,7 +100,7 @@ function Brands() {
         <div className="px-4 md:px-10 py-4 md:py-7 bg-gray-100 rounded-tl-lg rounded-tr-lg">
           <div className="sm:flex items-center justify-between">
             <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-gray-800">
-              Brands
+              {params.brand_name} Category
             </p>
             <div>
               <button
@@ -107,7 +108,7 @@ function Brands() {
                 className="inline-flex sm:ml-3 mt-4 sm:mt-0 items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded"
               >
                 <p className="text-sm font-medium leading-none text-white">
-                  Add Brand
+                  Add Category
                 </p>
               </button>
             </div>
@@ -118,8 +119,8 @@ function Brands() {
             ? Array(8)
                 .fill()
                 .map((index) => <CardPlaceHolder key={index} />)
-            : data?.data?.data.map((props) => (
-                <BrandList props={props} key={props._id} />
+            : data?.data.map((props) => (
+                <CategoryList props={props} key={props._id} />
               ))}
         </div>
 
@@ -165,7 +166,7 @@ function Brands() {
               </div>
               <div className="sm:flex hidden">
                 <p className="text-sm font-bold leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2">
-                  pages : 1/{data?.data?.meta?.total_page}
+                  pages : 1/{data?.meta?.total_page}
                 </p>
               </div>
               <div className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
@@ -209,12 +210,10 @@ function Brands() {
           </div>
         </div>
       </div>
-      {/* Modal code */}
-
       <Drawer open={openWithHeader} onClose={() => setOpenWithHeader(false)}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Drawer.Header>
-            <Drawer.Title>Add Brands</Drawer.Title>
+            <Drawer.Title>Add Category</Drawer.Title>
           </Drawer.Header>
           <Drawer.Body>
             <div className="flex justify-center items-center mb-10">
@@ -256,12 +255,12 @@ function Brands() {
             </div>
             <div className="flex gap-5">
               <div>
-                <p className="font-bold">Brand</p>
-                <Input {...register("brand_label")} />
+                <p className="font-bold">Category label</p>
+                <Input {...register("category_label")} />
               </div>
               <div>
-                <p className="font-bold">Brand Slug</p>
-                <Input {...register("brand_slug")} />
+                <p className="font-bold">Category Type</p>
+                <Input {...register("category_type")} />
               </div>
             </div>
 
@@ -279,7 +278,7 @@ function Brands() {
                 appearance="primary"
                 className="bg-blue-600"
               >
-                Add Brand
+                Add Category
               </Button>
             </Drawer.Actions>
           </Drawer.Body>
@@ -288,26 +287,23 @@ function Brands() {
     </>
   );
 }
-
-export default Brands;
-
-function BrandList({ props }) {
+function CategoryList({ props }) {
   const navigate = useNavigate();
   return (
     <>
       <div className="mx-2 w-80 lg:mb-0 border rounded-lg shadow-sm hover:shadow-xl mt-7 mb-8">
         <div className="border">
-          <img src={props.brand_image} className="w-full h-44 " />
+          <img src={props?.image} className="w-full h-44 " />
         </div>
         <div className="bg-white">
           <div className="p-4">
             <div className="flex justify-between">
               <EditIcon className="text-4xl border rounded hover:bg-indigo-200 hover:text-white" />
-              <h2 className="text-lg font-semibold">{props.brand_label}</h2>
+              <h2 className="text-lg font-semibold">{props?.category_label}</h2>
               <Link
                 onClick={() => {
                   navigate(
-                    `/dashbord/${props.brand_label}/categories/${props._id}`
+                    `/dashbord/${props?.category_label}/categories/${props?._id}`
                   );
                 }}
               >

@@ -56,3 +56,20 @@ export async function updateUser({ data, token }) {
   }
   return response.data;
 }
+
+export async function checkSession(data) {
+  console.log(data.queryKey[1]);
+  const headers = {
+    Authorization: `Bearer ${data.queryKey[1]}`,
+  };
+
+  try {
+    const response = await axios.get(config.endpoints.session_check, {
+      headers,
+    });
+    return response.data;
+  } catch (error) {
+    console.error(error.response ? error.response.data : error.message);
+    throw error;
+  }
+}
