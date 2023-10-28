@@ -1,19 +1,20 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 
-import ArrowRightLineIcon from "@rsuite/icons/ArrowRightLine";
-import EditIcon from "@rsuite/icons/Edit";
+import { FileEdit, Trash } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Button,
+  Divider,
   Drawer,
   Input,
   Loader,
   Message,
+  Modal,
   Uploader,
   useToaster,
 } from "rsuite";
@@ -99,7 +100,7 @@ function Brands() {
         <div className="px-4 md:px-10 py-4 md:py-7 bg-gray-100 rounded-tl-lg rounded-tr-lg">
           <div className="sm:flex items-center justify-between">
             <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-gray-800">
-              Brands
+              Company
             </p>
             <div>
               <button
@@ -107,7 +108,7 @@ function Brands() {
                 className="inline-flex sm:ml-3 mt-4 sm:mt-0 items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded"
               >
                 <p className="text-sm font-medium leading-none text-white">
-                  Add Brand
+                  Add Company
                 </p>
               </button>
             </div>
@@ -214,7 +215,7 @@ function Brands() {
       <Drawer open={openWithHeader} onClose={() => setOpenWithHeader(false)}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Drawer.Header>
-            <Drawer.Title>Add Brands</Drawer.Title>
+            <Drawer.Title>Add Company</Drawer.Title>
           </Drawer.Header>
           <Drawer.Body>
             <div className="flex justify-center items-center mb-10">
@@ -255,14 +256,14 @@ function Brands() {
               </Uploader>
             </div>
             <div className="flex gap-5">
-              <div>
-                <p className="font-bold">Brand</p>
-                <Input {...register("brand_label")} />
+              <div className="flex flex-col gap-2">
+                <p className="font-bold">Company</p>
+                <Input className="w-[28rem]" {...register("brand_label")} />
               </div>
-              <div>
-                <p className="font-bold">Brand Slug</p>
+              {/* <div className="hidden">
+                <p className="font-bold">Compnay Slug</p>
                 <Input {...register("brand_slug")} />
-              </div>
+              </div> */}
             </div>
 
             <Drawer.Actions className="mt-10">
@@ -279,7 +280,7 @@ function Brands() {
                 appearance="primary"
                 className="bg-blue-600"
               >
-                Add Brand
+                Add Company
               </Button>
             </Drawer.Actions>
           </Drawer.Body>
@@ -293,29 +294,114 @@ export default Brands;
 
 function BrandList({ props }) {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const handleClose = () => setOpen(false);
+  const toaster = useToaster();
+  const [uploading, setUploading] = useState(false);
+  const [fileInfo, setFileInfo] = useState(null);
+  const [uploadResponse, setUploadResponse] = useState({ fileUrl: "" });
+
+  const handleDelete = (id) => {
+    
+
+  }
   return (
     <>
       <div className="mx-2 w-80 lg:mb-0 border rounded-lg shadow-sm hover:shadow-xl mt-7 mb-8">
-        <div className="border">
+        <div
+          onClick={() => {
+            navigate(`/dashbord/${props.brand_label}/categories/${props._id}`);
+          }}
+          className="border"
+        >
           <img src={props.brand_image} className="w-full h-44 " />
         </div>
         <div className="bg-white">
           <div className="p-4">
             <div className="flex justify-between">
-              <EditIcon className="text-4xl border rounded hover:bg-indigo-200 hover:text-white" />
+              <div className="flex">
+                <FileEdit
+                  onClick={() => setOpen(true)}
+                  className="text-4xl border rounded hover:bg-indigo-200 hover:text-white"
+                />
+              </div>
               <h2 className="text-lg font-semibold">{props.brand_label}</h2>
-              <Link
-                onClick={() => {
-                  navigate(
-                    `/dashbord/${props.brand_label}/categories/${props._id}`
-                  );
-                }}
-              >
-                <ArrowRightLineIcon className="text-4xl border rounded hover:bg-indigo-200 hover:text-white" />
-              </Link>
+              <button>
+                <Trash className="text-4xl border rounded hover:bg-indigo-200 hover:text-white" />
+              </button>
             </div>
           </div>
         </div>
+        <Modal size={"sm"} open={open} onClose={handleClose}>
+          <Modal.Header>
+            <Modal.Title>Update Company Information</Modal.Title>
+          </Modal.Header>
+          <Divider />
+          <Modal.Body>
+            <div className="flex flex-wrap gap-5 ">
+              <div className="flex flex-col gap-2">
+                <div className="flex justify-center">
+                  <Uploader
+                    fileListVisible={false}
+                    listType="picture"
+                    action={`${config.endpoints.host}/upload`}
+                    onUpload={(file) => {
+                      setUploading(true);
+                      previewFile(file.blobFile, (value) => {
+                        setFileInfo(value);
+                      });
+                    }}
+                    onSuccess={(response, file) => {
+                      setUploading(false);
+                      toaster.push(
+                        <Message type="success">Uploaded successfully</Message>
+                      );
+                      setUploadResponse(response);
+                    }}
+                    onError={() => {
+                      setFileInfo(null);
+                      setUploading(false);
+                      toaster.push(
+                        <Message type="error">Upload failed</Message>
+                      );
+                    }}
+                  >
+                    <button style={{ width: 150, height: 150 }}>
+                      {uploading && <Loader backdrop center />}
+                      {fileInfo ? (
+                        <img src={fileInfo} width="100%" height="150%" />
+                      ) : (
+                        <img
+                          src="https://www.ivins.com/wp-content/uploads/2020/09/placeholder-1.png"
+                          alt="profile_picture"
+                        />
+                      )}
+                    </button>
+                  </Uploader>
+                </div>
+                <div className=" w-80">
+                  <p className="">Name</p>
+                  <Input />
+                </div>
+              </div>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              onClick={handleClose}
+              className="border-2 bg-red-600 text-white"
+            >
+              Cancel
+            </Button>
+            <Button
+              // type="submit"
+              onClick={() => handleDone(data)}
+              className="border-2 bg-indigo-600 text-white "
+            >
+              Update
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     </>
   );

@@ -9,13 +9,18 @@ import SideNavigation from "./components/Sidebar";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Modal } from "rsuite";
 import { checkSession } from "./api/UserServices";
+import NavbarHeader from "./components/Navbar";
+import AddCompany from "./pages/Dashbord/AddCompany";
+import { AllCompany } from "./pages/Dashbord/AllCompany";
 import Brands from "./pages/Dashbord/Brands";
 import Category from "./pages/Dashbord/Category";
+import EditCompany from "./pages/Dashbord/EditCompany";
+import Products from "./pages/Dashbord/Products";
+import UserInfoEdit from "./pages/Dashbord/UserInfoEdit";
+import { UserTable } from "./pages/Dashbord/UserTable";
 import Users from "./pages/Dashbord/Users";
 import { Login } from "./pages/Login";
-import { logOut } from "./redux/slices/user.slices";
 
 function App() {
   const routers = createBrowserRouter([
@@ -49,6 +54,30 @@ function App() {
           path: ":brand_name/categories/:brand_id",
           element: <Category />,
         },
+        {
+          path: "products",
+          element: <Products />,
+        },
+        {
+          path: "user-table",
+          element: <UserTable />,
+        },
+        {
+          path: "user-table/edit",
+          element: <UserInfoEdit />,
+        },
+        {
+          path: "all-company/edit",
+          element: <EditCompany />,
+        },
+        {
+          path: "company/add",
+          element: <AddCompany />,
+        },
+        {
+          path: "all-company",
+          element: <AllCompany />,
+        },
       ],
     },
   ]);
@@ -77,29 +106,9 @@ function Dashbord() {
   }, [error]);
   return (
     <>
-      {expire && (
-        <Modal open={open}>
-          <Modal.Header>
-            <Modal.Title>Session Expired !</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <p className="font-bold text-2xl">Please login again !</p>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              className="bg-indigo-400 text-white w-36"
-              onClick={() => {
-                dispatch(logOut());
-                navigate("/");
-              }}
-            >
-              OK
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      )}
-      <div className="flex ">
-        <div className="flex justify-between">
+      <NavbarHeader />
+      <div className="flex">
+        <div>
           <SideNavigation />
         </div>
         <div className="w-full">

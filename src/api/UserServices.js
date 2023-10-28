@@ -8,7 +8,7 @@ export async function getUsers(data) {
 
   try {
     const response = await axios.get(
-      config.endpoints.users + `?limit=${7}&page=${data.queryKey[1]}`,
+      config.endpoints.users + `?limit=${10}&page=${data.queryKey[1]}`,
       { headers }
     );
     return response.data;
@@ -58,7 +58,6 @@ export async function updateUser({ data, token }) {
 }
 
 export async function checkSession(data) {
-  console.log(data.queryKey[1]);
   const headers = {
     Authorization: `Bearer ${data.queryKey[1]}`,
   };

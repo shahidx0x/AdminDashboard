@@ -88,7 +88,7 @@ function Users() {
   const displayedData =
     isSearching && mutation.data ? [mutation.data] : data?.data;
 
-  return (
+  return (  
     <>
       <Toaster />
       <div className="w-full sm:px-6">
@@ -97,7 +97,7 @@ function Users() {
             <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-gray-800">
               Users
             </p>
-            <div className="form-control border border-indigo-200 rounded-md">
+            <div className="form-control border   border-indigo-200 rounded-md">
               <div className="input-group">
                 <input
                   onChange={handleInputChange}
@@ -125,7 +125,7 @@ function Users() {
             </div>
           </div>
         </div>
-        <div className="bg-white shadow px-4 md:px-10 pt-4 md:pt-7 pb-5 overflow-y-auto">
+        <div className="bg-white shadow    px-4 md:px-10 pt-4 md:pt-7 pb-5 overflow-y-auto">
           <table className="w-full whitespace-nowrap">
             <thead>
               <tr className="h-16 w-full text-sm leading-none text-gray-800 border-b border-b-indigo-300">
@@ -303,7 +303,6 @@ function User({ props, userRefetch }) {
           <div className="flex items-center">
             <div className="w-10 h-10">
               <IdInfoIcon className="text-4xl mt-1" />
-              {/* <ArrowRightSquare size={40} color="blue" /> */}
             </div>
             <div className="pl-2">
               <p className="font-medium font-mono">
@@ -660,7 +659,7 @@ function User({ props, userRefetch }) {
                 />
               </div>
             </div>
-            <div className="flex gap-5 mt-5">
+            <div className="gap-5 mt-5 hidden">
               <div>
                 <p className="font-bold">Payment Method</p>
                 <Input

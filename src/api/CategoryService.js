@@ -8,7 +8,9 @@ export async function getCategoryByBrandId(data) {
   try {
     const response = await axios.get(
       config.endpoints.all_category_under_brand +
-        `?limit=8&page=${data.queryKey[1]}&brand_id=${data.queryKey[3]}`,
+        `?limit=${data.queryKey[4] || 8}&page=${data.queryKey[1]}&brand_id=${
+          data.queryKey[3]
+        }`,
       { headers }
     );
     if (response.status === 404) {

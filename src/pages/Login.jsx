@@ -16,7 +16,7 @@ export const Login = () => {
     if (user !== null && user.role === "admin") {
       toast.success("welcome admin !");
       setTimeout(() => {
-        navigate("/dashbord");
+        navigate("/dashbord/user-table");
       }, 1000);
     } else if (user) {
       toast.error("You are not a Admin !");
@@ -60,7 +60,7 @@ export const Login = () => {
                     E-mail
                   </label>
                   <input
-                    placeholder="JohnDoe@email.com"
+                    placeholder="user@email.com"
                     required
                     type="text"
                     className="flex-grow w-full h-12 px-4 mb-2 transition duration-200 bg-white border border-gray-300 rounded shadow-sm appearance-none focus:border-deep-purple-accent-400 focus:outline-none focus:shadow-outline"
@@ -89,7 +89,7 @@ export const Login = () => {
                 <div className="mt-4 mb-2 sm:mb-4">
                   <button
                     type="submit"
-                    className="inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-deep-purple-accent-400 hover:bg-deep-purple-accent-700 focus:shadow-outline focus:outline-none"
+                    className="inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white bg-indigo-600 transition duration-200 rounded shadow-md bg-deep-purple-accent-400 hover:bg-deep-purple-accent-700 focus:shadow-outline focus:outline-none"
                   >
                     Login
                   </button>
