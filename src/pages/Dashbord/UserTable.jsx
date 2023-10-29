@@ -139,7 +139,15 @@ export const UserTable = () => {
     return (
       <Cell {...props}>
         <p className="flex justify-center items-center">
-          {rowData?.isActive ? "Active" : "Not Active"}
+          {rowData?.isAccountActive ? (
+            <button className="text-blue-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-500 rounded-lg">
+              Active
+            </button>
+          ) : (
+            <button className="text-red-600 border border-red-400 px-2 py-2 -mt-1 hover:text-white hover:bg-red-500 rounded-lg">
+              Not Active
+            </button>
+          )}
         </p>
       </Cell>
     );
@@ -163,7 +171,10 @@ export const UserTable = () => {
     return (
       <Cell {...props}>
         <div className="flex justify-center">
-          <button className="text-blue-500 " onClick={handleEdit}>
+          <button
+            className="text-blue-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-500 rounded-lg"
+            onClick={handleEdit}
+          >
             Edit
           </button>
         </div>

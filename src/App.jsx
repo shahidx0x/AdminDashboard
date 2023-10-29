@@ -1,20 +1,14 @@
-import {
-  Outlet,
-  RouterProvider,
-  createBrowserRouter,
-  useNavigate,
-} from "react-router-dom";
-import SideNavigation from "./components/Sidebar";
-
-import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
-import { useDispatch, useSelector } from "react-redux";
-import { checkSession } from "./api/UserServices";
+import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
 import NavbarHeader from "./components/Navbar";
+import SideNavigation from "./components/Sidebar";
 import AddCompany from "./pages/Dashbord/AddCompany";
 import { AllCompany } from "./pages/Dashbord/AllCompany";
 import Brands from "./pages/Dashbord/Brands";
 import Category from "./pages/Dashbord/Category";
+
+import AddCategory from "./pages/Dashbord/Category/AddCategory";
+import { AllCategory } from "./pages/Dashbord/Category/AllCategory";
+import EditCategory from "./pages/Dashbord/Category/EditCategory";
 import EditCompany from "./pages/Dashbord/EditCompany";
 import Products from "./pages/Dashbord/Products";
 import UserInfoEdit from "./pages/Dashbord/UserInfoEdit";
@@ -78,6 +72,18 @@ function App() {
           path: "all-company",
           element: <AllCompany />,
         },
+        {
+          path: "category/all",
+          element: <AllCategory />,
+        },
+        {
+          path: "category/add",
+          element: <AddCategory />,
+        },
+        {
+          path: "category/edit",
+          element: <EditCategory />,
+        },
       ],
     },
   ]);
@@ -94,16 +100,6 @@ function Root() {
 }
 
 function Dashbord() {
-  const [expire, setExpire] = useState(false);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const jwt = useSelector((state) => state.user.user.jwt);
-  const { error } = useQuery(["session-check", jwt], checkSession);
-  useEffect(() => {
-    if (error?.response?.status === 401) {
-      setExpire(true);
-    }
-  }, [error]);
   return (
     <>
       <NavbarHeader />

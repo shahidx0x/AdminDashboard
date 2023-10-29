@@ -10,7 +10,7 @@ export const config = {
     brands: host + "/get/all/brands", // has query params -> see api doc
     brand_create: host + "/create/brands",
     brand_delete: host + "/delete/brands/by",
-    all_category_under_brand: host + "/get/all/category", // has query params -> see api doc
+    all_category: host + "/get/all/category", // has query params -> see api doc
     create_category_under_brand: host + "/create/category",
     get_all_product: host + "/get/all/products", // has query params -> see api doc
     get_all_product_by_brand_id: host + "/get/all/products/by/brand", // has query params -> see api doc

@@ -17,12 +17,9 @@ import {
   Toggle,
   useToaster,
 } from "rsuite";
-import {
-  deleteBrand,
-  getBrands,
-  getBrandsSearched,
-} from "../../api/BrandServices";
-import { updateUser } from "../../api/UserServices";
+import { getBrandsSearched } from "../../../api/BrandServices";
+import { deleteCategory, getAllCategory } from "../../../api/CategoryService";
+import { updateUser } from "../../../api/UserServices";
 
 function previewFile(file, callback) {
   const reader = new FileReader();
@@ -32,7 +29,7 @@ function previewFile(file, callback) {
   reader.readAsDataURL(file);
 }
 
-export const AllCompany = () => {
+export const AllCategory = () => {
   const [loading, setLoading] = useState(false);
   const [compact, setCompact] = useState(true);
   const [bordered, setBordered] = useState(true);
@@ -55,6 +52,9 @@ export const AllCompany = () => {
   const [uploadResponse, setUploadResponse] = useState({ fileUrl: "" });
   const [forceUpdate, setForceUpdate] = useState(0);
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { Column, HeaderCell, Cell } = Table;
 
   const CompactCell = (props) => <Cell {...props} style={{ padding: 4 }} />;
@@ -70,7 +70,7 @@ export const AllCompany = () => {
           <Avatar
             className=""
             src={
-              rowData?.brand_image ||
+              rowData?.image ||
               "https://avatars.githubusercontent.com/u/12592949"
             }
             alt="P"
@@ -79,25 +79,28 @@ export const AllCompany = () => {
       </Cell>
     );
   };
-
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
   const { data, status, refetch } = useQuery(
-    ["brands", page, user.jwt],
-    getBrands
+    ["category", page, user.jwt],
+    getAllCategory
   );
-
   const BrandNameCell = ({ rowData, dataKey, ...props }) => {
     return (
       <Cell {...props}>
         <p className="flex justify-center items-center">
-          {rowData?.brand_label}
+          {rowData?.brand_name}
         </p>
       </Cell>
     );
   };
-
+  const SubCategoryCountCell = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <p className="flex justify-center items-center font-bold">
+          {rowData?.subCategories.length || 0}
+        </p>
+      </Cell>
+    );
+  };
   const BrandDescriptionCell = ({ rowData, dataKey, ...props }) => {
     return (
       <Cell {...props}>
@@ -112,21 +115,22 @@ export const AllCompany = () => {
   const handleOpen = () => {
     setOpen(true);
   };
-  const mutation_delete = useMutation(deleteBrand);
+  const mutation_delete = useMutation(deleteCategory);
   const handleOk = () => {
-    console.log(deleteId);
     mutation_delete.mutate(
       { deleteId, token: user.jwt },
       {
         onSuccess: (data) => {
           toaster.push(
-            <Message type="success">Brand deleted successfully</Message>
+            <Message type="success">Category deleted successfully</Message>
           );
           refetch();
         },
         onError: (error) => {
           console.log(error.response);
-          toaster.push(<Message type="error">Brand delete failed !</Message>);
+          toaster.push(
+            <Message type="error">Category delete failed !</Message>
+          );
         },
       }
     );
@@ -137,7 +141,23 @@ export const AllCompany = () => {
   const BrandIdCell = ({ rowData, dataKey, ...props }) => {
     return (
       <Cell {...props}>
+        <p className="flex justify-center items-center">{rowData?.brand_id}</p>
+      </Cell>
+    );
+  };
+  const CategoryIdCell = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
         <p className="flex justify-center items-center">{rowData?._id}</p>
+      </Cell>
+    );
+  };
+  const CategoryNameCell = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <p className="flex justify-center items-center text-blue-500 font-bold hover:underline hover:cursor-pointer">
+          {rowData?.category_label}
+        </p>
       </Cell>
     );
   };
@@ -148,7 +168,7 @@ export const AllCompany = () => {
       setDeleteId(rowData._id);
     };
     const handleEdit = () => {
-      navigate("edit", { state: { myData: rowData } });
+      navigate("/dashbord/category/edit", { state: { myData: rowData } });
     };
 
     return (
@@ -173,30 +193,42 @@ export const AllCompany = () => {
 
   const defaultColumns = [
     {
-      key: "brand_image",
-      label: "Company Image",
+      key: "image",
+      label: "Category Image",
       cellRenderer: ImageCell,
+      width: 100,
+    },
+
+    {
+      key: "brand_id",
+      label: "Brand Id",
+      cellRenderer: BrandIdCell,
       width: 200,
     },
 
     {
-      key: "_id",
-      label: "Company Id",
-      cellRenderer: BrandIdCell,
-      width: 300,
-    },
-
-    {
-      key: "brand_label",
-      label: "Company Name",
+      key: "brand_name",
+      label: "Brand Name",
       cellRenderer: BrandNameCell,
-      width: 250,
+      width: 150,
     },
     {
-      key: "brand_description",
-      label: "Company Description",
-      cellRenderer: BrandDescriptionCell,
-      width: 400,
+      key: "_id",
+      label: "Category Id",
+      cellRenderer: CategoryIdCell,
+      width: 200,
+    },
+    {
+      key: "category_label",
+      label: "Category Name",
+      cellRenderer: CategoryNameCell,
+      width: 200,
+    },
+    {
+      key: "category_label",
+      label: "Sub Category Count",
+      cellRenderer: SubCategoryCountCell,
+      width: 150,
     },
     {
       key: "actions",
@@ -260,14 +292,11 @@ export const AllCompany = () => {
       }
     );
   };
-  //   console.log(mutation_search?.data?.data);
 
   const displayedData =
     isSearching && mutation_search?.data?.data[0]
       ? [mutation_search?.data?.data[0]]
-      : data?.data?.data;
-
-  console.log(displayedData);
+      : data?.data;
 
   const [columnKeys, setColumnKeys] = useState(
     defaultColumns.map((column) => column.key)
@@ -278,10 +307,10 @@ export const AllCompany = () => {
   );
   const CustomCell = compact ? CompactCell : Cell;
   const CustomHeaderCell = compact ? CompactHeaderCell : HeaderCell;
-
+  console.log(data?.meta?.total_page);
   const handleLoadMore = () => {
     setPage((prevPage) => {
-      if (prevPage < data?.data?.meta?.total_page) {
+      if (prevPage < data?.meta?.total_page) {
         return prevPage + 1;
       }
       return prevPage;
@@ -299,7 +328,9 @@ export const AllCompany = () => {
       <Toaster />
       <Modal open={open} onClose={handleClose}>
         <Modal.Header className="p-5">
-          <Modal.Title>Are you sure you want delete this product ?</Modal.Title>
+          <Modal.Title className="font-bold font-mono">
+            All subcategory will be deleted . Are you sure ?
+          </Modal.Title>
         </Modal.Header>
 
         <Modal.Footer>
@@ -484,7 +515,7 @@ export const AllCompany = () => {
                 </div>
                 <div className="sm:flex hidden">
                   <p className="text-sm font-bold leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2">
-                    pages : {page}/{data?.data?.meta?.total_page}
+                    pages : {page}/{data?.meta?.total_page}
                   </p>
                 </div>
                 <div className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">

@@ -155,7 +155,7 @@ export default function UserInfoEdit() {
                     toaster.push(<Message type="error"></Message>);
                   }}
                 >
-                  <button style={{ width: 150, height: 150 }}>
+                  <button type="button" style={{ width: 150, height: 150 }}>
                     {uploading && <Loader backdrop center />}
                     {fileInfo ? (
                       <img src={fileInfo} width="100%" height="150%" />
@@ -276,7 +276,8 @@ export default function UserInfoEdit() {
                     defaultValue={myData?.zipCode}
                     className="w-56"
                   />
-                </div>w
+                </div>
+                w
               </div>
             </div>
 

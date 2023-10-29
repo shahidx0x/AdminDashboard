@@ -267,8 +267,6 @@ export const AllCompany = () => {
       ? [mutation_search?.data?.data[0]]
       : data?.data?.data;
 
-  console.log(displayedData);
-
   const [columnKeys, setColumnKeys] = useState(
     defaultColumns.map((column) => column.key)
   );

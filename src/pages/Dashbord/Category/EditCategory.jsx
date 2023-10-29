@@ -31,7 +31,7 @@ function previewFile(file, callback) {
   reader.readAsDataURL(file);
 }
 
-export default function AddCategory() {
+export default function EditCategory() {
   const user = useSelector((state) => state.user.user);
   const toaster = useToaster();
   const [uploading, setUploading] = useState(false);
@@ -101,7 +101,7 @@ export default function AddCategory() {
         justifyContent="center"
         alignItems="center"
         direction="column"
-        className="-mt-16 "
+        className="-mt-10"
         style={{
           height: "100vh",
         }}
@@ -110,18 +110,18 @@ export default function AddCategory() {
           <Breadcrumb.Item as={Link} to="/dashbord">
             Home
           </Breadcrumb.Item>
-          <Breadcrumb.Item as={Link} to="/dashbord/all-company">
+          <Breadcrumb.Item as={Link} to="/dashbord/category/all">
             category-list
           </Breadcrumb.Item>
           <Breadcrumb.Item active className="text-blue-400">
-            category-creation
+            category-update
           </Breadcrumb.Item>
         </Breadcrumb>
         <Panel
           bordered
           className="shadow-md w-[50rem]"
           style={{ background: "#fff" }}
-          header={<h3 className="font-bold">Add Category Information</h3>}
+          header={<h3 className="font-bold">Edit Category Information</h3>}
         >
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex justify-center items-center mb-10">
@@ -151,7 +151,7 @@ export default function AddCategory() {
                   {fileInfo ? (
                     <img src={fileInfo} width="100%" height="150%" />
                   ) : (
-                    <img src={myData?.profilePicture} alt="Category Profile" />
+                    <img src={myData?.image} alt="Category Profile" />
                   )}
                 </button>
               </Uploader>
@@ -188,7 +188,7 @@ export default function AddCategory() {
                   <p className="font-bold">Category Name</p>
                   <Input
                     {...register("category_label")}
-                    defaultValue={myData?.firstName}
+                    defaultValue={myData?.category_label}
                     className="w-96"
                   />
                 </div>
@@ -196,21 +196,21 @@ export default function AddCategory() {
                   <p className="font-bold">Category Type</p>
                   <Input
                     {...register("category_type")}
-                    defaultValue={myData?.firstName}
+                    defaultValue={myData?.category_type}
                     className="w-96"
                   />
                 </div>
                 <div>
                   <p className="font-bold">Category Information</p>
                   <Input
-                    defaultValue={myData?.description}
+                    defaultValue={myData?.category_description}
                     {...register("category_description")}
                     as="textarea"
                     rows={3}
                   />
                 </div>
 
-                <div className="mb-20 flex gap-2">
+                <div className=" flex gap-2">
                   <Button appearance="ghost" onClick={() => UserTable()}>
                     Cancel
                   </Button>
@@ -220,7 +220,7 @@ export default function AddCategory() {
                     appearance="primary"
                     className="bg-blue-600"
                   >
-                    Add Category
+                    Update Category
                   </Button>
                 </div>
               </div>

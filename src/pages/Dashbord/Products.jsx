@@ -79,14 +79,13 @@ function Products() {
     getCategoryByBrandId
   );
 
-  const brand_data = brand?.data?.map((each) => {
-    return { label: each?.name, value: each.id };
-  });
-
   const cate_data = category_data?.data?.map((each) => {
     return { label: each?.category_label, value: each._id };
   });
 
+  const brand_data = brand?.data?.map((each) => {
+    return { label: each?.name, value: each.id };
+  });
   const brand_f_data = [...(brand_data || ["loading"])].map((item) => ({
     label: item?.label,
     value: item?.value,
