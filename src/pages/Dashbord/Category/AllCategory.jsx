@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,15 +18,6 @@ import {
 } from "rsuite";
 import { getBrandsSearched } from "../../../api/BrandServices";
 import { deleteCategory, getAllCategory } from "../../../api/CategoryService";
-import { updateUser } from "../../../api/UserServices";
-
-function previewFile(file, callback) {
-  const reader = new FileReader();
-  reader.onloadend = () => {
-    callback(reader.result);
-  };
-  reader.readAsDataURL(file);
-}
 
 export const AllCategory = () => {
   const [loading, setLoading] = useState(false);
@@ -43,8 +33,7 @@ export const AllCategory = () => {
   const user = useSelector((state) => state.user.user);
   const [inputValue, setInputValue] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [openWithHeader, setOpenWithHeader] = useState(false);
-  const [show, setShow] = useState(null);
+
   const [search, setSearch] = useState(false);
   const toaster = useToaster();
   const [uploading, setUploading] = useState(false);
@@ -153,11 +142,28 @@ export const AllCategory = () => {
     );
   };
   const CategoryNameCell = ({ rowData, dataKey, ...props }) => {
+    const handleSubCategories = () => {
+      navigate(
+        `/dashbord/subcategory/list/${rowData?.category_label}/${rowData?._id}`,
+        { state: { rowData } }
+      );
+    };
     return (
       <Cell {...props}>
-        <p className="flex justify-center items-center text-blue-500 font-bold hover:underline hover:cursor-pointer">
-          {rowData?.category_label}
-        </p>
+        {rowData.subCategories.length > 0 ? (
+          <>
+            <p
+              onClick={() => handleSubCategories()}
+              className="flex justify-center items-center text-blue-500 font-bold hover:underline hover:cursor-pointer"
+            >
+              {rowData?.category_label}
+            </p>
+          </>
+        ) : (
+          <p className="flex justify-center items-center text-blue-500 font-bold hover:underline hover:cursor-pointer">
+            {rowData?.category_label}
+          </p>
+        )}
       </Cell>
     );
   };
@@ -237,35 +243,6 @@ export const AllCategory = () => {
       width: 200,
     },
   ];
-
-  const mutation = useMutation(updateUser);
-  const {
-    register,
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-  const onSubmit = (data) => {
-    if (uploadResponse.fileUrl !== "") {
-      data.profilePicture = uploadResponse.fileUrl;
-    } else {
-      data.profilePicture = "";
-    }
-    mutation.mutate(
-      { data: data, token: user.jwt },
-      {
-        onSuccess: (data) => {
-          console.log(data);
-          toaster.push(<Message type="success">Updated successfully</Message>);
-        },
-        onError: (error) => {
-          console.log(error);
-          toaster.push(<Message type="error">Update failed !</Message>);
-        },
-      }
-    );
-    setOpen(false);
-  };
 
   const mutation_search = useMutation(getBrandsSearched);
 
@@ -349,7 +326,7 @@ export const AllCategory = () => {
       <div>
         <hr />
         <div className="p-5">
-          <div className="flex justify-between">
+          <div className="flex flex-col 2xl:flex-row gap-3 2xl:justify-between">
             <div className="">
               <TagPicker
                 className="h-12"
@@ -421,12 +398,12 @@ export const AllCategory = () => {
 
             <div>
               <div className=" ">
-                <div className="flex space-x-4 border rounded-md">
+                <div className="flex space-x-4 rounded-md">
                   <div className="flex rounded-md overflow-hidden h-12 w-full">
                     <input
                       onChange={(event) => handleInputChange(event)}
                       type="text"
-                      className="w-[20rem] p-6 text-md  rounded-md rounded-r-none"
+                      className="w-[20rem] border-2 text-md  rounded-md rounded-r-none"
                     />
                     <button
                       onClick={handleButtonClick}

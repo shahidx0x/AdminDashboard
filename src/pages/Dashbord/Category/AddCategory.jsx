@@ -101,12 +101,12 @@ export default function AddCategory() {
         justifyContent="center"
         alignItems="center"
         direction="column"
-        className="-mt-16 "
+        className="mt-20 2xl:mt-[-3rem] "
         style={{
           height: "100vh",
         }}
       >
-        <Breadcrumb className="text-xl ">
+        <Breadcrumb className="text-xl font-mono ">
           <Breadcrumb.Item as={Link} to="/dashbord">
             Home
           </Breadcrumb.Item>
@@ -119,12 +119,16 @@ export default function AddCategory() {
         </Breadcrumb>
         <Panel
           bordered
-          className="shadow-md w-[50rem]"
+          className="shadow-sm w-[50rem] border-gray-300"
           style={{ background: "#fff" }}
-          header={<h3 className="font-bold">Add Category Information</h3>}
+          header={
+            <h3 className="font-bold bg-indigo-500 p-8 text-2xl text-white rounded-lg">
+              Add Category Information
+            </h3>
+          }
         >
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex justify-center items-center mb-10">
+            <div className="flex justify-center items-center mb-10 ">
               <Uploader
                 fileListVisible={false}
                 listType="picture"
@@ -156,7 +160,7 @@ export default function AddCategory() {
                 </button>
               </Uploader>
             </div>
-            <div className="flex gap-5 justify-center">
+            <div className="flex  gap-5 justify-center">
               <div className="flex flex-col gap-5">
                 <div>
                   <div>
@@ -210,7 +214,7 @@ export default function AddCategory() {
                   />
                 </div>
 
-                <div className="mb-20 flex gap-2">
+                <div className="2xl:mb-4 flex gap-2">
                   <Button appearance="ghost" onClick={() => UserTable()}>
                     Cancel
                   </Button>

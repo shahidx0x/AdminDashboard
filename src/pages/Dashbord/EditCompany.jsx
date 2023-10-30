@@ -89,7 +89,7 @@ export default function EditCompany() {
           height: "100vh",
         }}
       >
-        <Breadcrumb className="text-xl -mt-20">
+        <Breadcrumb className="text-xl -mt-20 font-mono">
           <Breadcrumb.Item as={Link} to="/dashbord">
             Home
           </Breadcrumb.Item>
@@ -102,9 +102,13 @@ export default function EditCompany() {
         </Breadcrumb>
         <Panel
           bordered
-          className="shadow-md -mt-10 w-[50rem]"
+          className="shadow-md -mt-10 w-[50rem] border-gray-300"
           style={{ background: "#fff" }}
-          header={<h3 className="font-bold">Update Company Information</h3>}
+          header={
+            <h3 className="font-bold text-2xl rounded-lg p-8 bg-indigo-500 text-white">
+              Update Company Information
+            </h3>
+          }
         >
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex justify-center items-center mb-10">

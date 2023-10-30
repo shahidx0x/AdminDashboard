@@ -111,7 +111,7 @@ export default function UserInfoEdit() {
           height: "100vh",
         }}
       >
-        <Breadcrumb className="text-xl -mt-20">
+        <Breadcrumb className="text-xl -mt-20 font-mono">
           <Breadcrumb.Item as={Link} to="/dashbord">
             Home
           </Breadcrumb.Item>
@@ -124,9 +124,13 @@ export default function UserInfoEdit() {
         </Breadcrumb>
         <Panel
           bordered
-          className="shadow-md -mt-10"
+          className="shadow-md -mt-10 border-gray-300"
           style={{ background: "#fff" }}
-          header={<h3 className="font-bold">Update User Information</h3>}
+          header={
+            <h3 className="font-bold p-5 text-2xl bg-indigo-500 rounded-lg text-white">
+              Update User Information
+            </h3>
+          }
         >
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex justify-center items-center mb-10">

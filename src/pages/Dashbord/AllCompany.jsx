@@ -316,7 +316,7 @@ export const AllCompany = () => {
       <div>
         <hr />
         <div className="p-5">
-          <div className="flex justify-between">
+          <div className="flex flex-col gap-5 2xl:flex-row 2xl:justify-between">
             <div className="">
               <TagPicker
                 className="h-12"
@@ -388,12 +388,12 @@ export const AllCompany = () => {
 
             <div>
               <div className=" ">
-                <div className="flex space-x-4 border rounded-md">
+                <div className="flex space-x-4  rounded-md">
                   <div className="flex rounded-md overflow-hidden h-12 w-full">
                     <input
                       onChange={(event) => handleInputChange(event)}
                       type="text"
-                      className="w-[20rem] p-6 text-md  rounded-md rounded-r-none"
+                      className="w-[20rem] text-md  rounded-md rounded-r-none border-2"
                     />
                     <button
                       onClick={handleButtonClick}

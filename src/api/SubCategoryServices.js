@@ -1,38 +1,19 @@
 import axios from "axios";
 import { config } from "../configs/api.config";
 
-export async function getCategoryByBrandId(data) {
-  const headers = {
-    Authorization: `Bearer ${data.queryKey[2]}`,
-  };
-  try {
-    const response = await axios.get(
-      config.endpoints.all_category_under_brand +
-        `?limit=${data.queryKey[4] || 8}&page=${data.queryKey[1]}&brand_id=${
-          data.queryKey[3]
-        }`,
-      { headers }
-    );
-    if (response.status === 404) {
-      throw new Error("User not found");
-    }
-    return response.data;
-  } catch (error) {
-    if (error.response && error.response.status === 404) {
-      throw new Error("User not found");
-    }
-    throw error;
-  }
-}
-
-export async function getAllCategory(data) {
+export async function getAllSubCategory(data) {
+  console.log(
+    config.endpoints.host +
+      `/get/all/subcat/${data.queryKey[3]}?limit=8&page=${data.queryKey[1]}`
+  );
   const headers = {
     Authorization: `Bearer ${data.queryKey[2]}`,
   };
 
   try {
     const response = await axios.get(
-      config.endpoints.all_category + `?limit=8&page=${data.queryKey[1]}`,
+      config.endpoints.host +
+        `/get/all/subcat/${data.queryKey[3]}?limit=8&page=${data.queryKey[1]}`,
       { headers }
     );
     return response.data;
@@ -45,7 +26,7 @@ export async function getAllCategory(data) {
   }
 }
 
-export async function createCategory({ data, token }) {
+export async function CreateSubCategory({ data, token }) {
   try {
     const headers = {
       Authorization: `Bearer ${token}`,
@@ -73,9 +54,8 @@ export async function createCategory({ data, token }) {
     throw error;
   }
 }
-// /delete/category/by/6537e46bd19f19612adc8c7a
 
-export async function deleteCategory(data) {
+export async function DeleteSubCategory(data) {
   try {
     const headers = {
       Authorization: `Bearer ${data?.token}`,
@@ -102,7 +82,7 @@ export async function deleteCategory(data) {
   }
 }
 
-export async function updateCategory({ data, token, id }) {
+export async function UpdateSubCategory({ data, token, id }) {
   try {
     const headers = {
       Authorization: `Bearer ${token}`,

@@ -3,17 +3,14 @@ import NavbarHeader from "./components/Navbar";
 import SideNavigation from "./components/Sidebar";
 import AddCompany from "./pages/Dashbord/AddCompany";
 import { AllCompany } from "./pages/Dashbord/AllCompany";
-import Brands from "./pages/Dashbord/Brands";
-import Category from "./pages/Dashbord/Category";
-
 import AddCategory from "./pages/Dashbord/Category/AddCategory";
 import { AllCategory } from "./pages/Dashbord/Category/AllCategory";
 import EditCategory from "./pages/Dashbord/Category/EditCategory";
 import EditCompany from "./pages/Dashbord/EditCompany";
 import Products from "./pages/Dashbord/Products";
+import { SubcategoryList } from "./pages/Dashbord/Subcategory/SubcategoryList";
 import UserInfoEdit from "./pages/Dashbord/UserInfoEdit";
 import { UserTable } from "./pages/Dashbord/UserTable";
-import Users from "./pages/Dashbord/Users";
 import { Login } from "./pages/Login";
 
 function App() {
@@ -36,18 +33,6 @@ function App() {
       path: "/dashbord",
       element: <Dashbord />,
       children: [
-        {
-          path: "brands",
-          element: <Brands />,
-        },
-        {
-          path: "users",
-          element: <Users />,
-        },
-        {
-          path: ":brand_name/categories/:brand_id",
-          element: <Category />,
-        },
         {
           path: "products",
           element: <Products />,
@@ -82,6 +67,14 @@ function App() {
         },
         {
           path: "category/edit",
+          element: <EditCategory />,
+        },
+        {
+          path: "subcategory/list/:category_name/:category_id",
+          element: <SubcategoryList />,
+        },
+        {
+          path: "category/subcategory/add",
           element: <EditCategory />,
         },
       ],

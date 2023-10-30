@@ -20,7 +20,7 @@ import {
   useToaster,
 } from "rsuite";
 import { getBrandsIdAndName } from "../../../api/BrandServices";
-import { createCategory } from "../../../api/CategoryService";
+import { updateCategory } from "../../../api/CategoryService";
 import { config } from "../../../configs/api.config";
 
 function previewFile(file, callback) {
@@ -49,7 +49,7 @@ export default function EditCategory() {
     formState: { errors },
   } = useForm();
 
-  const mutation = useMutation(createCategory);
+  const mutation = useMutation(updateCategory);
   const [brandId, SetBrandId] = useState(null);
   const [brandName, SetBrandName] = useState(null);
   const onSubmit = (data) => {
@@ -60,19 +60,20 @@ export default function EditCategory() {
     }
     data.brand_id = brandId;
     data.brand_name = brandName;
-    console.table(data);
+    data.id = myData?._id;
+    let id = myData?._id;
     mutation.mutate(
-      { data: data, token: user.jwt },
+      { data: data, token: user.jwt, id },
       {
         onSuccess: (data) => {
           toaster.push(
-            <Message type="success">Category added successfully</Message>
+            <Message type="success">Category updated successfully</Message>
           );
         },
         onError: (error) => {
           console.log(error);
           toaster.push(
-            <Message type="error">Category Add failed ! Try Again.</Message>
+            <Message type="error">Category update failed ! Try Again.</Message>
           );
         },
       }
@@ -93,7 +94,7 @@ export default function EditCategory() {
 
   const navigate = useNavigate();
   function UserTable() {
-    navigate("/dashbord/all-company");
+    navigate("/dashbord/category/all");
   }
   return (
     <>
@@ -106,7 +107,7 @@ export default function EditCategory() {
           height: "100vh",
         }}
       >
-        <Breadcrumb className="text-xl ">
+        <Breadcrumb className="text-xl font-mono ">
           <Breadcrumb.Item as={Link} to="/dashbord">
             Home
           </Breadcrumb.Item>
@@ -119,12 +120,16 @@ export default function EditCategory() {
         </Breadcrumb>
         <Panel
           bordered
-          className="shadow-md w-[50rem]"
+          className="shadow-md w-[40rem] border-gray-400"
           style={{ background: "#fff" }}
-          header={<h3 className="font-bold">Edit Category Information</h3>}
+          header={
+            <h3 className="font-bold bg-indigo-500 text-white p-3 rounded-md text-2xl ">
+              Edit Category Information
+            </h3>
+          }
         >
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex justify-center items-center mb-10">
+            <div className="flex justify-center items-center mb-8">
               <Uploader
                 fileListVisible={false}
                 listType="picture"
@@ -165,6 +170,7 @@ export default function EditCategory() {
                       name="brand_id"
                       {...register("brand_id")}
                       control={control}
+                      defaultValue={myData?.brand_name}
                       render={({ field }) => (
                         <SelectPicker
                           searchable={true}
@@ -210,7 +216,7 @@ export default function EditCategory() {
                   />
                 </div>
 
-                <div className=" flex gap-2">
+                <div className=" flex gap-2 mb-9">
                   <Button appearance="ghost" onClick={() => UserTable()}>
                     Cancel
                   </Button>

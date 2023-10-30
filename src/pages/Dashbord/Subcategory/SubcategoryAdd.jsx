@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
-import { useForm } from "react-hook-form";
 
-import { useMutation } from "react-query";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+
+import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
@@ -13,12 +14,14 @@ import {
   Loader,
   Message,
   Panel,
+  SelectPicker,
   Stack,
   Uploader,
   useToaster,
 } from "rsuite";
-import { createBrand } from "../../api/BrandServices";
-import { config } from "../../configs/api.config";
+import { getBrandsIdAndName } from "../../../api/BrandServices";
+import { createCategory } from "../../../api/CategoryService";
+import { config } from "../../../configs/api.config";
 
 function previewFile(file, callback) {
   const reader = new FileReader();
@@ -28,7 +31,7 @@ function previewFile(file, callback) {
   reader.readAsDataURL(file);
 }
 
-export default function AddCompany() {
+export default function AddSubCategory() {
   const user = useSelector((state) => state.user.user);
   const toaster = useToaster();
   const [uploading, setUploading] = useState(false);
@@ -46,34 +49,47 @@ export default function AddCompany() {
     formState: { errors },
   } = useForm();
 
-  const mutation = useMutation(createBrand);
-
+  const mutation = useMutation(createCategory);
+  const [brandId, SetBrandId] = useState(null);
+  const [brandName, SetBrandName] = useState(null);
   const onSubmit = (data) => {
     if (uploadResponse.fileUrl !== "") {
-      data.brand_image = uploadResponse.fileUrl;
+      data.image = uploadResponse.fileUrl;
     } else {
-      data.brand_image = "";
+      data.image = "";
     }
+    data.brand_id = brandId;
+    data.brand_name = brandName;
+    console.table(data);
     mutation.mutate(
       { data: data, token: user.jwt },
       {
         onSuccess: (data) => {
           toaster.push(
-            <Message type="success">Company added successfully</Message>
+            <Message type="success">Category added successfully</Message>
           );
-          reset();
-          setFileInfo(null);
-          setUploadResponse(null);
         },
         onError: (error) => {
           console.log(error);
           toaster.push(
-            <Message type="error">Company Add failed ! Try Again.</Message>
+            <Message type="error">Category Add failed ! Try Again.</Message>
           );
         },
       }
     );
+    reset();
   };
+  const { data: brand, status: brand_status } = useQuery(
+    ["brandsIdName", user.jwt],
+    getBrandsIdAndName
+  );
+  const brand_data = brand?.data?.map((each) => {
+    return { label: each?.name, value: each.id };
+  });
+  const brand_f_data = [...(brand_data || ["loading"])].map((item) => ({
+    label: item?.label,
+    value: item?.value,
+  }));
 
   const navigate = useNavigate();
   function UserTable() {
@@ -85,34 +101,34 @@ export default function AddCompany() {
         justifyContent="center"
         alignItems="center"
         direction="column"
-        className="mt-20 2xl:-mt-16 "
+        className="mt-20 2xl:mt-[-3rem] "
         style={{
           height: "100vh",
         }}
       >
-        <Breadcrumb className="text-xl -mt-20 font-mono">
+        <Breadcrumb className="text-xl font-mono ">
           <Breadcrumb.Item as={Link} to="/dashbord">
             Home
           </Breadcrumb.Item>
           <Breadcrumb.Item as={Link} to="/dashbord/all-company">
-            company-list
+            category-list
           </Breadcrumb.Item>
           <Breadcrumb.Item active className="text-blue-400">
-            company-creation
+            category-creation
           </Breadcrumb.Item>
         </Breadcrumb>
         <Panel
           bordered
-          className="shadow-md -mt-10 w-[50rem] border-gray-300"
+          className="shadow-sm w-[50rem] border-gray-300"
           style={{ background: "#fff" }}
           header={
-            <h3 className="font-bold p-8 bg-indigo-500 text-2xl text-white rounded-lg ">
-              Add Company Information
+            <h3 className="font-bold bg-indigo-500 p-8 text-2xl text-white rounded-lg">
+              Add Category Information
             </h3>
           }
         >
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex justify-center items-center mb-10">
+            <div className="flex justify-center items-center mb-10 ">
               <Uploader
                 fileListVisible={false}
                 listType="picture"
@@ -139,31 +155,66 @@ export default function AddCompany() {
                   {fileInfo ? (
                     <img src={fileInfo} width="100%" height="150%" />
                   ) : (
-                    <img src={myData?.profilePicture} alt="Company Profile" />
+                    <img src={myData?.profilePicture} alt="Category Profile" />
                   )}
                 </button>
               </Uploader>
             </div>
-            <div className="flex gap-5 justify-center">
+            <div className="flex  gap-5 justify-center">
               <div className="flex flex-col gap-5">
                 <div>
-                  <p className="font-bold">Company Name</p>
+                  <div>
+                    <p className="font-bold">Select Company</p>
+                    <Controller
+                      name="brand_id"
+                      {...register("brand_id")}
+                      control={control}
+                      render={({ field }) => (
+                        <SelectPicker
+                          searchable={true}
+                          {...field}
+                          size="md"
+                          data={brand_f_data}
+                          className="w-96"
+                          onChange={(value, data) => {
+                            field.onChange(value);
+                            SetBrandName(data.target.innerHTML);
+
+                            SetBrandId(value);
+                          }}
+                          onBlur={() => field.onBlur()}
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <p className="font-bold">Category Name</p>
                   <Input
-                    {...register("brand_label")}
+                    {...register("category_label")}
                     defaultValue={myData?.firstName}
                     className="w-96"
                   />
                 </div>
                 <div>
-                  <p className="font-bold">Company Information</p>
+                  <p className="font-bold">Category Type</p>
+                  <Input
+                    {...register("category_type")}
+                    defaultValue={myData?.firstName}
+                    className="w-96"
+                  />
+                </div>
+                <div>
+                  <p className="font-bold">Category Information</p>
                   <Input
                     defaultValue={myData?.description}
-                    {...register("brand_description")}
+                    {...register("category_description")}
                     as="textarea"
                     rows={3}
                   />
                 </div>
-                <div className="mb-20 flex gap-2">
+
+                <div className="2xl:mb-4 flex gap-2">
                   <Button appearance="ghost" onClick={() => UserTable()}>
                     Cancel
                   </Button>
@@ -173,7 +224,7 @@ export default function AddCompany() {
                     appearance="primary"
                     className="bg-blue-600"
                   >
-                    Add Company
+                    Add Category
                   </Button>
                 </div>
               </div>
