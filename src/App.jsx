@@ -7,7 +7,7 @@ import AddCategory from "./pages/Dashbord/Category/AddCategory";
 import { AllCategory } from "./pages/Dashbord/Category/AllCategory";
 import EditCategory from "./pages/Dashbord/Category/EditCategory";
 import EditCompany from "./pages/Dashbord/EditCompany";
-import Products from "./pages/Dashbord/Products";
+import AddSubCategory from "./pages/Dashbord/Subcategory/SubcategoryAdd";
 import { SubcategoryList } from "./pages/Dashbord/Subcategory/SubcategoryList";
 import UserInfoEdit from "./pages/Dashbord/UserInfoEdit";
 import { UserTable } from "./pages/Dashbord/UserTable";
@@ -33,10 +33,6 @@ function App() {
       path: "/dashbord",
       element: <Dashbord />,
       children: [
-        {
-          path: "products",
-          element: <Products />,
-        },
         {
           path: "user-table",
           element: <UserTable />,
@@ -74,8 +70,8 @@ function App() {
           element: <SubcategoryList />,
         },
         {
-          path: "category/subcategory/add",
-          element: <EditCategory />,
+          path: "subcategory/:brand_id/:category_id/add",
+          element: <AddSubCategory />,
         },
       ],
     },

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import {
   Avatar,
   Button,
@@ -17,8 +17,10 @@ import {
   useToaster,
 } from "rsuite";
 import { getBrandsSearched } from "../../../api/BrandServices";
-import { deleteCategory } from "../../../api/CategoryService";
-import { getAllSubCategory } from "../../../api/SubCategoryServices";
+import {
+  DeleteSubCategory,
+  getAllSubCategory,
+} from "../../../api/SubCategoryServices";
 
 export const SubcategoryList = () => {
   const [loading, setLoading] = useState(false);
@@ -41,6 +43,7 @@ export const SubcategoryList = () => {
   const { Column, HeaderCell, Cell } = Table;
 
   const params = useParams();
+  const location = useLocation();
 
   const CompactCell = (props) => <Cell {...props} style={{ padding: 4 }} />;
   const CompactHeaderCell = (props) => (
@@ -69,60 +72,46 @@ export const SubcategoryList = () => {
     getAllSubCategory
   );
 
-  const SubCatDescriptionCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center items-center">
-          {rowData?.description}
-        </p>
-      </Cell>
-    );
-  };
   const [open, setOpen] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const handleOpen = () => {
     setOpen(true);
   };
-  const mutation_delete = useMutation(deleteCategory);
+  const mutation_delete = useMutation(DeleteSubCategory);
   const handleOk = () => {
     mutation_delete.mutate(
-      { deleteId, token: user.jwt },
+      {
+        deleteId,
+        token: user.jwt,
+        category_id: params.category_id,
+        subcategory_id: deleteId,
+      },
       {
         onSuccess: (data) => {
           toaster.push(
-            <Message type="success">Category deleted successfully</Message>
+            <Message type="success">Sub category deleted successfully</Message>
           );
           refetch();
         },
         onError: (error) => {
           console.log(error.response);
           toaster.push(
-            <Message type="error">Category delete failed !</Message>
+            <Message type="error">Sub category delete failed !</Message>
           );
         },
       }
     );
     setOpen(false);
+
     refetch();
   };
   const handleClose = () => setOpen(false);
 
-  const SubCatIdCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center items-center">{rowData?._id}</p>
-      </Cell>
-    );
-  };
-  const SubCatCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center items-center">
-          {rowData.subcategory_name}{" "}
-        </p>
-      </Cell>
-    );
-  };
+  const GenericCell = ({ content, ...props }) => (
+    <Cell {...props}>
+      <p className="flex justify-center items-center">{content}</p>
+    </Cell>
+  );
 
   const ActionsCell = ({ rowData, ...props }) => {
     const handleDelete = () => {
@@ -137,14 +126,16 @@ export const SubcategoryList = () => {
       <Cell {...props}>
         <div className="flex justify-center gap-2">
           <button
-            className="text-blue-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-500 rounded-lg "
+            type="button"
+            className="text-blue-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-500 rounded-lg"
             onClick={handleEdit}
           >
             Edit
           </button>
           <button
-            className="text-red-500 border px-3 py-2 -mt-1 rounded-lg  hover:text-white hover:bg-red-500 "
-            onClick={() => handleDelete()}
+            type="button"
+            className="text-red-500 border px-3 py-2 -mt-1 rounded-lg hover:text-white hover:bg-red-500"
+            onClick={handleDelete}
           >
             Delete
           </button>
@@ -160,27 +151,30 @@ export const SubcategoryList = () => {
       cellRenderer: ImageCell,
       width: 150,
     },
-
     {
       key: "brand_id",
       label: "Subcategory Id",
-      cellRenderer: SubCatIdCell,
+      cellRenderer: (props) => (
+        <GenericCell {...props} content={props.rowData?._id} />
+      ),
       width: 200,
     },
     {
       key: "subcategory_name",
       label: "Sub Category Name",
-      cellRenderer: SubCatCell,
+      cellRenderer: (props) => (
+        <GenericCell {...props} content={props.rowData.subcategory_name} />
+      ),
       width: 200,
     },
-
     {
       key: "description",
       label: "Description",
-      cellRenderer: SubCatDescriptionCell,
+      cellRenderer: (props) => (
+        <GenericCell {...props} content={props.rowData?.description} />
+      ),
       width: 200,
     },
-
     {
       key: "actions",
       label: "Actions",
@@ -361,7 +355,14 @@ export const SubcategoryList = () => {
                   </div>
                 </div>
               </div>
-              <Button className="bg-indigo-600 w-60 text-white font-bold">
+              <Button
+                onClick={() => {
+                  navigate(
+                    `/dashbord/subcategory/${location.state.rowData.brand_id}/${location.state.rowData._id}/add`
+                  );
+                }}
+                className="bg-indigo-600 w-60 text-white font-bold"
+              >
                 ADD SUB CATEGORY
               </Button>
             </div>

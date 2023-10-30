@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 
 import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import {
   Breadcrumb,
@@ -14,13 +14,11 @@ import {
   Loader,
   Message,
   Panel,
-  SelectPicker,
   Stack,
   Uploader,
   useToaster,
 } from "rsuite";
-import { getBrandsIdAndName } from "../../../api/BrandServices";
-import { createCategory } from "../../../api/CategoryService";
+import { CreateSubCategory } from "../../../api/SubCategoryServices";
 import { config } from "../../../configs/api.config";
 
 function previewFile(file, callback) {
@@ -37,63 +35,49 @@ export default function AddSubCategory() {
   const [uploading, setUploading] = useState(false);
   const [fileInfo, setFileInfo] = useState(null);
   const [uploadResponse, setUploadResponse] = useState({ fileUrl: "" });
+  const navigate = useNavigate();
 
-  const location = useLocation();
-  const myData = location.state?.myData;
+  const params = useParams();
 
   const {
     register,
-    control,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
 
-  const mutation = useMutation(createCategory);
-  const [brandId, SetBrandId] = useState(null);
-  const [brandName, SetBrandName] = useState(null);
+  const mutation = useMutation(CreateSubCategory);
+
   const onSubmit = (data) => {
     if (uploadResponse.fileUrl !== "") {
       data.image = uploadResponse.fileUrl;
     } else {
       data.image = "";
     }
-    data.brand_id = brandId;
-    data.brand_name = brandName;
-    console.table(data);
+    data.brand_id = params.brand_id;
+    data.category_id = params.category_id;
+    let id = params.category_id;
     mutation.mutate(
-      { data: data, token: user.jwt },
+      { data: data, token: user.jwt, id },
       {
         onSuccess: (data) => {
           toaster.push(
-            <Message type="success">Category added successfully</Message>
+            <Message type="success">Sub Category added successfully</Message>
           );
         },
         onError: (error) => {
           console.log(error);
           toaster.push(
-            <Message type="error">Category Add failed ! Try Again.</Message>
+            <Message type="error">Sub Category Add failed ! Try Again.</Message>
           );
         },
       }
     );
     reset();
   };
-  const { data: brand, status: brand_status } = useQuery(
-    ["brandsIdName", user.jwt],
-    getBrandsIdAndName
-  );
-  const brand_data = brand?.data?.map((each) => {
-    return { label: each?.name, value: each.id };
-  });
-  const brand_f_data = [...(brand_data || ["loading"])].map((item) => ({
-    label: item?.label,
-    value: item?.value,
-  }));
 
-  const navigate = useNavigate();
-  function UserTable() {
-    navigate("/dashbord/all-company");
+  function Return() {
+    navigate(-1);
   }
   return (
     <>
@@ -113,8 +97,16 @@ export default function AddSubCategory() {
           <Breadcrumb.Item as={Link} to="/dashbord/all-company">
             category-list
           </Breadcrumb.Item>
+          <Breadcrumb.Item
+            className="cursor-pointer hover:text-blue-500"
+            onClick={() => {
+              navigate(-1);
+            }}
+          >
+            sub-category-list
+          </Breadcrumb.Item>
           <Breadcrumb.Item active className="text-blue-400">
-            category-creation
+            sub-category-creation
           </Breadcrumb.Item>
         </Breadcrumb>
         <Panel
@@ -123,7 +115,7 @@ export default function AddSubCategory() {
           style={{ background: "#fff" }}
           header={
             <h3 className="font-bold bg-indigo-500 p-8 text-2xl text-white rounded-lg">
-              Add Category Information
+              Add Sub Category Information
             </h3>
           }
         >
@@ -155,7 +147,7 @@ export default function AddSubCategory() {
                   {fileInfo ? (
                     <img src={fileInfo} width="100%" height="150%" />
                   ) : (
-                    <img src={myData?.profilePicture} alt="Category Profile" />
+                    <img src={fileInfo} alt="Category Profile" />
                   )}
                 </button>
               </Uploader>
@@ -163,59 +155,17 @@ export default function AddSubCategory() {
             <div className="flex  gap-5 justify-center">
               <div className="flex flex-col gap-5">
                 <div>
-                  <div>
-                    <p className="font-bold">Select Company</p>
-                    <Controller
-                      name="brand_id"
-                      {...register("brand_id")}
-                      control={control}
-                      render={({ field }) => (
-                        <SelectPicker
-                          searchable={true}
-                          {...field}
-                          size="md"
-                          data={brand_f_data}
-                          className="w-96"
-                          onChange={(value, data) => {
-                            field.onChange(value);
-                            SetBrandName(data.target.innerHTML);
+                  <p className="font-bold">Sub Category Name</p>
+                  <Input {...register("subcategory_name")} className="w-96" />
+                </div>
 
-                            SetBrandId(value);
-                          }}
-                          onBlur={() => field.onBlur()}
-                        />
-                      )}
-                    />
-                  </div>
-                </div>
                 <div>
-                  <p className="font-bold">Category Name</p>
-                  <Input
-                    {...register("category_label")}
-                    defaultValue={myData?.firstName}
-                    className="w-96"
-                  />
-                </div>
-                <div>
-                  <p className="font-bold">Category Type</p>
-                  <Input
-                    {...register("category_type")}
-                    defaultValue={myData?.firstName}
-                    className="w-96"
-                  />
-                </div>
-                <div>
-                  <p className="font-bold">Category Information</p>
-                  <Input
-                    defaultValue={myData?.description}
-                    {...register("category_description")}
-                    as="textarea"
-                    rows={3}
-                  />
+                  <p className="font-bold">Sub Category Information</p>
+                  <Input {...register("description")} as="textarea" rows={3} />
                 </div>
 
                 <div className="2xl:mb-4 flex gap-2">
-                  <Button appearance="ghost" onClick={() => UserTable()}>
+                  <Button appearance="ghost" onClick={() => Return()}>
                     Cancel
                   </Button>
 
@@ -224,7 +174,7 @@ export default function AddSubCategory() {
                     appearance="primary"
                     className="bg-blue-600"
                   >
-                    Add Category
+                    Add Sub Category
                   </Button>
                 </div>
               </div>

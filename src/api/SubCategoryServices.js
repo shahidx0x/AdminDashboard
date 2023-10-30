@@ -26,7 +26,7 @@ export async function getAllSubCategory(data) {
   }
 }
 
-export async function CreateSubCategory({ data, token }) {
+export async function CreateSubCategory({ data, token, id }) {
   try {
     const headers = {
       Authorization: `Bearer ${token}`,
@@ -34,7 +34,7 @@ export async function CreateSubCategory({ data, token }) {
     };
 
     const response = await axios.post(
-      config.endpoints.create_category_under_brand,
+      config.endpoints.host + `/create/subcategory/${id}`,
       data,
       {
         headers,
@@ -63,7 +63,8 @@ export async function DeleteSubCategory(data) {
     };
 
     const response = await axios.delete(
-      config.endpoints.host + `/delete/category/by/${data?.deleteId}`,
+      config.endpoints.host +
+        `/subcategory/${data.category_id}/${data.subcategory_id}`,
       {
         headers,
       }

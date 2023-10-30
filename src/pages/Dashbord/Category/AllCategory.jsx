@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import {
   Avatar,
@@ -24,7 +24,6 @@ export const AllCategory = () => {
   const [compact, setCompact] = useState(true);
   const [bordered, setBordered] = useState(true);
   const [noData, setNoData] = useState(false);
-  const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
   const [showHeader, setShowHeader] = useState(true);
   const [autoHeight, setAutoHeight] = useState(true);
@@ -36,12 +35,7 @@ export const AllCategory = () => {
 
   const [search, setSearch] = useState(false);
   const toaster = useToaster();
-  const [uploading, setUploading] = useState(false);
-  const [fileInfo, setFileInfo] = useState(null);
-  const [uploadResponse, setUploadResponse] = useState({ fileUrl: "" });
-  const [forceUpdate, setForceUpdate] = useState(0);
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { Column, HeaderCell, Cell } = Table;
@@ -52,53 +46,12 @@ export const AllCategory = () => {
       <div className="flex justify-center font-bold">{props.children}</div>
     </HeaderCell>
   );
-  const ImageCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <div className="flex justify-center -mt-2">
-          <Avatar
-            className=""
-            src={
-              rowData?.image ||
-              "https://avatars.githubusercontent.com/u/12592949"
-            }
-            alt="P"
-          />
-        </div>
-      </Cell>
-    );
-  };
+
   const { data, status, refetch } = useQuery(
     ["category", page, user.jwt],
     getAllCategory
   );
-  const BrandNameCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center items-center">
-          {rowData?.brand_name}
-        </p>
-      </Cell>
-    );
-  };
-  const SubCategoryCountCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center items-center font-bold">
-          {rowData?.subCategories.length || 0}
-        </p>
-      </Cell>
-    );
-  };
-  const BrandDescriptionCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center items-center">
-          {rowData?.brand_description}
-        </p>
-      </Cell>
-    );
-  };
+
   const [open, setOpen] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const handleOpen = () => {
@@ -123,47 +76,44 @@ export const AllCategory = () => {
         },
       }
     );
-    setOpen(false);
     refetch();
   };
   const handleClose = () => setOpen(false);
-  const BrandIdCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center items-center">{rowData?.brand_id}</p>
-      </Cell>
-    );
-  };
-  const CategoryIdCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center items-center">{rowData?._id}</p>
-      </Cell>
-    );
-  };
-  const CategoryNameCell = ({ rowData, dataKey, ...props }) => {
+
+  const GenericCell = ({ content, ...props }) => (
+    <Cell {...props}>
+      <p className="flex justify-center items-center">{content}</p>
+    </Cell>
+  );
+  const ImageCell = ({ rowData, ...props }) => (
+    <Cell {...props}>
+      <div className="flex justify-center -mt-2">
+        <Avatar
+          src={
+            rowData?.image || "https://avatars.githubusercontent.com/u/12592949"
+          }
+          alt="P"
+        />
+      </div>
+    </Cell>
+  );
+
+  const CategoryNameCell = ({ rowData, ...props }) => {
     const handleSubCategories = () => {
       navigate(
         `/dashbord/subcategory/list/${rowData?.category_label}/${rowData?._id}`,
         { state: { rowData } }
       );
     };
+
     return (
       <Cell {...props}>
-        {rowData.subCategories.length > 0 ? (
-          <>
-            <p
-              onClick={() => handleSubCategories()}
-              className="flex justify-center items-center text-blue-500 font-bold hover:underline hover:cursor-pointer"
-            >
-              {rowData?.category_label}
-            </p>
-          </>
-        ) : (
-          <p className="flex justify-center items-center text-blue-500 font-bold hover:underline hover:cursor-pointer">
-            {rowData?.category_label}
-          </p>
-        )}
+        <p
+          onClick={handleSubCategories}
+          className="flex justify-center items-center text-blue-500 font-bold hover:underline hover:cursor-pointer"
+        >
+          {rowData?.category_label}
+        </p>
       </Cell>
     );
   };
@@ -181,14 +131,16 @@ export const AllCategory = () => {
       <Cell {...props}>
         <div className="flex justify-center gap-2">
           <button
-            className="text-blue-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-500 rounded-lg "
+            type="button"
+            className="text-blue-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-500 rounded-lg"
             onClick={handleEdit}
           >
             Edit
           </button>
           <button
-            className="text-red-500 border px-3 py-2 -mt-1 rounded-lg  hover:text-white hover:bg-red-500 "
-            onClick={() => handleDelete()}
+            type="button"
+            className="text-red-500 border px-3 py-2 -mt-1 rounded-lg hover:text-white hover:bg-red-500"
+            onClick={handleDelete}
           >
             Delete
           </button>
@@ -204,24 +156,28 @@ export const AllCategory = () => {
       cellRenderer: ImageCell,
       width: 100,
     },
-
     {
       key: "brand_id",
       label: "Brand Id",
-      cellRenderer: BrandIdCell,
+      cellRenderer: (props) => (
+        <GenericCell {...props} content={props.rowData?.brand_id} />
+      ),
       width: 200,
     },
-
     {
       key: "brand_name",
       label: "Brand Name",
-      cellRenderer: BrandNameCell,
+      cellRenderer: (props) => (
+        <GenericCell {...props} content={props.rowData?.brand_name} />
+      ),
       width: 150,
     },
     {
       key: "_id",
       label: "Category Id",
-      cellRenderer: CategoryIdCell,
+      cellRenderer: (props) => (
+        <GenericCell {...props} content={props.rowData?._id} />
+      ),
       width: 200,
     },
     {
@@ -233,7 +189,13 @@ export const AllCategory = () => {
     {
       key: "category_label",
       label: "Sub Category Count",
-      cellRenderer: SubCategoryCountCell,
+      cellRenderer: (props) => (
+        <GenericCell
+          {...props}
+          content={props.rowData?.subCategories.length || 0}
+          className="font-bold"
+        />
+      ),
       width: 150,
     },
     {
