@@ -8,21 +8,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import {
   Avatar,
-  Button,
   Dropdown,
   Message,
-  Modal,
   Table,
   TagPicker,
   Toggle,
   useToaster,
 } from "rsuite";
 import {
-  deleteBrand,
-  getBrands,
-  getBrandsSearched,
-} from "../../api/BrandServices";
-import { updateUser } from "../../api/UserServices";
+  getUsers,
+  getUsersByEmail,
+  updateUser,
+} from "../../../api/UserServices";
 
 function previewFile(file, callback) {
   const reader = new FileReader();
@@ -32,7 +29,7 @@ function previewFile(file, callback) {
   reader.readAsDataURL(file);
 }
 
-export const AllCompany = () => {
+export const UserTable = () => {
   const [loading, setLoading] = useState(false);
   const [compact, setCompact] = useState(true);
   const [bordered, setBordered] = useState(true);
@@ -46,6 +43,7 @@ export const AllCompany = () => {
   const user = useSelector((state) => state.user.user);
   const [inputValue, setInputValue] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const [open, setOpen] = useState(false);
   const [openWithHeader, setOpenWithHeader] = useState(false);
   const [show, setShow] = useState(null);
   const [search, setSearch] = useState(false);
@@ -53,8 +51,6 @@ export const AllCompany = () => {
   const [uploading, setUploading] = useState(false);
   const [fileInfo, setFileInfo] = useState(null);
   const [uploadResponse, setUploadResponse] = useState({ fileUrl: "" });
-  const [forceUpdate, setForceUpdate] = useState(0);
-
   const { Column, HeaderCell, Cell } = Table;
 
   const CompactCell = (props) => <Cell {...props} style={{ padding: 4 }} />;
@@ -70,7 +66,7 @@ export const AllCompany = () => {
           <Avatar
             className=""
             src={
-              rowData?.brand_image ||
+              rowData?.profilePicture ||
               "https://avatars.githubusercontent.com/u/12592949"
             }
             alt="P"
@@ -79,92 +75,111 @@ export const AllCompany = () => {
       </Cell>
     );
   };
-
+  const NameCell = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <p className="flex justify-center items-center">
+          {rowData?.firstName + " " + rowData?.lastName}
+        </p>
+      </Cell>
+    );
+  };
+  const CartCell = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <p className="flex justify-center items-center">
+          {rowData?.cartNumber}
+        </p>
+      </Cell>
+    );
+  };
+  const CompanyCell = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <p className="flex justify-center items-center">{rowData?.company}</p>
+      </Cell>
+    );
+  };
+  const ContactCell = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <p className="flex justify-center items-center">
+          {rowData?.phoneNumber}
+        </p>
+      </Cell>
+    );
+  };
+  const RollCell = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <p className="flex justify-center items-center">{rowData?.role}</p>
+      </Cell>
+    );
+  };
+  const SubscriptionCell = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <p className="flex justify-center items-center">
+          {rowData?.subscription}
+        </p>
+      </Cell>
+    );
+  };
+  const LocationCell = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <p className="flex justify-center items-center">{rowData?.location}</p>
+      </Cell>
+    );
+  };
+  const ZipCell = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <p className="flex justify-center items-center">{rowData?.zipCode}</p>
+      </Cell>
+    );
+  };
+  const StatusCell = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <p className="flex justify-center items-center">
+          {rowData?.isAccountActive ? (
+            <button className="text-blue-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-500 rounded-lg">
+              Active
+            </button>
+          ) : (
+            <button className="text-red-600 border border-red-400 px-2 py-2 -mt-1 hover:text-white hover:bg-red-500 rounded-lg">
+              Not Active
+            </button>
+          )}
+        </p>
+      </Cell>
+    );
+  };
+  const EmailCell = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <p className="flex justify-center items-center">{rowData.email}</p>
+      </Cell>
+    );
+  };
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { data, status, refetch } = useQuery(
-    ["brands", page, user.jwt],
-    getBrands
-  );
-
-  const BrandNameCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center items-center">
-          {rowData?.brand_label}
-        </p>
-      </Cell>
-    );
-  };
-
-  const BrandDescriptionCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center items-center">
-          {rowData?.brand_description}
-        </p>
-      </Cell>
-    );
-  };
-  const [open, setOpen] = useState(false);
-  const [deleteId, setDeleteId] = useState(null);
-  const handleOpen = () => {
-    setOpen(true);
-  };
-  const mutation_delete = useMutation(deleteBrand);
-  const handleOk = () => {
-    console.log(deleteId);
-    mutation_delete.mutate(
-      { deleteId, token: user.jwt },
-      {
-        onSuccess: (data) => {
-          toaster.push(
-            <Message type="success">Brand deleted successfully</Message>
-          );
-          refetch();
-        },
-        onError: (error) => {
-          console.log(error.response);
-          toaster.push(<Message type="error">Brand delete failed !</Message>);
-        },
-      }
-    );
-    setOpen(false);
-    refetch();
-  };
-  const handleClose = () => setOpen(false);
-  const BrandIdCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center items-center">{rowData?._id}</p>
-      </Cell>
-    );
-  };
-
   const ActionsCell = ({ rowData, ...props }) => {
-    const handleDelete = () => {
-      handleOpen();
-      setDeleteId(rowData._id);
-    };
     const handleEdit = () => {
       navigate("edit", { state: { myData: rowData } });
+      console.log("Edit clicked for:", rowData._id);
     };
 
     return (
       <Cell {...props}>
-        <div className="flex justify-center gap-2">
+        <div className="flex justify-center">
           <button
-            className="text-blue-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-500 rounded-lg "
+            className="text-blue-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-500 rounded-lg"
             onClick={handleEdit}
           >
             Edit
-          </button>
-          <button
-            className="text-red-500 border px-3 py-2 -mt-1 rounded-lg  hover:text-white hover:bg-red-500 "
-            onClick={() => handleDelete()}
-          >
-            Delete
           </button>
         </div>
       </Cell>
@@ -173,39 +188,75 @@ export const AllCompany = () => {
 
   const defaultColumns = [
     {
-      key: "brand_image",
-      label: "Company Image",
+      key: "profilePicture",
+      label: "Profle Image",
       cellRenderer: ImageCell,
+      width: 90,
+    },
+
+    {
+      key: "name",
+      label: "Name",
+      cellRenderer: NameCell,
+      width: 190,
+    },
+
+    {
+      key: "cartNumber",
+      label: "Carts",
+      cellRenderer: CartCell,
+      width: 130,
+    },
+    {
+      key: "company",
+      label: "Company",
+      cellRenderer: CompanyCell,
+      width: 140,
+    },
+    {
+      key: "phoneNumber",
+      label: "Contact",
+      cellRenderer: ContactCell,
+      width: 150,
+    },
+    {
+      key: "email",
+      label: "Email",
+      cellRenderer: EmailCell,
       width: 200,
     },
-
     {
-      key: "_id",
-      label: "Company Id",
-      cellRenderer: BrandIdCell,
-      width: 300,
+      key: "subscription",
+      label: "Subscription",
+      cellRenderer: SubscriptionCell,
+      width: 150,
+    },
+    {
+      key: "location",
+      label: "Location",
+      cellRenderer: LocationCell,
+      width: 150,
+    },
+    {
+      key: "zipCode",
+      label: "ZipCode",
+      cellRenderer: ZipCell,
+      width: 150,
+    },
+    {
+      key: "status",
+      label: "Status",
+      cellRenderer: StatusCell,
+      width: 100,
     },
 
-    {
-      key: "brand_label",
-      label: "Company Name",
-      cellRenderer: BrandNameCell,
-      width: 250,
-    },
-    {
-      key: "brand_description",
-      label: "Company Description",
-      cellRenderer: BrandDescriptionCell,
-      width: 400,
-    },
     {
       key: "actions",
       label: "Actions",
       cellRenderer: ActionsCell,
-      width: 200,
+      width: 100,
     },
   ];
-
   const mutation = useMutation(updateUser);
   const {
     register,
@@ -235,10 +286,25 @@ export const AllCompany = () => {
     setOpen(false);
   };
 
-  const mutation_search = useMutation(getBrandsSearched);
+  const dropdown = ["admin", "user"].map((item) => ({
+    label: item,
+    value: item,
+  }));
+
+  const dropdownSub = ["Gold", "Bronze"].map((item) => ({
+    label: item,
+    value: item,
+  }));
+  const { data, status, refetch, error } = useQuery(
+    ["users", page, user.jwt],
+    getUsers
+  );
+
+  const mutation_search = useMutation(getUsersByEmail);
 
   const handleInputChange = (event) => {
     const value = event.target.value;
+    console.log("OnChnage : ", value);
     setInputValue(value);
 
     if (value === "") {
@@ -248,6 +314,7 @@ export const AllCompany = () => {
   };
 
   const handleButtonClick = () => {
+    console.log("Input : ", user.jwt);
     setIsSearching(true);
     toast.promise(
       mutation_search.mutateAsync({
@@ -255,17 +322,15 @@ export const AllCompany = () => {
       }),
       {
         loading: "Searching...",
-        success: <b>Company found!</b>,
-        error: <b>Company not found in the database!</b>,
+        success: <b>User found!</b>,
+        error: <b>User not found in the database!</b>,
       }
     );
   };
-  //   console.log(mutation_search?.data?.data);
+  //
 
   const displayedData =
-    isSearching && mutation_search?.data?.data[0]
-      ? [mutation_search?.data?.data[0]]
-      : data?.data?.data;
+    isSearching && mutation_search?.data ? [mutation_search?.data] : data?.data;
 
   const [columnKeys, setColumnKeys] = useState(
     defaultColumns.map((column) => column.key)
@@ -279,7 +344,7 @@ export const AllCompany = () => {
 
   const handleLoadMore = () => {
     setPage((prevPage) => {
-      if (prevPage < data?.data?.meta?.total_page) {
+      if (prevPage < data.meta?.total_page) {
         return prevPage + 1;
       }
       return prevPage;
@@ -295,28 +360,10 @@ export const AllCompany = () => {
   return (
     <div>
       <Toaster />
-      <Modal open={open} onClose={handleClose}>
-        <Modal.Header className="p-5">
-          <Modal.Title>Are you sure you want delete this product ?</Modal.Title>
-        </Modal.Header>
-
-        <Modal.Footer>
-          <Button
-            onClick={handleOk}
-            className="bg-blue-500 w-20"
-            appearance="primary"
-          >
-            Confirm
-          </Button>
-          <Button className=" bg-red-500 text-white" onClick={handleClose}>
-            Cancel
-          </Button>
-        </Modal.Footer>
-      </Modal>
       <div>
         <hr />
         <div className="p-5">
-          <div className="flex flex-col gap-5 2xl:flex-row 2xl:justify-between">
+          <div className="flex gap-3 flex-col 2xl:flex-row 2xl:justify-between">
             <div className="">
               <TagPicker
                 className="h-12"
@@ -388,12 +435,31 @@ export const AllCompany = () => {
 
             <div>
               <div className=" ">
+                {/* <div className="flex space-x-1 items-center mb-2 border-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-8 w-8 text-red-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <p className="text-white text-lg font-semibold">
+                    Please enter something
+                  </p>
+                </div> */}
                 <div className="flex space-x-4  rounded-md">
                   <div className="flex rounded-md overflow-hidden h-12 w-full">
                     <input
                       onChange={(event) => handleInputChange(event)}
                       type="text"
-                      className="w-[20rem] text-md  rounded-md rounded-r-none border-2"
+                      className="w-[20rem] border-2 text-md  rounded-md rounded-r-none"
                     />
                     <button
                       onClick={handleButtonClick}
@@ -482,7 +548,7 @@ export const AllCompany = () => {
                 </div>
                 <div className="sm:flex hidden">
                   <p className="text-sm font-bold leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2">
-                    pages : {page}/{data?.data?.meta?.total_page}
+                    pages : {page}/{data?.meta?.total_page}
                   </p>
                 </div>
                 <div className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">

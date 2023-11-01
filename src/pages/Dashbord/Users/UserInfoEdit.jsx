@@ -19,8 +19,8 @@ import {
   Uploader,
   useToaster,
 } from "rsuite";
-import { updateUser } from "../../api/UserServices";
-import { config } from "../../configs/api.config";
+import { updateUser } from "../../../api/UserServices";
+import { config } from "../../../configs/api.config";
 
 function previewFile(file, callback) {
   const reader = new FileReader();

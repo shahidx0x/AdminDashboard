@@ -2,20 +2,23 @@ import axios from "axios";
 import { config } from "../configs/api.config";
 
 export async function getAllSubCategory(data) {
-  console.log(
-    config.endpoints.host +
-      `/get/all/subcat/${data.queryKey[3]}?limit=8&page=${data.queryKey[1]}`
-  );
+  console.log(data.queryKey[4]);
+  let url;
   const headers = {
     Authorization: `Bearer ${data.queryKey[2]}`,
   };
+  if (data.queryKey[4]) {
+    url =
+      config.endpoints.host +
+      `/get/all/subcat/${data.queryKey[3]}?limit=8&page=${data.queryKey[1]}&search=${data.queryKey[4]}`;
+  } else {
+    url =
+      config.endpoints.host +
+      `/get/all/subcat/${data.queryKey[3]}?limit=8&page=${data.queryKey[1]}`;
+  }
 
   try {
-    const response = await axios.get(
-      config.endpoints.host +
-        `/get/all/subcat/${data.queryKey[3]}?limit=8&page=${data.queryKey[1]}`,
-      { headers }
-    );
+    const response = await axios.get(url, { headers });
     return response.data;
   } catch (error) {
     console.error(
@@ -83,14 +86,14 @@ export async function DeleteSubCategory(data) {
   }
 }
 
-export async function UpdateSubCategory({ data, token, id }) {
+export async function UpdateSubCategory({ data, token, cat_id, sub_cat_id }) {
   try {
     const headers = {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     };
     const response = await axios.patch(
-      config.endpoints.host + `/update/category/by/${id}`,
+      config.endpoints.host + `/subcategory/${cat_id}/${sub_cat_id}`,
       data,
       {
         headers,

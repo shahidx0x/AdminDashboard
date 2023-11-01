@@ -1,16 +1,18 @@
 import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
 import NavbarHeader from "./components/Navbar";
 import SideNavigation from "./components/Sidebar";
-import AddCompany from "./pages/Dashbord/AddCompany";
-import { AllCompany } from "./pages/Dashbord/AllCompany";
+
 import AddCategory from "./pages/Dashbord/Category/AddCategory";
 import { AllCategory } from "./pages/Dashbord/Category/AllCategory";
 import EditCategory from "./pages/Dashbord/Category/EditCategory";
-import EditCompany from "./pages/Dashbord/EditCompany";
+import AddCompany from "./pages/Dashbord/Company/AddCompany";
+import { AllCompany } from "./pages/Dashbord/Company/AllCompany";
+import EditCompany from "./pages/Dashbord/Company/EditCompany";
+import EditSubCategory from "./pages/Dashbord/Subcategory/SubCategoryEdit";
 import AddSubCategory from "./pages/Dashbord/Subcategory/SubcategoryAdd";
 import { SubcategoryList } from "./pages/Dashbord/Subcategory/SubcategoryList";
-import UserInfoEdit from "./pages/Dashbord/UserInfoEdit";
-import { UserTable } from "./pages/Dashbord/UserTable";
+import UserInfoEdit from "./pages/Dashbord/Users/UserInfoEdit";
+import { UserTable } from "./pages/Dashbord/Users/UserTable";
 import { Login } from "./pages/Login";
 
 function App() {
@@ -72,6 +74,10 @@ function App() {
         {
           path: "subcategory/:brand_id/:category_id/add",
           element: <AddSubCategory />,
+        },
+        {
+          path: "subcategory/edit",
+          element: <EditSubCategory />,
         },
       ],
     },

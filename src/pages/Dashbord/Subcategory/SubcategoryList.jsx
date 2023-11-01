@@ -16,7 +16,6 @@ import {
   Toggle,
   useToaster,
 } from "rsuite";
-import { getBrandsSearched } from "../../../api/BrandServices";
 import {
   DeleteSubCategory,
   getAllSubCategory,
@@ -43,6 +42,7 @@ export const SubcategoryList = () => {
   const { Column, HeaderCell, Cell } = Table;
 
   const params = useParams();
+  const cat_id = params.category_id;
   const location = useLocation();
 
   const CompactCell = (props) => <Cell {...props} style={{ padding: 4 }} />;
@@ -119,7 +119,7 @@ export const SubcategoryList = () => {
       setDeleteId(rowData._id);
     };
     const handleEdit = () => {
-      navigate("/dashbord/category/edit", { state: { myData: rowData } });
+      navigate("/dashbord/subcategory/edit", { state: { myData: rowData } });
     };
 
     return (
@@ -183,7 +183,7 @@ export const SubcategoryList = () => {
     },
   ];
 
-  const mutation_search = useMutation(getBrandsSearched);
+  const mutation_search = useMutation(getAllSubCategory);
 
   const handleInputChange = (event) => {
     const value = event.target.value;
@@ -197,14 +197,15 @@ export const SubcategoryList = () => {
 
   const handleButtonClick = () => {
     setIsSearching(true);
+
     toast.promise(
       mutation_search.mutateAsync({
-        queryKey: ["user_search", inputValue, user.jwt],
+        queryKey: ["sucat_search", page, user.jwt, cat_id, inputValue],
       }),
       {
         loading: "Searching...",
-        success: <b>Company found!</b>,
-        error: <b>Company not found in the database!</b>,
+        success: <b>sub category found!</b>,
+        error: <b>sub not found in the database!</b>,
       }
     );
   };
@@ -246,7 +247,7 @@ export const SubcategoryList = () => {
         <Modal open={open} onClose={handleClose}>
           <Modal.Header className="p-5">
             <Modal.Title className="font-bold font-mono">
-              All subcategory will be deleted . Are you sure ?
+              Subcategory will be deleted . Are you sure ?
             </Modal.Title>
           </Modal.Header>
 
