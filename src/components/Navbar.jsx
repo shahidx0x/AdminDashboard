@@ -42,7 +42,7 @@ export default function NavbarHeader() {
         </Modal.Footer>
       </Modal>
       <Navbar className="h-20">
-        <Navbar.Brand className="text-4xl" href="#">
+        <Navbar.Brand className="text-4xl font-bold" href="#">
           FGY-Y2J
         </Navbar.Brand>
 

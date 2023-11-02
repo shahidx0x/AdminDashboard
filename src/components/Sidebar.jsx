@@ -2,10 +2,10 @@
 
 import GridIcon from "@rsuite/icons/Grid";
 import SiteIcon from "@rsuite/icons/Site";
+import ThreeColumnsIcon from "@rsuite/icons/ThreeColumns";
 import TreemapIcon from "@rsuite/icons/Treemap";
 import DashboardIcon from "@rsuite/icons/legacy/Dashboard";
 import GearCircleIcon from "@rsuite/icons/legacy/GearCircle";
-import MagicIcon from "@rsuite/icons/legacy/Magic";
 import { useState } from "react";
 import { AiOutlineFileAdd } from "react-icons/ai";
 import { BsListUl } from "react-icons/bs";
@@ -47,7 +47,7 @@ const CustomSidenav = ({
               eventKey="3"
               className="font-bold"
               title="Manage"
-              icon={<MagicIcon />}
+              icon={<ThreeColumnsIcon />}
             >
               <Nav.Item as={Link} to="/dashbord/user-table" eventKey="3-1">
                 <div className="flex gap-2">
