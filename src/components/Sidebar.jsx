@@ -1,12 +1,19 @@
 /* eslint-disable react/prop-types */
 
+import GridIcon from "@rsuite/icons/Grid";
+import SiteIcon from "@rsuite/icons/Site";
+import TreemapIcon from "@rsuite/icons/Treemap";
 import DashboardIcon from "@rsuite/icons/legacy/Dashboard";
-import { Nav, Sidenav } from "rsuite";
-
 import GearCircleIcon from "@rsuite/icons/legacy/GearCircle";
 import MagicIcon from "@rsuite/icons/legacy/Magic";
 import { useState } from "react";
+import { AiOutlineFileAdd } from "react-icons/ai";
+import { BsListUl } from "react-icons/bs";
+import { HiOutlineUsers } from "react-icons/hi";
+import { PiShoppingCartSimple } from "react-icons/pi";
+import { RiProductHuntLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
+import { Nav, Sidenav } from "rsuite";
 
 const CustomSidenav = ({
   appearance,
@@ -19,7 +26,7 @@ const CustomSidenav = ({
   return (
     <div className="">
       <Sidenav
-        className="  h-[120vh] 2xl:h-screen "
+        className="h-[120vh] 2xl:h-screen "
         appearance={appearance}
         expanded={expanded}
         openKeys={openKeys}
@@ -29,47 +36,94 @@ const CustomSidenav = ({
           <Sidenav.Toggle onToggle={onExpand} />
           <Nav {...navProps}>
             <Nav.Item
-              className=" "
+              className="font-bold "
               eventKey="1"
-              active
               icon={<DashboardIcon />}
             >
-              <p className="w-[15rem]"> Dashboard</p>
+              <p className="w-[13rem]"> Dashboard</p>
             </Nav.Item>
 
-            <Nav.Menu eventKey="3" title="Manage" icon={<MagicIcon />}>
+            <Nav.Menu
+              eventKey="3"
+              className="font-bold"
+              title="Manage"
+              icon={<MagicIcon />}
+            >
               <Nav.Item as={Link} to="/dashbord/user-table" eventKey="3-1">
-                Users
+                <div className="flex gap-2">
+                  <HiOutlineUsers className="text-xl" />
+                  <p className="font-bold">Users</p>
+                </div>
               </Nav.Item>
               <Nav.Item as={Link} to="/" eventKey="3-2">
-                Products
+                <div className="flex gap-2">
+                  <RiProductHuntLine className="text-xl" />
+                  <p className="font-bold">Products</p>
+                </div>
               </Nav.Item>
               <Nav.Item as={Link} to="/" eventKey="3-3">
-                Orders
+                <div className="flex gap-2">
+                  <PiShoppingCartSimple className="text-xl" />
+                  <p className="font-bold">Orders</p>
+                </div>
               </Nav.Item>
             </Nav.Menu>
-            <Nav.Menu eventKey="4" title="Company" icon={<GearCircleIcon />}>
+            {/* */}
+            <Nav.Menu
+              eventKey="4"
+              className="font-bold"
+              title="Company"
+              icon={<TreemapIcon />}
+            >
               <Nav.Item as={Link} to="/dashbord/all-company/" eventKey="4-1">
-                All Company
+                <div className="flex gap-2">
+                  <BsListUl className="text-xl font-bold" />
+                  <p className="font-bold ">All company</p>
+                </div>
               </Nav.Item>
               <Nav.Item as={Link} to="/dashbord/company/add" eventKey="4-2">
-                Add Company
+                <div className="flex gap-2">
+                  <AiOutlineFileAdd className="text-xl  font-bold" />
+                  <p className="font-bold">Add company</p>
+                </div>
               </Nav.Item>
             </Nav.Menu>
-            <Nav.Menu eventKey="5" title="Category" icon={<GearCircleIcon />}>
+            <Nav.Menu
+              eventKey="5"
+              className="font-bold"
+              title="Category"
+              icon={<SiteIcon />}
+            >
               <Nav.Item as={Link} to="/dashbord/category/all" eventKey="5-1">
-                All Category
+                <div className="flex gap-2">
+                  <BsListUl className="text-xl font-bold" />
+                  <p className="font-bold ">All category</p>
+                </div>
               </Nav.Item>
               <Nav.Item as={Link} to="/dashbord/category/add" eventKey="5-2">
-                Add Category
+                <div className="flex gap-2">
+                  <AiOutlineFileAdd className="text-xl  font-bold" />
+                  <p className="font-bold">Add category</p>
+                </div>
               </Nav.Item>
             </Nav.Menu>
-            <Nav.Menu eventKey="6" title="Product" icon={<GearCircleIcon />}>
-              <Nav.Item as={Link} to="/dashbord/all-category/" eventKey="6-1">
-                All Product
+            <Nav.Menu
+              eventKey="6"
+              className="font-bold"
+              title="Product"
+              icon={<GridIcon />}
+            >
+              <Nav.Item as={Link} to="/dashbord/product/add" eventKey="6-1">
+                <div className="flex gap-2">
+                  <BsListUl className="text-xl font-bold" />
+                  <p className="font-bold ">All product</p>
+                </div>
               </Nav.Item>
-              <Nav.Item as={Link} to="/dashbord/category/add" eventKey="6-2">
-                Add Product
+              <Nav.Item as={Link} to="/dashbord/product/add" eventKey="6-2">
+                <div className="flex gap-2">
+                  <AiOutlineFileAdd className="text-xl  font-bold" />
+                  <p className="font-bold">Add product</p>
+                </div>
               </Nav.Item>
             </Nav.Menu>
             <Nav.Menu eventKey="7" title="History" icon={<GearCircleIcon />}>

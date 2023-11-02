@@ -29,12 +29,17 @@ export async function getAllCategory(data) {
   const headers = {
     Authorization: `Bearer ${data.queryKey[2]}`,
   };
+  let url;
+  if (data.queryKey[3]) {
+    url =
+      config.endpoints.all_category +
+      `?limit=8&page=${data.queryKey[1]}&search=${data.queryKey[3]}`;
+  } else {
+    url = config.endpoints.all_category + `?limit=8&page=${data.queryKey[1]}`;
+  }
 
   try {
-    const response = await axios.get(
-      config.endpoints.all_category + `?limit=8&page=${data.queryKey[1]}`,
-      { headers }
-    );
+    const response = await axios.get(url, { headers });
     return response.data;
   } catch (error) {
     console.error(

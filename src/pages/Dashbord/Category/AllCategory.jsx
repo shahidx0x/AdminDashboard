@@ -16,7 +16,6 @@ import {
   Toggle,
   useToaster,
 } from "rsuite";
-import { getBrandsSearched } from "../../../api/BrandServices";
 import { deleteCategory, getAllCategory } from "../../../api/CategoryService";
 
 export const AllCategory = () => {
@@ -206,7 +205,7 @@ export const AllCategory = () => {
     },
   ];
 
-  const mutation_search = useMutation(getBrandsSearched);
+  const mutation_search = useMutation(getAllCategory);
 
   const handleInputChange = (event) => {
     const value = event.target.value;
@@ -222,12 +221,12 @@ export const AllCategory = () => {
     setIsSearching(true);
     toast.promise(
       mutation_search.mutateAsync({
-        queryKey: ["user_search", inputValue, user.jwt],
+        queryKey: ["user_search", page, user.jwt, inputValue],
       }),
       {
         loading: "Searching...",
-        success: <b>Company found!</b>,
-        error: <b>Company not found in the database!</b>,
+        success: <b>Category found!</b>,
+        error: <b>Category not found in the database!</b>,
       }
     );
   };
@@ -246,7 +245,7 @@ export const AllCategory = () => {
   );
   const CustomCell = compact ? CompactCell : Cell;
   const CustomHeaderCell = compact ? CompactHeaderCell : HeaderCell;
-  console.log(data?.meta?.total_page);
+
   const handleLoadMore = () => {
     setPage((prevPage) => {
       if (prevPage < data?.meta?.total_page) {
@@ -365,7 +364,7 @@ export const AllCategory = () => {
                     <input
                       onChange={(event) => handleInputChange(event)}
                       type="text"
-                      className="w-[20rem] border-2 text-md  rounded-md rounded-r-none"
+                      className="w-[20rem] border-2 p-3 text-lg  rounded-md rounded-r-none"
                     />
                     <button
                       onClick={handleButtonClick}

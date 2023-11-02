@@ -16,6 +16,7 @@ import {
   Panel,
   SelectPicker,
   Stack,
+  Toggle,
   Uploader,
   useToaster,
 } from "rsuite";
@@ -31,37 +32,26 @@ function previewFile(file, callback) {
 }
 
 export default function UserInfoEdit() {
-  const [loading, setLoading] = useState(false);
-  const [compact, setCompact] = useState(true);
-  const [bordered, setBordered] = useState(true);
-  const [noData, setNoData] = useState(false);
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(1);
-  const [showHeader, setShowHeader] = useState(true);
-  const [autoHeight, setAutoHeight] = useState(true);
-  const [fillHeight, setFillHeight] = useState(false);
-  const [hover, setHover] = useState(true);
   const user = useSelector((state) => state.user.user);
-  const [inputValue, setInputValue] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [openWithHeader, setOpenWithHeader] = useState(false);
-  const [show, setShow] = useState(null);
-  const [search, setSearch] = useState(false);
   const toaster = useToaster();
   const [uploading, setUploading] = useState(false);
   const [fileInfo, setFileInfo] = useState(null);
   const [uploadResponse, setUploadResponse] = useState({ fileUrl: "" });
-
   const location = useLocation();
   const myData = location.state?.myData;
 
   const {
     register,
     control,
+    watch,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      isAccountActive: myData?.isAccountActive,
+    },
+  });
+  const isAccountActive = watch("isAccountActive");
 
   const mutation = useMutation(updateUser);
 
@@ -71,16 +61,15 @@ export default function UserInfoEdit() {
     } else {
       data.profilePicture = "";
     }
+
     mutation.mutate(
       { data: data, token: user.jwt },
       {
         onSuccess: (data) => {
-          console.log(data);
           toaster.push(<Message type="success">Updated successfully</Message>);
-          UserTable();
+          navigate(-1);
         },
         onError: (error) => {
-          console.log(error);
           toaster.push(<Message type="error">Update failed !</Message>);
         },
       }
@@ -281,8 +270,22 @@ export default function UserInfoEdit() {
                     className="w-56"
                   />
                 </div>
-                w
               </div>
+            </div>
+            <div className="mt-10 flex gap-5">
+              <p className="font-bold">Account Activation Status :</p>
+              <Controller
+                name="isAccountActive"
+                control={control}
+                render={({ field: { onChange, onBlur, value, name, ref } }) => (
+                  <Toggle
+                    defaultChecked={value}
+                    onChange={onChange}
+                    checkedChildren="Active"
+                    unCheckedChildren="Not Active"
+                  />
+                )}
+              />
             </div>
 
             <div className="mt-5 flex gap-5">

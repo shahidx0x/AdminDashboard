@@ -8,6 +8,7 @@ import EditCategory from "./pages/Dashbord/Category/EditCategory";
 import AddCompany from "./pages/Dashbord/Company/AddCompany";
 import { AllCompany } from "./pages/Dashbord/Company/AllCompany";
 import EditCompany from "./pages/Dashbord/Company/EditCompany";
+import AddProduct from "./pages/Dashbord/Products/AddProduct";
 import EditSubCategory from "./pages/Dashbord/Subcategory/SubCategoryEdit";
 import AddSubCategory from "./pages/Dashbord/Subcategory/SubcategoryAdd";
 import { SubcategoryList } from "./pages/Dashbord/Subcategory/SubcategoryList";
@@ -78,6 +79,14 @@ function App() {
         {
           path: "subcategory/edit",
           element: <EditSubCategory />,
+        },
+        {
+          path: "product/add",
+          element: <AddProduct />,
+        },
+        {
+          path: "product/edit",
+          element: <AddProduct />,
         },
       ],
     },

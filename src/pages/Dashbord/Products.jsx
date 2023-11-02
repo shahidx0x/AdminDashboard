@@ -59,11 +59,9 @@ function Products() {
   const [fileInfo, setFileInfo] = useState({
     product_image: "",
   });
-
   const [uploadResponse, setUploadResponse] = useState([]);
   const [coverUploadResponse, setCoverUploadResponse] = useState(null);
   const [selectedBrandId, SetSelectedBrandId] = useState("brand");
-
   const { data, status, refetch } = useQuery(
     ["products", page, user.jwt],
     getProducts
@@ -105,7 +103,7 @@ function Products() {
     formState: { errors },
   } = useForm();
 
-  const mutation = useMutation(createProduct);
+const mutation = useMutation(createProduct);
 
   const onSubmit = (data) => {
     data.fet_image = [...uploadResponse];
@@ -266,14 +264,10 @@ function Products() {
           </div>
         </div>
       </div>
-      {/* Modal code */}
 
       <Drawer open={openWithHeader} onClose={() => setOpenWithHeader(false)}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Drawer.Header>
-            <Drawer.Title>Add Product</Drawer.Title>
-          </Drawer.Header>
-          <Drawer.Body>
+          <div>
             <div className="flex justify-center items-center mb-5">
               <Uploader
                 fileListVisible={false}
@@ -456,7 +450,7 @@ function Products() {
               </div>
             </div>
 
-            <Drawer.Actions className="mt-10">
+            <div className="mt-10">
               <Button
                 appearance="ghost"
                 onClick={() => setOpenWithHeader(false)}
@@ -473,8 +467,8 @@ function Products() {
               >
                 Add Product
               </Button>
-            </Drawer.Actions>
-          </Drawer.Body>
+            </div>
+          </div>
         </form>
       </Drawer>
     </>

@@ -103,10 +103,10 @@ export default function AddCompany() {
         </Breadcrumb>
         <Panel
           bordered
-          className="shadow-md -mt-10 w-[50rem] border-gray-300"
+          className="shadow-md -mt-10 w-[40rem]"
           style={{ background: "#fff" }}
           header={
-            <h3 className="font-bold p-8 bg-indigo-500 text-2xl text-white rounded-lg ">
+            <h3 className="font-bold p-8 bg-indigo-700 text-2xl text-white rounded-lg ">
               Add Company Information
             </h3>
           }
@@ -164,14 +164,18 @@ export default function AddCompany() {
                   />
                 </div>
                 <div className="mb-20 flex gap-2">
-                  <Button appearance="ghost" onClick={() => UserTable()}>
+                  <Button
+                    appearance="ghost"
+                    className="font-bold"
+                    onClick={() => UserTable()}
+                  >
                     Cancel
                   </Button>
 
                   <Button
                     type="submit"
                     appearance="primary"
-                    className="bg-blue-600"
+                    className="bg-blue-600 font-bold"
                   >
                     Add Company
                   </Button>

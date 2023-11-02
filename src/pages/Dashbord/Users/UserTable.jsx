@@ -1,25 +1,12 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import {
-  Avatar,
-  Dropdown,
-  Message,
-  Table,
-  TagPicker,
-  Toggle,
-  useToaster,
-} from "rsuite";
-import {
-  getUsers,
-  getUsersByEmail,
-  updateUser,
-} from "../../../api/UserServices";
+import { Avatar, Dropdown, Table, TagPicker, Toggle } from "rsuite";
+import { getUsers, getUsersByEmail } from "../../../api/UserServices";
 
 function previewFile(file, callback) {
   const reader = new FileReader();
@@ -30,11 +17,9 @@ function previewFile(file, callback) {
 }
 
 export const UserTable = () => {
-  const [loading, setLoading] = useState(false);
   const [compact, setCompact] = useState(true);
   const [bordered, setBordered] = useState(true);
   const [noData, setNoData] = useState(false);
-  const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
   const [showHeader, setShowHeader] = useState(true);
   const [autoHeight, setAutoHeight] = useState(true);
@@ -43,15 +28,9 @@ export const UserTable = () => {
   const user = useSelector((state) => state.user.user);
   const [inputValue, setInputValue] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [openWithHeader, setOpenWithHeader] = useState(false);
-  const [show, setShow] = useState(null);
-  const [search, setSearch] = useState(false);
-  const toaster = useToaster();
-  const [uploading, setUploading] = useState(false);
-  const [fileInfo, setFileInfo] = useState(null);
-  const [uploadResponse, setUploadResponse] = useState({ fileUrl: "" });
+
   const { Column, HeaderCell, Cell } = Table;
+  const navigate = useNavigate();
 
   const CompactCell = (props) => <Cell {...props} style={{ padding: 4 }} />;
   const CompactHeaderCell = (props) => (
@@ -59,6 +38,27 @@ export const UserTable = () => {
       <div className="flex justify-center font-bold">{props.children}</div>
     </HeaderCell>
   );
+
+  const TextCell = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <p className="flex justify-center items-center">{rowData[dataKey]}</p>
+      </Cell>
+    );
+  };
+  const NameCell = ({ rowData, ...props }) => {
+    const fullName =
+      rowData?.firstName && rowData?.lastName
+        ? `${rowData.firstName} ${rowData.lastName}`
+        : "";
+
+    return (
+      <Cell {...props}>
+        <p className="flex justify-center items-center">{fullName}</p>
+      </Cell>
+    );
+  };
+
   const ImageCell = ({ rowData, dataKey, ...props }) => {
     return (
       <Cell {...props}>
@@ -75,96 +75,24 @@ export const UserTable = () => {
       </Cell>
     );
   };
-  const NameCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center items-center">
-          {rowData?.firstName + " " + rowData?.lastName}
-        </p>
-      </Cell>
-    );
-  };
-  const CartCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center items-center">
-          {rowData?.cartNumber}
-        </p>
-      </Cell>
-    );
-  };
-  const CompanyCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center items-center">{rowData?.company}</p>
-      </Cell>
-    );
-  };
-  const ContactCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center items-center">
-          {rowData?.phoneNumber}
-        </p>
-      </Cell>
-    );
-  };
-  const RollCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center items-center">{rowData?.role}</p>
-      </Cell>
-    );
-  };
-  const SubscriptionCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center items-center">
-          {rowData?.subscription}
-        </p>
-      </Cell>
-    );
-  };
-  const LocationCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center items-center">{rowData?.location}</p>
-      </Cell>
-    );
-  };
-  const ZipCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center items-center">{rowData?.zipCode}</p>
-      </Cell>
-    );
-  };
+
   const StatusCell = ({ rowData, dataKey, ...props }) => {
     return (
       <Cell {...props}>
         <p className="flex justify-center items-center">
           {rowData?.isAccountActive ? (
-            <button className="text-blue-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-500 rounded-lg">
+            <p className="text-blue-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-500 rounded-lg">
               Active
-            </button>
+            </p>
           ) : (
-            <button className="text-red-600 border border-red-400 px-2 py-2 -mt-1 hover:text-white hover:bg-red-500 rounded-lg">
+            <p className="text-red-600 border border-red-400 px-2 py-2 -mt-1 hover:text-white hover:bg-red-500 rounded-lg">
               Not Active
-            </button>
+            </p>
           )}
         </p>
       </Cell>
     );
   };
-  const EmailCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center items-center">{rowData.email}</p>
-      </Cell>
-    );
-  };
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const ActionsCell = ({ rowData, ...props }) => {
     const handleEdit = () => {
@@ -189,58 +117,56 @@ export const UserTable = () => {
   const defaultColumns = [
     {
       key: "profilePicture",
-      label: "Profle Image",
+      label: "Profile Image",
       cellRenderer: ImageCell,
       width: 90,
     },
-
     {
       key: "name",
       label: "Name",
       cellRenderer: NameCell,
       width: 190,
     },
-
     {
       key: "cartNumber",
       label: "Carts",
-      cellRenderer: CartCell,
+      cellRenderer: (props) => <TextCell {...props} dataKey="cartNumber" />,
       width: 130,
     },
     {
       key: "company",
       label: "Company",
-      cellRenderer: CompanyCell,
+      cellRenderer: (props) => <TextCell {...props} dataKey="company" />,
       width: 140,
     },
     {
       key: "phoneNumber",
       label: "Contact",
-      cellRenderer: ContactCell,
+      cellRenderer: (props) => <TextCell {...props} dataKey="phoneNumber" />,
       width: 150,
     },
     {
       key: "email",
       label: "Email",
-      cellRenderer: EmailCell,
+      cellRenderer: (props) => <TextCell {...props} dataKey="email" />,
       width: 200,
     },
     {
       key: "subscription",
       label: "Subscription",
-      cellRenderer: SubscriptionCell,
+      cellRenderer: (props) => <TextCell {...props} dataKey="subscription" />,
       width: 150,
     },
     {
       key: "location",
       label: "Location",
-      cellRenderer: LocationCell,
+      cellRenderer: (props) => <TextCell {...props} dataKey="location" />,
       width: 150,
     },
     {
       key: "zipCode",
       label: "ZipCode",
-      cellRenderer: ZipCell,
+      cellRenderer: (props) => <TextCell {...props} dataKey="zipCode" />,
       width: 150,
     },
     {
@@ -249,7 +175,6 @@ export const UserTable = () => {
       cellRenderer: StatusCell,
       width: 100,
     },
-
     {
       key: "actions",
       label: "Actions",
@@ -257,44 +182,7 @@ export const UserTable = () => {
       width: 100,
     },
   ];
-  const mutation = useMutation(updateUser);
-  const {
-    register,
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-  const onSubmit = (data) => {
-    if (uploadResponse.fileUrl !== "") {
-      data.profilePicture = uploadResponse.fileUrl;
-    } else {
-      data.profilePicture = "";
-    }
-    mutation.mutate(
-      { data: data, token: user.jwt },
-      {
-        onSuccess: (data) => {
-          console.log(data);
-          toaster.push(<Message type="success">Updated successfully</Message>);
-        },
-        onError: (error) => {
-          console.log(error);
-          toaster.push(<Message type="error">Update failed !</Message>);
-        },
-      }
-    );
-    setOpen(false);
-  };
 
-  const dropdown = ["admin", "user"].map((item) => ({
-    label: item,
-    value: item,
-  }));
-
-  const dropdownSub = ["Gold", "Bronze"].map((item) => ({
-    label: item,
-    value: item,
-  }));
   const { data, status, refetch, error } = useQuery(
     ["users", page, user.jwt],
     getUsers
@@ -304,7 +192,6 @@ export const UserTable = () => {
 
   const handleInputChange = (event) => {
     const value = event.target.value;
-    console.log("OnChnage : ", value);
     setInputValue(value);
 
     if (value === "") {
@@ -314,7 +201,6 @@ export const UserTable = () => {
   };
 
   const handleButtonClick = () => {
-    console.log("Input : ", user.jwt);
     setIsSearching(true);
     toast.promise(
       mutation_search.mutateAsync({
@@ -327,7 +213,6 @@ export const UserTable = () => {
       }
     );
   };
-  //
 
   const displayedData =
     isSearching && mutation_search?.data ? [mutation_search?.data] : data?.data;
@@ -435,31 +320,12 @@ export const UserTable = () => {
 
             <div>
               <div className=" ">
-                {/* <div className="flex space-x-1 items-center mb-2 border-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-8 w-8 text-red-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  <p className="text-white text-lg font-semibold">
-                    Please enter something
-                  </p>
-                </div> */}
                 <div className="flex space-x-4  rounded-md">
                   <div className="flex rounded-md overflow-hidden h-12 w-full">
                     <input
                       onChange={(event) => handleInputChange(event)}
                       type="text"
-                      className="w-[20rem] border-2 text-md  rounded-md rounded-r-none"
+                      className="w-[20rem] border-2 text-md p-2 text-xl  rounded-md rounded-r-none"
                     />
                     <button
                       onClick={handleButtonClick}

@@ -119,10 +119,10 @@ export default function AddCategory() {
         </Breadcrumb>
         <Panel
           bordered
-          className="shadow-sm w-[50rem] border-gray-300"
+          className="shadow-sm w-[45rem]"
           style={{ background: "#fff" }}
           header={
-            <h3 className="font-bold bg-indigo-500 p-8 text-2xl text-white rounded-lg">
+            <h3 className="font-bold bg-indigo-700 p-8 text-2xl text-white rounded-lg">
               Add Category Information
             </h3>
           }
@@ -214,15 +214,19 @@ export default function AddCategory() {
                   />
                 </div>
 
-                <div className="2xl:mb-4 flex gap-2">
-                  <Button appearance="ghost" onClick={() => UserTable()}>
+                <div className="2xl:mb-4 flex gap-2 ">
+                  <Button
+                    appearance="ghost"
+                    className="font-bold"
+                    onClick={() => UserTable()}
+                  >
                     Cancel
                   </Button>
 
                   <Button
                     type="submit"
                     appearance="primary"
-                    className="bg-blue-600"
+                    className="bg-blue-600 font-bold"
                   >
                     Add Category
                   </Button>
