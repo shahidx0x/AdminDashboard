@@ -1,8 +1,32 @@
 import axios from "axios";
 import { config } from "../configs/api.config";
+// /get/all/subcat/653ffc54030e5d2b5771ef06?limit=-1&page=1
+
+export async function getSubCategoryByCategoryId(data) {
+  const headers = {
+    Authorization: `Bearer ${data.queryKey[2]}`,
+  };
+  try {
+    const response = await axios.get(
+      config.endpoints.host +
+        `/get/all/subcat/${data.queryKey[3]}?limit=${
+          data.queryKey[4] || 8
+        }&page=${data.queryKey[1]}`,
+      { headers }
+    );
+    if (response.status === 404) {
+      throw new Error("sub category not found");
+    }
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      throw new Error("sub category not found");
+    }
+    throw error;
+  }
+}
 
 export async function getAllSubCategory(data) {
-  console.log(data.queryKey[4]);
   let url;
   const headers = {
     Authorization: `Bearer ${data.queryKey[2]}`,

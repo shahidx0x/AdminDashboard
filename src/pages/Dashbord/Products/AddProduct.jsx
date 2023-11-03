@@ -6,7 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import { Plus } from "lucide-react";
 import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import {
   Breadcrumb,
@@ -22,7 +22,8 @@ import {
 } from "rsuite";
 import { getBrandsIdAndName } from "../../../api/BrandServices";
 import { getCategoryByBrandId } from "../../../api/CategoryService";
-import { createProduct, getProducts } from "../../../api/ProductService";
+import { createProduct } from "../../../api/ProductService";
+import { getSubCategoryByCategoryId } from "../../../api/SubCategoryServices";
 import { config } from "../../../configs/api.config";
 
 function previewFile(file, callback) {
@@ -36,9 +37,6 @@ function previewFile(file, callback) {
 export default function AddProduct() {
   const user = useSelector((state) => state.user.user);
   const toaster = useToaster();
-  const location = useLocation();
-  const myData = location.state?.myData;
-  const [page, setPage] = useState(-1);
 
   const [uploading, setUploading] = useState(false);
   const [fileInfo, setFileInfo] = useState({
@@ -47,23 +45,31 @@ export default function AddProduct() {
   const [uploadResponse, setUploadResponse] = useState([]);
   const [coverUploadResponse, setCoverUploadResponse] = useState(null);
   const [selectedBrandId, SetSelectedBrandId] = useState("brand");
-  const { data, status, refetch } = useQuery(
-    ["products", page, user.jwt],
-    getProducts
-  );
+  const [selectedCatId, SetSelectedCatId] = useState("");
 
-  const { data: brand, status: brand_status } = useQuery(
+  const { data: brand } = useQuery(
     ["brandsIdName", user.jwt],
     getBrandsIdAndName
   );
 
-  const { data: category_data, status: category_status } = useQuery(
+  const { data: category_data } = useQuery(
     ["categoryIdName", "", user.jwt, selectedBrandId, -1],
     getCategoryByBrandId
   );
 
+  const { data: sub_category_data } = useQuery(
+    ["subCategoryIdName", "", user.jwt, selectedCatId, -1],
+    getSubCategoryByCategoryId
+  );
+
+  console.log(sub_category_data);
+
   const cate_data = category_data?.data?.map((each) => {
     return { label: each?.category_label, value: each._id };
+  });
+
+  const sub_cat_data = sub_category_data?.data?.map((each) => {
+    return { label: each?.subcategory_name, value: each._id };
   });
 
   const brand_data = brand?.data?.map((each) => {
@@ -109,7 +115,6 @@ export default function AddProduct() {
       }
     );
     reset();
-    refetch();
   };
 
   const navigate = useNavigate();
@@ -259,7 +264,7 @@ export default function AddProduct() {
                         className="w-[14.5rem]"
                         onChange={(value) => {
                           field.onChange(value);
-                          console.log(value);
+                          SetSelectedCatId(value);
                         }}
                         onBlur={() => field.onBlur()}
                       />
@@ -270,11 +275,23 @@ export default function AddProduct() {
               <div className="flex gap-5 mt-3">
                 <div>
                   <p className="font-bold">Select Sub Category</p>
-                  <SelectPicker
-                    searchable={false}
-                    size="md"
-                    data={["developing"]}
-                    className="w-[14.5rem]"
+                  <Controller
+                    name="sub_category_id"
+                    {...register("subcategory_id")}
+                    control={control}
+                    render={({ field }) => (
+                      <SelectPicker
+                        searchable={true}
+                        {...field}
+                        size="md"
+                        data={sub_cat_data}
+                        className="w-[14.5rem]"
+                        onChange={(value) => {
+                          field.onChange(value);
+                        }}
+                        onBlur={() => field.onBlur()}
+                      />
+                    )}
                   />
                 </div>
                 <div>
