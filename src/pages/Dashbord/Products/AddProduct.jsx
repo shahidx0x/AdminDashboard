@@ -86,6 +86,7 @@ export default function AddProduct() {
     label: item?.label,
     value: item?.value,
   }));
+
   const {
     register,
     control,
@@ -95,11 +96,16 @@ export default function AddProduct() {
   } = useForm();
 
   const mutation = useMutation(createProduct);
+  const [brandName, SetBrandName] = useState("No Brand");
+  const [categoryName, SetCategoryName] = useState("No Category");
+  const [subCategoryName, SetSubCategoryName] = useState("No Sub Category");
 
   const onSubmit = (data) => {
     data.fet_image = [...uploadResponse];
     data.product_image = coverUploadResponse;
-
+    data.brand_name = brandName;
+    data.category_name = categoryName;
+    data.subcategory_name = subCategoryName;
     mutation.mutate(
       { data: data, token: user.jwt },
       {
@@ -240,9 +246,10 @@ export default function AddProduct() {
                         size="md"
                         data={brand_f_data}
                         className="w-[14.5rem]"
-                        onChange={(value) => {
+                        onChange={(value, data) => {
                           field.onChange(value);
                           SetSelectedBrandId(value);
+                          SetBrandName(data.target.innerHTML);
                         }}
                         onBlur={() => field.onBlur()}
                       />
@@ -262,8 +269,9 @@ export default function AddProduct() {
                         size="md"
                         data={category_f_data}
                         className="w-[14.5rem]"
-                        onChange={(value) => {
+                        onChange={(value, data) => {
                           field.onChange(value);
+                          SetCategoryName(data.target.innerHTML);
                           SetSelectedCatId(value);
                         }}
                         onBlur={() => field.onBlur()}
@@ -286,7 +294,8 @@ export default function AddProduct() {
                         size="md"
                         data={sub_cat_data}
                         className="w-[14.5rem]"
-                        onChange={(value) => {
+                        onChange={(value, data) => {
+                          SetSubCategoryName(data.target.innerHTML);
                           field.onChange(value);
                         }}
                         onBlur={() => field.onBlur()}

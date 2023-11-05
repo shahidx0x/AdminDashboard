@@ -1,6 +1,5 @@
 import axios from "axios";
 import { config } from "../configs/api.config";
-// /get/all/subcat/653ffc54030e5d2b5771ef06?limit=-1&page=1
 
 export async function getSubCategoryByCategoryId(data) {
   const headers = {

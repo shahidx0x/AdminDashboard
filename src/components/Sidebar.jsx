@@ -113,7 +113,7 @@ const CustomSidenav = ({
               title="Product"
               icon={<GridIcon />}
             >
-              <Nav.Item as={Link} to="/dashbord/product/add" eventKey="6-1">
+              <Nav.Item as={Link} to="/dashbord/product/list" eventKey="6-1">
                 <div className="flex gap-2">
                   <BsListUl className="text-xl font-bold" />
                   <p className="font-bold ">All product</p>

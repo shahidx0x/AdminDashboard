@@ -16,10 +16,10 @@ export async function getProducts(data) {
 
   try {
     const response = await axios.get(urls, { headers });
-    return response;
+    return response.data;
   } catch (error) {
     console.error(
-      "Error fetching users:",
+      "Error fetching products:",
       error.response ? error.response.data : error.message
     );
     throw error;

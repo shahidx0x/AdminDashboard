@@ -179,7 +179,6 @@ export default function AddCategory() {
                           onChange={(value, data) => {
                             field.onChange(value);
                             SetBrandName(data.target.innerHTML);
-
                             SetBrandId(value);
                           }}
                           onBlur={() => field.onBlur()}
