@@ -16,7 +16,7 @@ export const Login = () => {
     if (user !== null && user.role === "admin") {
       toast.success("welcome admin !");
       setTimeout(() => {
-        navigate("/dashbord/user-table");
+        navigate("/dashbord/status");
       }, 1000);
     } else if (user) {
       toast.error("You are not a Admin !");
@@ -44,7 +44,7 @@ export const Login = () => {
   return (
     <>
       <Toaster />
-      <div className="h-screen w-screen bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#377eca] via-[#6557df] to-[#10131C]">
+      {/* <div className="h-screen w-screen bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#377eca] via-[#6557df] to-[#10131C]">
         <div className="backdrop-blur-3xl bg-opacity-30 p-10  w-screen h-screen flex justify-center ">
           <div className="flex  justify-center items-center">
             <div className="bg-white border-2 border-indigo-400 rounded-md shadow-md p-7 sm:p-10">
@@ -95,6 +95,66 @@ export const Login = () => {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      </div> */}
+
+      <div className=" h-screen">
+        <img
+          src="https://e0.pxfuel.com/wallpapers/120/1024/desktop-wallpaper-fast-food-junk-food.jpg"
+          className="absolute inset-0 object-cover w-full h-full"
+          alt=""
+        />
+        <div className="relative bg-gray-900 bg-opacity-75">
+          <div>
+            <div className="flex flex-col justify-center h-screen items-center xl:flex-row">
+              <div className="w-full max-w-xl xl:px-8 xl:w-5/12">
+                <div className="bg-white rounded shadow-2xl p-7 sm:p-10">
+                  <h3 className="mb-4 text-xl font-semibold sm:text-center sm:mb-6 sm:text-2xl">
+                    FGY-Y2J ADMIN DASHBORD
+                  </h3>
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className="mb-1 sm:mb-2">
+                      <label
+                        htmlFor="firstName"
+                        className="inline-block mb-1 font-bold"
+                      >
+                        Email
+                      </label>
+                      <input
+                        required
+                        type="text"
+                        className="flex-grow w-full h-12 px-4 mb-2 transition duration-200 bg-white border border-gray-300 rounded shadow-sm appearance-none focus:border-deep-purple-accent-400 focus:outline-none focus:shadow-outline"
+                        {...register("email", {})}
+                      />
+                    </div>
+                    <div className="mb-1 sm:mb-2">
+                      <label
+                        htmlFor="lastName"
+                        className="inline-block mb-1 font-bold"
+                      >
+                        Password
+                      </label>
+                      <input
+                        required
+                        type="password"
+                        className="flex-grow w-full h-12 px-4 mb-2 transition duration-200 bg-white border border-gray-300 rounded shadow-sm appearance-none focus:border-deep-purple-accent-400 focus:outline-none focus:shadow-outline"
+                        {...register("password", {})}
+                      />
+                    </div>
+
+                    <div className="mt-4 mb-2 sm:mb-4">
+                      <button
+                        type="submit"
+                        className="inline-flex bg-indigo-600 items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-deep-purple-accent-400 hover:bg-deep-purple-accent-700 focus:shadow-outline focus:outline-none"
+                      >
+                        Login
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
             </div>
           </div>
         </div>

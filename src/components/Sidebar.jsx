@@ -36,6 +36,8 @@ const CustomSidenav = ({
           <Sidenav.Toggle onToggle={onExpand} />
           <Nav {...navProps}>
             <Nav.Item
+              as={Link}
+              to="/dashbord/status"
               className="font-bold "
               eventKey="1"
               icon={<DashboardIcon />}

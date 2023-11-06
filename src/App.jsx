@@ -8,6 +8,7 @@ import EditCategory from "./pages/Dashbord/Category/EditCategory";
 import AddCompany from "./pages/Dashbord/Company/AddCompany";
 import { AllCompany } from "./pages/Dashbord/Company/AllCompany";
 import EditCompany from "./pages/Dashbord/Company/EditCompany";
+import { MainDashbord } from "./pages/Dashbord/MainDashbord";
 import AddProduct from "./pages/Dashbord/Products/AddProduct";
 import { ProductList } from "./pages/Dashbord/Products/ListProduct";
 import EditSubCategory from "./pages/Dashbord/Subcategory/SubCategoryEdit";
@@ -37,6 +38,10 @@ function App() {
       path: "/dashbord",
       element: <Dashbord />,
       children: [
+        {
+          path: "status",
+          element: <MainDashbord />,
+        },
         {
           path: "user-table",
           element: <UserTable />,
