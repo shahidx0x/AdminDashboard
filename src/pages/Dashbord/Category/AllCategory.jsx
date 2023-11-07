@@ -19,7 +19,7 @@ import {
 } from "rsuite";
 import { deleteCategory, getAllCategory } from "../../../api/CategoryService";
 
-export const AllCategory = () => {
+export default function AllCategory() {
   const [loading, setLoading] = useState(false);
   const [compact, setCompact] = useState(true);
   const [bordered, setBordered] = useState(true);
@@ -504,4 +504,4 @@ export const AllCategory = () => {
       </div>
     </div>
   );
-};
+}

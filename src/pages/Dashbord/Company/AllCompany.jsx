@@ -33,7 +33,7 @@ function previewFile(file, callback) {
   reader.readAsDataURL(file);
 }
 
-export const AllCompany = () => {
+export default function AllCompany() {
   const [loading, setLoading] = useState(false);
   const [compact, setCompact] = useState(true);
   const [bordered, setBordered] = useState(true);
@@ -527,4 +527,4 @@ export const AllCompany = () => {
       </div>
     </div>
   );
-};
+}

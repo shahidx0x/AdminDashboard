@@ -17,7 +17,7 @@ function previewFile(file, callback) {
   reader.readAsDataURL(file);
 }
 
-export const UserTable = () => {
+export default function UserTable() {
   const [compact, setCompact] = useState(true);
   const [bordered, setBordered] = useState(true);
   const [noData, setNoData] = useState(false);
@@ -464,4 +464,4 @@ export const UserTable = () => {
       </div>
     </div>
   );
-};
+}

@@ -7,9 +7,7 @@ import { Plus } from "lucide-react";
 import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import { Link } from "react-router-dom";
 import {
-  Breadcrumb,
   Button,
   Input,
   Loader,
@@ -109,14 +107,14 @@ export default function EditProduct() {
       {
         onSuccess: (data) => {
           toaster.push(
-            <Message type="success">Product added successfully</Message>
+            <Message type="success">Product updated successfully</Message>
           );
           setFileInfo(null);
           setCoverUploadResponse(null);
           setUploadResponse(null);
         },
         onError: (error) => {
-          toaster.push(<Message type="error">Product add failed !</Message>);
+          toaster.push(<Message type="error">Product update failed !</Message>);
         },
       }
     );
@@ -136,24 +134,13 @@ export default function EditProduct() {
           height: "100vh",
         }}
       >
-        <Breadcrumb className="text-xl font-mono ">
-          <Breadcrumb.Item as={Link} to="/dashbord">
-            Home
-          </Breadcrumb.Item>
-          <Breadcrumb.Item as={Link} to="/dashbord/product/list">
-            product-list
-          </Breadcrumb.Item>
-          <Breadcrumb.Item active className="text-blue-400">
-            product-creation
-          </Breadcrumb.Item>
-        </Breadcrumb>
         <Panel
           bordered
           className="shadow-sm w-[48.5rem]"
           style={{ background: "#fff" }}
           header={
             <h3 className="font-bold bg-indigo-700 p-8 text-2xl text-white rounded-lg">
-              Add Product Information
+              Upadte Product Information
             </h3>
           }
         >
@@ -366,7 +353,7 @@ export default function EditProduct() {
                   appearance="primary"
                   className="bg-blue-600 font-bold"
                 >
-                  Add Product
+                  Update Product
                 </Button>
               </div>
             </div>

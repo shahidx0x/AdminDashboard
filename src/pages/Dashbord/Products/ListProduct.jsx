@@ -28,7 +28,7 @@ function previewFile(file, callback) {
   reader.readAsDataURL(file);
 }
 
-export const ProductList = () => {
+export default function ProductList() {
   const [compact, setCompact] = useState(true);
   const [bordered, setBordered] = useState(true);
   const [noData, setNoData] = useState(false);
@@ -98,7 +98,7 @@ export const ProductList = () => {
 
   const ActionsCell = ({ rowData, ...props }) => {
     const handleEdit = () => {
-      navigate("edit", { state: { myData: rowData } });
+      navigate("/dashbord/product/edit", { state: { myData: rowData } });
     };
     const handleDelete = () => {
       handleOpen();
@@ -520,4 +520,4 @@ export const ProductList = () => {
       </div>
     </div>
   );
-};
+}

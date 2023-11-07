@@ -1,4 +1,4 @@
-name: CI
+name: Auto Deploy Production to cPanel
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,8 +28,19 @@ jobs:
       - name: Build app
         run: yarn run build
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
+      # Assuming dist/ is the directory with your build files
+      - name: Archive production build
+        run: tar -czvf build.tar.gz ./dist
+
+      - name: Deploy to cPanel
+        uses: SamKirkland/FTP-Deploy-Action@4.1.0
         with:
-          name: my-artifact
-          path: ./dist
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./
+          server-dir: /home/appgobd/public_html/assets
+          # Optional: add for debugging
+          log-level: verbose
+
+          # dangerous-clean-slate: true

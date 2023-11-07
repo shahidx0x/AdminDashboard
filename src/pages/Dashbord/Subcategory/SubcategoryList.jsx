@@ -22,7 +22,7 @@ import {
   getAllSubCategory,
 } from "../../../api/SubCategoryServices";
 
-export const SubcategoryList = () => {
+export default function SubcategoryList() {
   const [loading, setLoading] = useState(false);
   const [compact, setCompact] = useState(true);
   const [bordered, setBordered] = useState(true);
@@ -492,4 +492,4 @@ export const SubcategoryList = () => {
       </div>
     </>
   );
-};
+}

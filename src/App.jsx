@@ -1,22 +1,34 @@
-import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
+import { lazy, Suspense } from "react";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import Loading from "./components/Loading";
 import NavbarHeader from "./components/Navbar";
 import SideNavigation from "./components/Sidebar";
 
-import AddCategory from "./pages/Dashbord/Category/AddCategory";
-import { AllCategory } from "./pages/Dashbord/Category/AllCategory";
-import EditCategory from "./pages/Dashbord/Category/EditCategory";
-import AddCompany from "./pages/Dashbord/Company/AddCompany";
-import { AllCompany } from "./pages/Dashbord/Company/AllCompany";
-import EditCompany from "./pages/Dashbord/Company/EditCompany";
-import { MainDashbord } from "./pages/Dashbord/MainDashbord";
-import AddProduct from "./pages/Dashbord/Products/AddProduct";
-import { ProductList } from "./pages/Dashbord/Products/ListProduct";
-import EditSubCategory from "./pages/Dashbord/Subcategory/SubCategoryEdit";
-import AddSubCategory from "./pages/Dashbord/Subcategory/SubcategoryAdd";
-import { SubcategoryList } from "./pages/Dashbord/Subcategory/SubcategoryList";
-import UserInfoEdit from "./pages/Dashbord/Users/UserInfoEdit";
-import { UserTable } from "./pages/Dashbord/Users/UserTable";
-import { Login } from "./pages/Login";
+// Lazy load the components
+const AddCategory = lazy(() => import("./pages/Dashbord/Category/AddCategory"));
+const AllCategory = lazy(() => import("./pages/Dashbord/Category/AllCategory"));
+const EditCategory = lazy(() =>
+  import("./pages/Dashbord/Category/EditCategory")
+);
+const AddCompany = lazy(() => import("./pages/Dashbord/Company/AddCompany"));
+const AllCompany = lazy(() => import("./pages/Dashbord/Company/AllCompany"));
+const EditCompany = lazy(() => import("./pages/Dashbord/Company/EditCompany"));
+const MainDashbord = lazy(() => import("./pages/Dashbord/MainDashbord"));
+const AddProduct = lazy(() => import("./pages/Dashbord/Products/AddProduct"));
+const EditProduct = lazy(() => import("./pages/Dashbord/Products/EditProduct"));
+const ProductList = lazy(() => import("./pages/Dashbord/Products/ListProduct"));
+const EditSubCategory = lazy(() =>
+  import("./pages/Dashbord/Subcategory/SubCategoryEdit")
+);
+const AddSubCategory = lazy(() =>
+  import("./pages/Dashbord/Subcategory/SubcategoryAdd")
+);
+const SubcategoryList = lazy(() =>
+  import("./pages/Dashbord/Subcategory/SubcategoryList")
+);
+const UserInfoEdit = lazy(() => import("./pages/Dashbord/Users/UserInfoEdit"));
+const UserTable = lazy(() => import("./pages/Dashbord/Users/UserTable"));
+const Login = lazy(() => import("./pages/Login"));
 
 function App() {
   const routers = createBrowserRouter([
@@ -96,12 +108,16 @@ function App() {
         },
         {
           path: "product/edit",
-          element: <AddProduct />,
+          element: <EditProduct />,
         },
       ],
     },
   ]);
-  return <RouterProvider router={routers} />;
+  return (
+    <Suspense fallback={<Loading />}>
+      <RouterProvider router={routers} />
+    </Suspense>
+  );
 }
 function Root() {
   return (

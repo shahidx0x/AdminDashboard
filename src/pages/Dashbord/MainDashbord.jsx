@@ -11,7 +11,7 @@ const style = {
   marginRight: 10,
 };
 
-export const MainDashbord = () => {
+export default function MainDashbord() {
   const user = useSelector((state) => state.user.user);
   const { data: server_data, refetch } = useQuery(
     ["server-status", user.jwt],
@@ -139,7 +139,7 @@ export const MainDashbord = () => {
       </div>
     </>
   );
-};
+}
 
 const MyResponsivePie = ({ data }) => (
   <div className=" h-[20rem] w-[30rem]">
