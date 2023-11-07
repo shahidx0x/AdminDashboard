@@ -28,19 +28,15 @@ jobs:
       - name: Build app
         run: yarn run build
 
-      # Assuming dist/ is the directory with your build files
       - name: Archive production build
         run: tar -czvf build.tar.gz ./dist
 
-      - name: Deploy to cPanel
-        uses: SamKirkland/FTP-Deploy-Action@4.1.0
+      - name: Deploy to cPanel via SFTP
+        uses: appleboy/scp-action@master
         with:
-          server: ${{ secrets.FTP_SERVER }}
+          host: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./
-          server-dir: /home/appgobd/public_html/assets/
-          # Optional: add for debugging
-          log-level: verbose
-
-          # dangerous-clean-slate: true
+          key: ${{ secrets.FTP_PASSWORD }}
+          port: 22 # Default SFTP port
+          source: "build.tar.gz"
+          target: "/home/appgobd/public_html/assets/"
