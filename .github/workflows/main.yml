@@ -39,4 +39,4 @@ jobs:
           key: ${{ secrets.FTP_PASSWORD }}
           port: 22
           source: "build.tar.gz"
-          target: "/home/appgobd/public_html/assets/"
+          target: "/home/appgobd/public_html/assets/" # this is test
