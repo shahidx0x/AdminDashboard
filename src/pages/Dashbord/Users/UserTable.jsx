@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
+import { Settings } from "lucide-react";
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
@@ -97,7 +98,6 @@ export const UserTable = () => {
   const ActionsCell = ({ rowData, ...props }) => {
     const handleEdit = () => {
       navigate("edit", { state: { myData: rowData } });
-      console.log("Edit clicked for:", rowData._id);
     };
 
     return (
@@ -164,9 +164,9 @@ export const UserTable = () => {
       width: 150,
     },
     {
-      key: "zipCode",
-      label: "ZipCode",
-      cellRenderer: (props) => <TextCell {...props} dataKey="zipCode" />,
+      key: "role",
+      label: "Role",
+      cellRenderer: (props) => <TextCell {...props} dataKey="role" />,
       width: 150,
     },
     {
@@ -185,7 +185,10 @@ export const UserTable = () => {
 
   const { data, status, refetch, error } = useQuery(
     ["users", page, user.jwt],
-    getUsers
+    getUsers,
+    {
+      cacheTime: 0, // Data is not cached
+    }
   );
 
   const mutation_search = useMutation(getUsersByEmail);
@@ -259,7 +262,7 @@ export const UserTable = () => {
                 onChange={setColumnKeys}
                 cleanable={false}
               />
-              <Dropdown className="" title="Settings">
+              <Dropdown className="" icon={<Settings />}>
                 <Dropdown.Item>
                   <span className="flex justify-between">
                     <p>Compact：</p>

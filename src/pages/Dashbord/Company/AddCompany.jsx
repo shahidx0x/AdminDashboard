@@ -66,7 +66,6 @@ export default function AddCompany() {
           setUploadResponse(null);
         },
         onError: (error) => {
-          console.log(error);
           toaster.push(
             <Message type="error">Company Add failed ! Try Again.</Message>
           );

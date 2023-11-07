@@ -68,9 +68,10 @@ export default function AddCategory() {
           toaster.push(
             <Message type="success">Category added successfully</Message>
           );
+          setFileInfo(null);
+          reset();
         },
         onError: (error) => {
-          console.log(error);
           toaster.push(
             <Message type="error">Category Add failed ! Try Again.</Message>
           );
@@ -110,7 +111,7 @@ export default function AddCategory() {
           <Breadcrumb.Item as={Link} to="/dashbord">
             Home
           </Breadcrumb.Item>
-          <Breadcrumb.Item as={Link} to="/dashbord/all-company">
+          <Breadcrumb.Item as={Link} to="/dashbord/category/all">
             category-list
           </Breadcrumb.Item>
           <Breadcrumb.Item active className="text-blue-400">

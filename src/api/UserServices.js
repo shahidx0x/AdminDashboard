@@ -3,6 +3,7 @@ import { config } from "../configs/api.config";
 
 export async function getUsers(data) {
   const headers = {
+    "Cache-Control": "no-cache",
     Authorization: `Bearer ${data.queryKey[2]}`,
   };
 
@@ -23,6 +24,7 @@ export async function getUsers(data) {
 
 export async function getUsersByEmail(data) {
   const headers = {
+    "Cache-Control": "no-cache",
     Authorization: `Bearer ${data.queryKey[2]}`,
   };
   try {

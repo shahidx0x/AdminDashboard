@@ -1,12 +1,23 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
+import { Settings } from "lucide-react";
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import { Avatar, Dropdown, Table, TagPicker, Toggle } from "rsuite";
-import { getProducts } from "../../../api/ProductService";
+import {
+  Avatar,
+  Button,
+  Dropdown,
+  Message,
+  Modal,
+  Table,
+  TagPicker,
+  Toggle,
+  toaster,
+} from "rsuite";
+import { deleteProduct, getProducts } from "../../../api/ProductService";
 import { getUsersByEmail } from "../../../api/UserServices";
 
 function previewFile(file, callback) {
@@ -29,6 +40,8 @@ export const ProductList = () => {
   const user = useSelector((state) => state.user.user);
   const [inputValue, setInputValue] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
 
   const { Column, HeaderCell, Cell } = Table;
   const navigate = useNavigate();
@@ -83,28 +96,13 @@ export const ProductList = () => {
     );
   };
 
-  //   const StatusCell = ({ rowData, dataKey, ...props }) => {
-  //     return (
-  //       <Cell {...props}>
-  //         <p className="flex justify-center items-center">
-  //           {rowData?.isAccountActive ? (
-  //             <p className="text-blue-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-500 rounded-lg">
-  //               Active
-  //             </p>
-  //           ) : (
-  //             <p className="text-red-600 border border-red-400 px-2 py-2 -mt-1 hover:text-white hover:bg-red-500 rounded-lg">
-  //               Not Active
-  //             </p>
-  //           )}
-  //         </p>
-  //       </Cell>
-  //     );
-  //   };
-
   const ActionsCell = ({ rowData, ...props }) => {
     const handleEdit = () => {
       navigate("edit", { state: { myData: rowData } });
-      console.log("Edit clicked for:", rowData._id);
+    };
+    const handleDelete = () => {
+      handleOpen();
+      setDeleteId(rowData._id);
     };
 
     return (
@@ -118,7 +116,7 @@ export const ProductList = () => {
           </button>
           <button
             className="text-red-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-red-500 rounded-lg"
-            onClick={handleEdit}
+            onClick={handleDelete}
           >
             Delete
           </button>
@@ -169,19 +167,16 @@ export const ProductList = () => {
       width: 140,
     },
     {
-      key: "minimum_price",
-      label: "Minimum Price",
-      cellRenderer: (props) => (
-        <TextCell {...props} dataKey="minimum_price" icon="$" />
-      ),
+      key: "min_purchease",
+      label: "Minimum Purchase",
+      cellRenderer: (props) => <TextCell {...props} dataKey="min_purchease" />,
       width: 140,
     },
+
     {
-      key: "maximum_price",
-      label: "Maximum Price",
-      cellRenderer: (props) => (
-        <TextCell {...props} dataKey="maximum_price" icon="$" />
-      ),
+      key: "max_purchease",
+      label: "Maximum Purchase",
+      cellRenderer: (props) => <TextCell {...props} dataKey="max_purchease" />,
       width: 140,
     },
     {
@@ -201,12 +196,37 @@ export const ProductList = () => {
 
   const { data, status, refetch, error } = useQuery(
     ["products", page, user.jwt],
-    getProducts
+    getProducts,
+    {
+      cacheTime: 0,
+    }
   );
   console.log(data);
 
-  const mutation_search = useMutation(getUsersByEmail);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const mutation_delete = useMutation(deleteProduct);
+  const handleOk = () => {
+    mutation_delete.mutate(
+      { id: deleteId, token: user.jwt },
+      {
+        onSuccess: (data) => {
+          toaster.push(
+            <Message type="success">Product deleted successfully</Message>
+          );
+          refetch();
+        },
+        onError: (error) => {
+          toaster.push(<Message type="error">Product delete failed !</Message>);
+        },
+      }
+    );
+    setOpen(false);
+    refetch();
+  };
 
+  const mutation_search = useMutation(getUsersByEmail);
   const handleInputChange = (event) => {
     const value = event.target.value;
     setInputValue(value);
@@ -221,12 +241,12 @@ export const ProductList = () => {
     setIsSearching(true);
     toast.promise(
       mutation_search.mutateAsync({
-        queryKey: ["user_search", inputValue, user.jwt],
+        queryKey: ["product_search", inputValue, user.jwt],
       }),
       {
         loading: "Searching...",
-        success: <b>User found!</b>,
-        error: <b>User not found in the database!</b>,
+        success: <b>Product found!</b>,
+        error: <b>Product not found in the database!</b>,
       }
     );
   };
@@ -246,7 +266,7 @@ export const ProductList = () => {
 
   const handleLoadMore = () => {
     setPage((prevPage) => {
-      if (prevPage < data.meta?.total_page) {
+      if (prevPage < data?.meta?.total_page) {
         return prevPage + 1;
       }
       return prevPage;
@@ -258,10 +278,29 @@ export const ProductList = () => {
     setPage((prevPage) => Math.max(prevPage - 1, 1));
     refetch();
   };
+  const handleClose = () => setOpen(false);
 
   return (
     <div>
       <Toaster />
+      <Modal open={open} onClose={handleClose}>
+        <Modal.Header className="p-5">
+          <Modal.Title>Are you sure you want delete this product ?</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Footer>
+          <Button
+            onClick={handleOk}
+            className="bg-blue-500 w-20"
+            appearance="primary"
+          >
+            Confirm
+          </Button>
+          <Button className=" bg-red-500 text-white" onClick={handleClose}>
+            Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <div>
         <hr />
         <div className="p-5">
@@ -276,7 +315,7 @@ export const ProductList = () => {
                 onChange={setColumnKeys}
                 cleanable={false}
               />
-              <Dropdown className="" title="Settings">
+              <Dropdown className="" icon={<Settings />}>
                 <Dropdown.Item>
                   <span className="flex justify-between">
                     <p>Compact：</p>

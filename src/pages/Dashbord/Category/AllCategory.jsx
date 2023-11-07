@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
+import { Settings } from "lucide-react";
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
@@ -48,7 +49,10 @@ export const AllCategory = () => {
 
   const { data, status, refetch } = useQuery(
     ["category", page, user.jwt],
-    getAllCategory
+    getAllCategory,
+    {
+      cacheTime: 0, // Data is not cached
+    }
   );
 
   const [open, setOpen] = useState(false);
@@ -298,7 +302,7 @@ export const AllCategory = () => {
                 onChange={setColumnKeys}
                 cleanable={false}
               />
-              <Dropdown className="" title="Settings">
+              <Dropdown className="" icon={<Settings />}>
                 <Dropdown.Item>
                   <span className="flex justify-between">
                     <p>Compact：</p>

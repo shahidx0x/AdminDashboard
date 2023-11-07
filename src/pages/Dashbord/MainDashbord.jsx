@@ -1,34 +1,53 @@
 /* eslint-disable react/prop-types */
 import { ResponsivePie } from "@nivo/pie";
+import { useQuery } from "react-query";
+import { useSelector } from "react-redux";
 import { Badge, Divider, Panel, Progress } from "rsuite";
+import { getServerStatus, getUsersDevice } from "../../api/DashbordService";
 
 const style = {
   width: 120,
   display: "inline-block",
   marginRight: 10,
 };
-const data = [
-  {
-    id: "Android",
-    label: "Android",
-    value: 99,
-    color: "hsl(325, 70%, 50%)",
-  },
-  {
-    id: "Iphone",
-    label: "Iphone",
-    value: 100,
-    color: "hsl(167, 70%, 50%)",
-  },
-];
 
 export const MainDashbord = () => {
+  const user = useSelector((state) => state.user.user);
+  const { data: server_data, refetch } = useQuery(
+    ["server-status", user.jwt],
+    getServerStatus,
+    {
+      refetchInterval: 5000,
+      staleTime: 0,
+    }
+  );
+  const { data: users_device } = useQuery(
+    ["users-device", user.jwt],
+    getUsersDevice
+  );
+
+  const data = [
+    {
+      id: "Android",
+      label: "Android",
+      value: users_device?.android_user + 10,
+      color: "hsl(325, 70%, 50%)",
+    },
+    {
+      id: "Iphone",
+      label: "Iphone",
+      value: users_device?.ios_user + 10,
+      color: "hsl(167, 70%, 50%)",
+    },
+  ];
+  refetch();
+
   return (
     <>
-      <div className="container">
+      <div className="">
         <h3 className="text-4xl font-bold p-4">Dashbord</h3>
         <Divider />
-        <div className="flex sm:flex-wrap justify-center items-center gap-2">
+        <div className="flex flex-col md:flex-wrap md:flex-row 2xl:flex-row 2xl:flex-wrap justify-center items-center gap-2">
           <div>
             <Panel className="border w-[20rem] py-10 bg-gradient-to-r from-rose-400 to-red-500">
               <div className="flex flex-col gap-8 justify-between items-center">
@@ -81,37 +100,40 @@ export const MainDashbord = () => {
         <Divider />
         <h3 className="text-2xl font-bold p-6">Server Status</h3>
         <div className=" flex gap-10 flex-wrap ">
-          <div className="flex justify-start hover:shadow-lg items-center ml-4 gap-10 border shadow-sm 2xl:px-20 2xl:py-16 rounded-lg">
+          <div className="flex justify-start hover:shadow-lg items-center ml-4 gap-2 border shadow-sm 2xl:px-20 2xl:py-16 rounded-lg">
             <Badge content={"CPU"}>
               <div style={style}>
                 <Progress.Circle
-                  percent={100}
+                  percent={server_data?.cpuUsage || 0}
                   status="active"
-                  strokeColor="#ffc107"
+                  strokeColor="#03fc0b"
                 />
               </div>
             </Badge>
             <Badge content={"Memory"}>
               <div style={style}>
                 <Progress.Circle
-                  percent={100}
+                  percent={server_data?.memoryUsage || 0}
                   status="active"
-                  strokeColor="#ffc107"
+                  strokeColor="#4454fc"
                 />
               </div>
             </Badge>
-            <Badge content={"DISK"}>
+            <Badge content={"Disk"}>
               <div style={style}>
                 <Progress.Circle
-                  percent={100}
+                  percent={server_data?.diskUsage || 0}
                   status="active"
-                  strokeColor="#ffc107"
+                  strokeColor="#c016f0"
                 />
               </div>
             </Badge>
+            <MyResponsivePie data={data} />
           </div>
           <div className="flex  justify-center items-center border shadow-sm hover:shadow-lg  2xl:px-28 2xl:py-16 rounded-lg">
-            <MyResponsivePie data={data} />
+            <div className="flex flex-col">
+              <h3>Recent Completed Order</h3>
+            </div>
           </div>
         </div>
       </div>
@@ -135,6 +157,7 @@ const MyResponsivePie = ({ data }) => (
       arcLinkLabelsTextOffset={11}
       arcLinkLabelsTextColor="#333333"
       arcLinkLabelsOffset={1}
+      enableArcLabels={false}
       arcLinkLabelsStraightLength={14}
       arcLinkLabelsThickness={2}
       arcLinkLabelsColor={{ from: "color" }}

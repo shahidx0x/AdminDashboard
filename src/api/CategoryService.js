@@ -3,6 +3,7 @@ import { config } from "../configs/api.config";
 
 export async function getCategoryByBrandId(data) {
   const headers = {
+    "Cache-Control": "no-cache",
     Authorization: `Bearer ${data.queryKey[2]}`,
   };
   try {
@@ -27,6 +28,7 @@ export async function getCategoryByBrandId(data) {
 
 export async function getAllCategory(data) {
   const headers = {
+    "Cache-Control": "no-cache",
     Authorization: `Bearer ${data.queryKey[2]}`,
   };
   let url;
@@ -78,7 +80,6 @@ export async function createCategory({ data, token }) {
     throw error;
   }
 }
-// /delete/category/by/6537e46bd19f19612adc8c7a
 
 export async function deleteCategory(data) {
   try {

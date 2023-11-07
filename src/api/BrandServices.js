@@ -3,6 +3,7 @@ import { config } from "../configs/api.config";
 
 export async function getBrands(data) {
   const headers = {
+    "Cache-Control": "no-cache",
     Authorization: `Bearer ${data.queryKey[2]}`,
   };
 
@@ -11,6 +12,7 @@ export async function getBrands(data) {
       config.endpoints.brands + `?limit=8&page=${data.queryKey[1]}`,
       { headers }
     );
+    console.log(response.data);
     return response;
   } catch (error) {
     console.error(
@@ -21,8 +23,8 @@ export async function getBrands(data) {
   }
 }
 export async function getBrandsSearched(data) {
-  console.log(data.queryKey[0]);
   const headers = {
+    "Cache-Control": "no-cache",
     Authorization: `Bearer ${data.queryKey[2]}`,
   };
 
@@ -43,6 +45,7 @@ export async function getBrandsSearched(data) {
 
 export async function getBrandsIdAndName(data) {
   const headers = {
+    "Cache-Control": "no-cache",
     Authorization: `Bearer ${data.queryKey[1]}`,
   };
 
@@ -64,6 +67,7 @@ export async function getBrandsIdAndName(data) {
 
 export async function getBrandsByName(data) {
   const headers = {
+    "Cache-Control": "no-cache",
     Authorization: `Bearer ${data.queryKey[2]}`,
   };
   try {

@@ -3,6 +3,7 @@ import { config } from "../configs/api.config";
 
 export async function getSubCategoryByCategoryId(data) {
   const headers = {
+    "Cache-Control": "no-cache",
     Authorization: `Bearer ${data.queryKey[2]}`,
   };
   try {
@@ -28,6 +29,7 @@ export async function getSubCategoryByCategoryId(data) {
 export async function getAllSubCategory(data) {
   let url;
   const headers = {
+    "Cache-Control": "no-cache",
     Authorization: `Bearer ${data.queryKey[2]}`,
   };
   if (data.queryKey[4]) {

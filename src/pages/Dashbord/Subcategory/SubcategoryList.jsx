@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
+import { Settings } from "lucide-react";
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
@@ -278,7 +279,7 @@ export const SubcategoryList = () => {
                   onChange={setColumnKeys}
                   cleanable={false}
                 />
-                <Dropdown className="" title="Settings">
+                <Dropdown className="" icon={<Settings />}>
                   <Dropdown.Item>
                     <span className="flex justify-between">
                       <p>Compact：</p>

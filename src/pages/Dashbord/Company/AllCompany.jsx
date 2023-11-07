@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
+import { Settings } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import {
   Avatar,
@@ -80,12 +81,14 @@ export const AllCompany = () => {
     );
   };
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { data, status, refetch } = useQuery(
     ["brands", page, user.jwt],
-    getBrands
+    getBrands,
+    {
+      cacheTime: 0,
+    }
   );
 
   const BrandNameCell = ({ rowData, dataKey, ...props }) => {
@@ -114,7 +117,6 @@ export const AllCompany = () => {
   };
   const mutation_delete = useMutation(deleteBrand);
   const handleOk = () => {
-    console.log(deleteId);
     mutation_delete.mutate(
       { deleteId, token: user.jwt },
       {
@@ -125,7 +127,6 @@ export const AllCompany = () => {
           refetch();
         },
         onError: (error) => {
-          console.log(error.response);
           toaster.push(<Message type="error">Brand delete failed !</Message>);
         },
       }
@@ -223,11 +224,9 @@ export const AllCompany = () => {
       { data: data, token: user.jwt },
       {
         onSuccess: (data) => {
-          console.log(data);
           toaster.push(<Message type="success">Updated successfully</Message>);
         },
         onError: (error) => {
-          console.log(error);
           toaster.push(<Message type="error">Update failed !</Message>);
         },
       }
@@ -260,7 +259,6 @@ export const AllCompany = () => {
       }
     );
   };
-  //   console.log(mutation_search?.data?.data);
 
   const displayedData =
     isSearching && mutation_search?.data?.data[0]
@@ -297,7 +295,7 @@ export const AllCompany = () => {
       <Toaster />
       <Modal open={open} onClose={handleClose}>
         <Modal.Header className="p-5">
-          <Modal.Title>Are you sure you want delete this product ?</Modal.Title>
+          <Modal.Title>Are you sure you want delete company ?</Modal.Title>
         </Modal.Header>
 
         <Modal.Footer>
@@ -327,7 +325,7 @@ export const AllCompany = () => {
                 onChange={setColumnKeys}
                 cleanable={false}
               />
-              <Dropdown className="" title="Settings">
+              <Dropdown className="" icon={<Settings />}>
                 <Dropdown.Item>
                   <span className="flex justify-between">
                     <p>Compact：</p>

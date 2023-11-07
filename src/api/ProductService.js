@@ -3,6 +3,7 @@ import { config } from "../configs/api.config";
 
 export async function getProducts(data) {
   const headers = {
+    "Cache-Control": "no-cache",
     Authorization: `Bearer ${data.queryKey[2]}`,
   };
   let urls;
@@ -52,7 +53,6 @@ export async function createProduct({ data, token }) {
 }
 
 export async function deleteProduct({ id, token }) {
-  console.log(id);
   try {
     const headers = {
       Authorization: `Bearer ${token}`,

@@ -5,7 +5,6 @@ import SiteIcon from "@rsuite/icons/Site";
 import ThreeColumnsIcon from "@rsuite/icons/ThreeColumns";
 import TreemapIcon from "@rsuite/icons/Treemap";
 import DashboardIcon from "@rsuite/icons/legacy/Dashboard";
-import GearCircleIcon from "@rsuite/icons/legacy/GearCircle";
 import { useState } from "react";
 import { AiOutlineFileAdd } from "react-icons/ai";
 import { BsListUl } from "react-icons/bs";
@@ -60,7 +59,7 @@ const CustomSidenav = ({
               <Nav.Item as={Link} to="/" eventKey="3-2">
                 <div className="flex gap-2">
                   <RiProductHuntLine className="text-xl" />
-                  <p className="font-bold">Products</p>
+                  <p className="font-bold">Inventory</p>
                 </div>
               </Nav.Item>
               <Nav.Item as={Link} to="/" eventKey="3-3">
@@ -126,11 +125,6 @@ const CustomSidenav = ({
                   <AiOutlineFileAdd className="text-xl  font-bold" />
                   <p className="font-bold">Add product</p>
                 </div>
-              </Nav.Item>
-            </Nav.Menu>
-            <Nav.Menu eventKey="7" title="History" icon={<GearCircleIcon />}>
-              <Nav.Item as={Link} to="/" eventKey="7-1">
-                Order History
               </Nav.Item>
             </Nav.Menu>
           </Nav>

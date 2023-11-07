@@ -62,8 +62,6 @@ export default function AddProduct() {
     getSubCategoryByCategoryId
   );
 
-  console.log(sub_category_data);
-
   const cate_data = category_data?.data?.map((each) => {
     return { label: each?.category_label, value: each._id };
   });
@@ -113,9 +111,11 @@ export default function AddProduct() {
           toaster.push(
             <Message type="success">Product added successfully</Message>
           );
+          setFileInfo(null);
+          setCoverUploadResponse(null);
+          setUploadResponse(null);
         },
         onError: (error) => {
-          console.log(error);
           toaster.push(<Message type="error">Product add failed !</Message>);
         },
       }
@@ -124,9 +124,7 @@ export default function AddProduct() {
   };
 
   const navigate = useNavigate();
-  function UserTable() {
-    navigate("/dashbord/all-company");
-  }
+
   return (
     <>
       <Stack
@@ -142,7 +140,7 @@ export default function AddProduct() {
           <Breadcrumb.Item as={Link} to="/dashbord">
             Home
           </Breadcrumb.Item>
-          <Breadcrumb.Item as={Link} to="/dashbord/all-company">
+          <Breadcrumb.Item as={Link} to="/dashbord/product/list">
             product-list
           </Breadcrumb.Item>
           <Breadcrumb.Item active className="text-blue-400">

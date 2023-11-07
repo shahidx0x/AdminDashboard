@@ -38,7 +38,7 @@ export default function NavbarHeader() {
     <>
       <Modal open={open} onClose={handleClose}>
         <Modal.Header>
-          <Modal.Title className="font-mono font-bold text-lg">
+          <Modal.Title className=" font-bold text-lg">
             Are you sure you want to logout ?
           </Modal.Title>
         </Modal.Header>
@@ -103,6 +103,7 @@ const DefaultPopover = React.forwardRef(({ content, ...props }, ref) => {
       title={
         <p className="font-bold">
           <span className="font-mono">Signed in as : </span>
+          <br />
           <span className="font-mono">{user.email}</span>
         </p>
       }
@@ -149,14 +150,14 @@ const MenuComponent = ({ placement, loading, children, handleOpen }) => (
           content={
             <>
               <div>
-                <p className="text-black-600 cursor-pointer hover:text-black hover:bg-indigo-100 hover:rounded-xl  text-md font-bold p-2 ">
+                <p className="text-black-600 cursor-pointer hover:text-white hover:bg-indigo-500  font-bold p-2 ">
                   Profile
                 </p>
               </div>
               <div className="border-b"></div>
               <div
                 onClick={handleOpen}
-                className="text-red-600 cursor-pointer hover:text-red-500 text-md font-mono  hover:rounded-xl p-2 font-bold hover:bg-indigo-100"
+                className="text-red-600 cursor-pointer hover:text-white text-md font-mono  p-2 font-bold hover:bg-indigo-500"
               >
                 Logout
               </div>
