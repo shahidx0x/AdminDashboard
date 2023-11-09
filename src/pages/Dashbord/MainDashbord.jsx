@@ -3,12 +3,17 @@ import { ResponsivePie } from "@nivo/pie";
 import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { Badge, Divider, Panel, Progress } from "rsuite";
-import { getServerStatus, getUsersDevice } from "../../api/DashbordService";
+import {
+  getInventoryStatus,
+  getServerStatus,
+  getUsersDevice,
+} from "../../api/DashbordService";
 
 const style = {
   width: 120,
   display: "inline-block",
   marginRight: 10,
+  marginLeft: 20,
 };
 
 export default function MainDashbord() {
@@ -24,6 +29,11 @@ export default function MainDashbord() {
   const { data: users_device } = useQuery(
     ["users-device", user.jwt],
     getUsersDevice
+  );
+
+  const { data: inventory_status } = useQuery(
+    ["inventory-status", user.jwt],
+    getInventoryStatus
   );
 
   const data = [
@@ -47,60 +57,58 @@ export default function MainDashbord() {
       <div className="">
         <h3 className="text-4xl font-bold p-4">Dashbord</h3>
         <Divider />
-        <div className="flex flex-col md:flex-wrap md:flex-row 2xl:flex-row 2xl:flex-wrap justify-center items-center gap-2">
+        <div className="flex flex-col md:flex-wrap md:flex-row 2xl:flex-row 2xl:flex-wrap justify-start ml-5 items-center gap-2">
           <div>
-            <Panel className="border w-[20rem] py-10 bg-gradient-to-r from-rose-400 to-red-500">
+            <Panel className="border w-[20rem] py-10 bg-gradient-to-r from-rose-400 to-red-500 hover:bg-gradient-to-l hover:from-blue-400 hover:to-indigo-500 hover:delay-75 hover:animate-pulse">
               <div className="flex flex-col gap-8 justify-between items-center">
                 <div className="text-2xl font-bold  text-white">
                   User Registerd
                 </div>
-                <div className="text-white text-2xl font-bold font-mono">
-                  281,358
+                <div className="text-white text-5xl font-bold font-mono">
+                  {inventory_status?.meta.totalUsers}
                 </div>
               </div>
             </Panel>
           </div>
           <div>
-            <Panel className="border w-[20rem]  py-10 bg-gradient-to-r from-cyan-500 to-blue-500">
+            <Panel className="border w-[20rem]  py-10 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-l hover:from-blue-400 hover:to-indigo-500 hover:delay-75 hover:animate-pulse">
               <div className="flex flex-col gap-8 justify-between items-center">
                 <div className="text-2xl font-bold text-white">
                   Registerd Products
                 </div>
-                <div className="text-white text-2xl font-bold font-mono">
-                  281,358
+                <div className="text-white text-5xl font-bold font-mono">
+                  {inventory_status?.meta.totalProducts}
                 </div>
               </div>
             </Panel>
           </div>
           <div>
-            <Panel className="border w-[20rem]  py-10 bg-gradient-to-r from-indigo-500 to-blue-500">
+            <Panel className="border w-[20rem]  py-10 bg-gradient-to-r from-indigo-500 to-blue-500 hover:bg-gradient-to-l hover:from-blue-400 hover:to-indigo-500 hover:delay-75 hover:animate-pulse">
               <div className="flex flex-col gap-8 justify-between items-center">
                 <div className="text-2xl font-bold text-white">
                   Registerd Company
                 </div>
-                <div className="text-white text-2xl font-bold font-mono">
-                  281,358
+                <div className="text-white text-5xl font-bold font-mono">
+                  {inventory_status?.meta.totalCompany}
                 </div>
               </div>
             </Panel>
           </div>
           <div>
-            <Panel className="border w-[20rem]  py-10 bg-gradient-to-r from-violet-500 to-purple-500">
+            <Panel className="border w-[20rem]  py-10 bg-gradient-to-r from-violet-500 to-purple-500 hover:bg-gradient-to-l hover:from-blue-400 hover:to-indigo-500 hover:delay-75 hover:animate-pulse">
               <div className="flex flex-col gap-8 justify-between items-center">
                 <div className="text-2xl font-bold text-white">
                   Completed Orders
                 </div>
-                <div className="text-white text-2xl font-bold font-mono">
-                  281,358
-                </div>
+                <div className="text-white text-5xl font-bold font-mono">0</div>
               </div>
             </Panel>
           </div>
         </div>
         <Divider />
         <h3 className="text-2xl font-bold p-6">Server Status</h3>
-        <div className=" flex gap-10 flex-wrap ">
-          <div className="flex justify-start hover:shadow-lg items-center ml-4 gap-2 border shadow-sm 2xl:px-20 2xl:py-16 rounded-lg">
+        <div className=" flex ">
+          <div className="flex justify-start hover:shadow-lg items-center ml-4 gap-2 border-2 2xl:w-[80%] shadow-sm  rounded-lg">
             <Badge content={"CPU"}>
               <div style={style}>
                 <Progress.Circle
@@ -129,11 +137,6 @@ export default function MainDashbord() {
               </div>
             </Badge>
             <MyResponsivePie data={data} />
-          </div>
-          <div className="flex  justify-center items-center border shadow-sm hover:shadow-lg  2xl:px-28 2xl:py-16 rounded-lg">
-            <div className="flex flex-col">
-              <h3>Recent Completed Order</h3>
-            </div>
           </div>
         </div>
       </div>

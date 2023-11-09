@@ -20,6 +20,28 @@ export async function getServerStatus(data) {
     throw error;
   }
 }
+export async function getInventoryStatus(data) {
+  const headers = {
+    "Cache-Control": "no-cache",
+    Authorization: `Bearer ${data.queryKey[1]}`,
+  };
+
+  try {
+    const response = await axios.get(
+      config.endpoints.host + "/total-inventory",
+      {
+        headers,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching total-inventory:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+}
 export async function getUsersDevice(data) {
   const headers = {
     "Cache-Control": "no-cache",

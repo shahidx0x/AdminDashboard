@@ -130,14 +130,38 @@ function Root() {
 }
 
 function Dashbord() {
+  const containerStyle = {
+    display: "flex",
+    height: "100vh",
+  };
+
+  const scrollableStyle = {
+    flex: "1",
+    overflowY: "scroll",
+    msOverflowStyle: "none",
+    scrollbarWidth: "none",
+  };
+
   return (
     <>
       <NavbarHeader />
-      <div className="flex">
-        <div>
+      <div style={containerStyle}>
+        <div
+          style={{
+            flex: "0 0 auto",
+            height: "100%",
+          }}
+        >
           <SideNavigation />
         </div>
-        <div className="w-full">
+        <div style={scrollableStyle} className="main-content">
+          <style>
+            {`
+              .main-content::-webkit-scrollbar {
+                display: none;
+              }
+            `}
+          </style>
           <Outlet />
         </div>
       </div>

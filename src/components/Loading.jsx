@@ -1,7 +1,9 @@
 const Loading = () => {
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className="w-[10rem] h-[10rem] border-4 border-dashed rounded-full animate-spin border-violet-600"></div>
+      <div className="text-9xl font-bold font-mono animate-pulse text-violet-600">
+        FGY-Y2J
+      </div>
     </div>
   );
 };

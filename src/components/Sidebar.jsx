@@ -25,7 +25,7 @@ const CustomSidenav = ({
   return (
     <div className="">
       <Sidenav
-        className="h-[120vh] 2xl:h-screen "
+        className="h-[100vh] 2xl:h-screen "
         appearance={appearance}
         expanded={expanded}
         openKeys={openKeys}
