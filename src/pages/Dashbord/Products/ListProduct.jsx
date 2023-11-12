@@ -86,7 +86,7 @@ export default function ProductList() {
           <Avatar
             className=""
             src={
-              rowData?.profilePicture ||
+              rowData?.product_image ||
               "https://avatars.githubusercontent.com/u/12592949"
             }
             alt="P"
@@ -180,9 +180,11 @@ export default function ProductList() {
       width: 140,
     },
     {
-      key: "des",
+      key: "product_information",
       label: "Description",
-      cellRenderer: (props) => <TextCell {...props} dataKey="des" />,
+      cellRenderer: (props) => (
+        <TextCell {...props} dataKey="product_information" />
+      ),
       width: 200,
     },
 
@@ -201,7 +203,6 @@ export default function ProductList() {
       cacheTime: 0,
     }
   );
-  console.log(data);
 
   const handleOpen = () => {
     setOpen(true);

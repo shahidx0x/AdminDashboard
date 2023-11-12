@@ -3,10 +3,9 @@
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-import { Plus } from "lucide-react";
 import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import {
   Button,
   Input,
@@ -35,10 +34,12 @@ function previewFile(file, callback) {
 export default function EditProduct() {
   const user = useSelector((state) => state.user.user);
   const toaster = useToaster();
+  const location = useLocation();
+  const editData = location.state.myData;
 
   const [uploading, setUploading] = useState(false);
   const [fileInfo, setFileInfo] = useState({
-    product_image: "",
+    product_image: editData?.product_image,
   });
   const [uploadResponse, setUploadResponse] = useState([]);
   const [coverUploadResponse, setCoverUploadResponse] = useState(null);
@@ -121,7 +122,17 @@ export default function EditProduct() {
     reset();
   };
 
+  const fileList = editData.fet_image.map((url, index) => ({
+    name: `${index}.png`,
+    fileKey: index + 1,
+    url: url,
+  }));
+
   const navigate = useNavigate();
+  const [updatedFetImage, setUpdatedFetImage] = useState(null);
+  const handleImageDelete = (image) => {
+    console.log(image);
+  };
 
   return (
     <>
@@ -181,7 +192,7 @@ export default function EditProduct() {
                       />
                     ) : (
                       <img
-                        src="https://www.ivins.com/wp-content/uploads/2020/09/placeholder-1.png"
+                        src={editData?.product_image}
                         alt="product_picture"
                       />
                     )}
@@ -192,19 +203,19 @@ export default function EditProduct() {
               <div className="mt-3">
                 <div>
                   <p className="font-bold">Feature Image</p>
-                  <div className="flex gap-5">
+                  <div className="flex">
                     <Uploader
-                      multiple
+                      disabled={false}
                       listType="picture"
+                      defaultFileList={fileList}
                       action={`${config.endpoints.host}/upload`}
                       onSuccess={(value) =>
                         setUploadResponse((prev) => [...prev, value.fileUrl])
                       }
-                    >
-                      <button type="button">
-                        <Plus />
-                      </button>
-                    </Uploader>
+                      onRemove={(e) => {
+                        handleImageDelete(e.url.split("/")[4]);
+                      }}
+                    />
                   </div>
                 </div>
               </div>

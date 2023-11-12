@@ -159,36 +159,30 @@ export default function AllCategory() {
       cellRenderer: ImageCell,
       width: 100,
     },
-    {
-      key: "brand_id",
-      label: "Brand Id",
-      cellRenderer: (props) => (
-        <GenericCell {...props} content={props.rowData?.brand_id} />
-      ),
-      width: 200,
-    },
-    {
-      key: "brand_name",
-      label: "Brand Name",
-      cellRenderer: (props) => (
-        <GenericCell {...props} content={props.rowData?.brand_name} />
-      ),
-      width: 150,
-    },
-    {
-      key: "_id",
-      label: "Category Id",
-      cellRenderer: (props) => (
-        <GenericCell {...props} content={props.rowData?._id} />
-      ),
-      width: 200,
-    },
+    // {
+    //   key: "brand_id",
+    //   label: "Brand Id",
+    //   cellRenderer: (props) => (
+    //     <GenericCell {...props} content={props.rowData?.brand_id} />
+    //   ),
+    //   width: 200,
+    // },
+
+    // {
+    //   key: "_id",
+    //   label: "Category Id",
+    //   cellRenderer: (props) => (
+    //     <GenericCell {...props} content={props.rowData?._id} />
+    //   ),
+    //   width: 200,
+    // },
     {
       key: "category_label",
       label: "Category Name",
       cellRenderer: CategoryNameCell,
       width: 200,
     },
+
     {
       key: "category_label",
       label: "Sub Category Count",
@@ -201,6 +195,15 @@ export default function AllCategory() {
       ),
       width: 150,
     },
+    {
+      key: "brand_name",
+      label: "Brand Name",
+      cellRenderer: (props) => (
+        <GenericCell {...props} content={props.rowData?.brand_name} />
+      ),
+      width: 150,
+    },
+
     {
       key: "actions",
       label: "Actions",
@@ -384,7 +387,10 @@ export default function AllCategory() {
         </div>
 
         <hr />
-        <div className="mt-5" style={{ height: autoHeight ? "auto" : 400 }}>
+        <div
+          className="mt-5 ml-4"
+          style={{ height: autoHeight ? "auto" : 400 }}
+        >
           <Table
             loading={status === "loading" ? true : false}
             height={300}

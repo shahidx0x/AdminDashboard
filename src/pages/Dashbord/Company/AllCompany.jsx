@@ -180,12 +180,12 @@ export default function AllCompany() {
       width: 200,
     },
 
-    {
-      key: "_id",
-      label: "Company Id",
-      cellRenderer: BrandIdCell,
-      width: 300,
-    },
+    // {
+    //   key: "_id",
+    //   label: "Company Id",
+    //   cellRenderer: BrandIdCell,
+    //   width: 300,
+    // },
 
     {
       key: "brand_label",
