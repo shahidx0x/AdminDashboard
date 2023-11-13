@@ -8,10 +8,10 @@ export async function getCategoryByBrandId(data) {
   };
   try {
     const response = await axios.get(
-      config.endpoints.all_category +
-        `?limit=${data.queryKey[4] || 8}&page=${data.queryKey[1]}&brand_id=${
-          data.queryKey[3]
-        }`,
+      config.endpoints.host +
+        `/get/all/category?limit=${data.queryKey[4] || 8}&page=${
+          data.queryKey[1]
+        }&brand_id=${data.queryKey[3]}`,
       { headers }
     );
     if (response.status === 404) {

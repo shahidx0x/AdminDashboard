@@ -22,6 +22,7 @@ import { getCategoryByBrandId } from "../../../api/CategoryService";
 import { createProduct } from "../../../api/ProductService";
 import { getSubCategoryByCategoryId } from "../../../api/SubCategoryServices";
 import { config } from "../../../configs/api.config";
+import { toolbarConfig } from "../../../configs/toolbar.config";
 
 function previewFile(file, callback) {
   const reader = new FileReader();
@@ -53,7 +54,7 @@ export default function AddProduct() {
     ["categoryIdName", "", user.jwt, selectedBrandId, -1],
     getCategoryByBrandId
   );
-
+  console.log(category_data);
   const { data: sub_category_data } = useQuery(
     ["subCategoryIdName", "", user.jwt, selectedCatId, -1],
     getSubCategoryByCategoryId
@@ -127,7 +128,7 @@ export default function AddProduct() {
         onSuccess: (data) => {
           toaster.push(message_success, {
             placement: "bottomStart",
-            duration: 3000,
+            duration: 2000,
           });
           setFileInfo(null);
           setCoverUploadResponse(null);
@@ -143,7 +144,7 @@ export default function AddProduct() {
     );
     setTimeout(() => {
       window.location.reload();
-    }, 3000);
+    }, 1500);
   };
 
   const [price, setPrice] = useState("");
@@ -404,7 +405,7 @@ export default function AddProduct() {
                     </label>
                     <RichTextEditor
                       className="mt-2"
-                      // toolbarConfig={toolbarConfig}
+                      toolbarConfig={toolbarConfig}
                       value={editorValue}
                       onChange={handleChange}
                     />

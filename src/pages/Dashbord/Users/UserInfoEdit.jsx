@@ -95,34 +95,33 @@ export default function UserInfoEdit() {
         justifyContent="center"
         alignItems="center"
         direction="column"
-        className="-mt-16 "
-        style={{
-          height: "100vh",
-        }}
+        className="mt-14 2xl:-ml-28 px-8 w-full"
       >
-        <Breadcrumb className="text-xl -mt-20 font-mono">
-          <Breadcrumb.Item as={Link} to="/dashbord">
-            Home
-          </Breadcrumb.Item>
-          <Breadcrumb.Item as={Link} to="/dashbord/user-table">
-            user-list
-          </Breadcrumb.Item>
-          <Breadcrumb.Item active className="text-blue-400">
-            user-information-edit
-          </Breadcrumb.Item>
-        </Breadcrumb>
         <Panel
           bordered
-          className="shadow-md -mt-10 border-gray-300"
+          className="shadow-sm -mt-10 border-l-8 border-l-indigo-400"
           style={{ background: "#fff" }}
           header={
-            <h3 className="font-bold p-5 text-2xl bg-indigo-500 rounded-lg text-white">
-              Update User Information
-            </h3>
+            <>
+              <Breadcrumb className="text-sm font-mono">
+                <Breadcrumb.Item as={Link} to="/dashbord">
+                  Home
+                </Breadcrumb.Item>
+                <Breadcrumb.Item as={Link} to="/dashbord/user-table">
+                  user-list
+                </Breadcrumb.Item>
+                <Breadcrumb.Item active className="text-blue-400">
+                  user-information-edit
+                </Breadcrumb.Item>
+              </Breadcrumb>
+              <h3 className="font-bold p-5 text-2xl bg-indigo-500 rounded-lg text-white">
+                Update User Information
+              </h3>
+            </>
           }
         >
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex justify-center items-center mb-10">
+            <div className="flex  flex-col justify-center items-center mb-10">
               <Badge
                 color={uploadResponse?.fileUrl !== "" ? "green" : "red"}
                 content={uploadResponse?.fileUrl !== "" && "uploaded"}
@@ -159,106 +158,81 @@ export default function UserInfoEdit() {
                 </Uploader>
               </Badge>
             </div>
-            <div className="flex gap-5">
-              <div className="flex gap-5">
-                <div>
-                  <p className="font-bold">First Name</p>
-                  <Input
-                    {...register("firstName")}
-                    defaultValue={myData?.firstName}
-                    className="w-56"
-                  />
-                </div>
-                <div>
-                  <p className="font-bold">Last Name</p>
-                  <Input
-                    {...register("lastName")}
-                    defaultValue={myData?.lastName}
-                    className="w-56"
-                  />
-                </div>
-              </div>
-              <div>
-                <p className="font-bold">Email</p>
-                <Input
-                  value={myData?.email}
-                  {...register("email")}
-                  className="w-56"
-                />
-              </div>
-              <div>
-                <div className="">
-                  <p className="font-bold">Subscription</p>
-                  <Controller
-                    name="subscription"
-                    control={control}
-                    defaultValue={myData?.subscription}
-                    render={({ field }) => (
-                      <SelectPicker
-                        searchable={false}
-                        {...field}
-                        size="md"
-                        data={dropdownSub}
-                        className="w-56"
-                        onChange={(value) => field.onChange(value)}
-                        onBlur={() => field.onBlur()}
-                      />
-                    )}
-                  />
-                </div>
-              </div>
-              <div className="">
-                <p className="font-bold">Role</p>
-                <Controller
-                  name="role"
-                  control={control}
-                  defaultValue={myData?.role}
-                  render={({ field }) => (
-                    <SelectPicker
-                      searchable={false}
-                      {...field}
-                      size="md"
-                      data={dropdown}
+            <div className="">
+              <div className="flex  p-5">
+                <div className="flex flex-col 2xl:flex-row gap-5">
+                  <div>
+                    <p className="font-bold">First Name</p>
+                    <Input
+                      {...register("firstName")}
+                      defaultValue={myData?.firstName}
                       className="w-56"
-                      onChange={(value) => field.onChange(value)}
-                      onBlur={() => field.onBlur()}
                     />
-                  )}
-                />
-              </div>
-            </div>
-
-            <div className="flex gap-5 mt-5">
-              <div>
-                <p className="font-bold">Cart Number</p>
-                <Input
-                  {...register("cartNumber")}
-                  defaultValue={myData?.cartNumber}
-                  className="w-56"
-                />
-              </div>
-              <div>
-                <p className="font-bold">Company</p>
-                <Input
-                  {...register("company")}
-                  defaultValue={myData?.company}
-                  className="w-56"
-                />
-              </div>
-              <div className="flex gap-5">
-                <div>
-                  <p className="font-bold">Location</p>
-                  <Input
-                    {...register("location")}
-                    defaultValue={myData?.location}
-                    className="w-56"
-                  />
+                  </div>
+                  <div>
+                    <p className="font-bold">Last Name</p>
+                    <Input
+                      {...register("lastName")}
+                      defaultValue={myData?.lastName}
+                      className="w-56"
+                    />
+                  </div>
+                  <div>
+                    <p className="font-bold">Email</p>
+                    <Input
+                      value={myData?.email}
+                      {...register("email")}
+                      className="w-56"
+                    />
+                  </div>
+                  <div>
+                    <div className="">
+                      <p className="font-bold">Subscription</p>
+                      <Controller
+                        name="subscription"
+                        control={control}
+                        defaultValue={myData?.subscription}
+                        render={({ field }) => (
+                          <SelectPicker
+                            searchable={false}
+                            {...field}
+                            size="md"
+                            data={dropdownSub}
+                            className="w-56"
+                            onChange={(value) => field.onChange(value)}
+                            onBlur={() => field.onBlur()}
+                          />
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <div className="">
+                    <p className="font-bold">Role</p>
+                    <Controller
+                      name="role"
+                      control={control}
+                      defaultValue={myData?.role}
+                      render={({ field }) => (
+                        <SelectPicker
+                          searchable={false}
+                          {...field}
+                          size="md"
+                          data={dropdown}
+                          className="w-56"
+                          onChange={(value) => field.onChange(value)}
+                          onBlur={() => field.onBlur()}
+                        />
+                      )}
+                    />
+                  </div>
                 </div>
+              </div>
+              <div className="flex  p-5 flex-col 2xl:flex-row gap-5">
                 <div>
-                  <p className="font-bold">Phone Number</p>
+                  <p className="font-bold">Cart Number</p>
                   <Input
-                    {...register("phoneNumber")}
-                    defaultValue={myData?.phoneNumber || "Not Available"}
+                    {...register("cartNumber")}
+                    defaultValue={myData?.cartNumber}
                     className="w-56"
                   />
                 </div>
@@ -270,36 +244,63 @@ export default function UserInfoEdit() {
                     className="w-56"
                   />
                 </div>
-              </div>
-            </div>
-            <div className="mt-10 flex gap-5">
-              <p className="font-bold">Account Activation Status :</p>
-              <Controller
-                name="isAccountActive"
-                control={control}
-                render={({ field: { onChange, onBlur, value, name, ref } }) => (
-                  <Toggle
-                    defaultChecked={value}
-                    onChange={onChange}
-                    checkedChildren="Active"
-                    unCheckedChildren="Not Active"
+                <div>
+                  <p className="font-bold">Company</p>
+                  <Input
+                    {...register("company")}
+                    defaultValue={myData?.company}
+                    className="w-56"
                   />
-                )}
-              />
-            </div>
+                </div>
+                <div>
+                  <p className="font-bold">Phone Number</p>
+                  <Input
+                    {...register("phoneNumber")}
+                    defaultValue={myData?.phoneNumber || "Not Available"}
+                    className="w-56"
+                  />
+                </div>
+                <div className="flex gap-5">
+                  <div>
+                    <p className="font-bold">Location</p>
+                    <Input
+                      {...register("location")}
+                      defaultValue={myData?.location}
+                      className="w-56"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="mt-10 flex gap-5">
+                <p className="font-bold">Account Activation Status :</p>
+                <Controller
+                  name="isAccountActive"
+                  control={control}
+                  render={({
+                    field: { onChange, onBlur, value, name, ref },
+                  }) => (
+                    <Toggle
+                      defaultChecked={value}
+                      onChange={onChange}
+                      checkedChildren="Active"
+                      unCheckedChildren="Not Active"
+                    />
+                  )}
+                />
+              </div>
+              <div className="mt-5 flex gap-5">
+                <Button appearance="ghost" onClick={() => UserTable()}>
+                  Cancel
+                </Button>
 
-            <div className="mt-5 flex gap-5">
-              <Button appearance="ghost" onClick={() => UserTable()}>
-                Cancel
-              </Button>
-
-              <Button
-                type="submit"
-                appearance="primary"
-                className="bg-blue-600"
-              >
-                Update
-              </Button>
+                <Button
+                  type="submit"
+                  appearance="primary"
+                  className="bg-blue-600"
+                >
+                  Update
+                </Button>
+              </div>
             </div>
           </form>
         </Panel>
