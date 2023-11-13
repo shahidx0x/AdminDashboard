@@ -1,4 +1,4 @@
-let host = "http://localhost:9000";
+let host = "https://rest.app.gobd.xyz";
 export const config = {
   endpoints: {
     host: host,
