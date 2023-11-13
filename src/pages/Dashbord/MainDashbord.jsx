@@ -107,36 +107,38 @@ export default function MainDashbord() {
         </div>
         <Divider />
         <h3 className="text-2xl font-bold p-6">Server Status</h3>
-        <div className=" flex ">
-          <div className="flex justify-start hover:shadow-lg items-center ml-4 gap-2 border-2 2xl:w-[80%] shadow-sm  rounded-lg">
-            <Badge content={"CPU"}>
-              <div style={style}>
-                <Progress.Circle
-                  percent={server_data?.cpuUsage || 0}
-                  status="active"
-                  strokeColor="#03fc0b"
-                />
-              </div>
-            </Badge>
-            <Badge content={"Memory"}>
-              <div style={style}>
-                <Progress.Circle
-                  percent={server_data?.memoryUsage || 0}
-                  status="active"
-                  strokeColor="#4454fc"
-                />
-              </div>
-            </Badge>
-            <Badge content={"Disk"}>
-              <div style={style}>
-                <Progress.Circle
-                  percent={server_data?.diskUsage || 0}
-                  status="active"
-                  strokeColor="#c016f0"
-                />
-              </div>
-            </Badge>
-            <MyResponsivePie data={data} />
+        <div className="  ">
+          <div className="flex flex-wrap  2xl:p-0 justify-start hover:shadow-lg items-center ml-4 gap-2 border-2 2xl:w-[80%] shadow-sm  rounded-lg">
+            <div className="mt-5 2xl:mt-0">
+              <Badge content={"CPU"}>
+                <div style={style}>
+                  <Progress.Circle
+                    percent={server_data?.cpuUsage || 0}
+                    status="active"
+                    strokeColor="#03fc0b"
+                  />
+                </div>
+              </Badge>
+              <Badge content={"Memory"}>
+                <div style={style}>
+                  <Progress.Circle
+                    percent={server_data?.memoryUsage || 0}
+                    status="active"
+                    strokeColor="#4454fc"
+                  />
+                </div>
+              </Badge>
+              <Badge content={"Disk"}>
+                <div style={style}>
+                  <Progress.Circle
+                    percent={server_data?.diskUsage || 0}
+                    status="active"
+                    strokeColor="#c016f0"
+                  />
+                </div>
+              </Badge>
+            </div>
+            <MyResponsivePie className="" data={data} />
           </div>
         </div>
       </div>

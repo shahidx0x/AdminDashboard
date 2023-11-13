@@ -12,7 +12,7 @@ export async function getBrands(data) {
       config.endpoints.brands + `?limit=8&page=${data.queryKey[1]}`,
       { headers }
     );
-    console.log(response.data);
+
     return response;
   } catch (error) {
     console.error(

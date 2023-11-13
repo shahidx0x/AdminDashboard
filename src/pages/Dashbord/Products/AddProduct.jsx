@@ -161,7 +161,7 @@ export default function AddProduct() {
 
   return (
     <>
-      <section className="p-6 bg-base-100 text-gray-900 h-screen">
+      <section className="p-6 bg-base-100 text-gray-900 h-screen ">
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="container flex flex-col mx-auto space-y-12 "
@@ -182,7 +182,7 @@ export default function AddProduct() {
               <p className="font-thin text-3xl">Product & Feature Images</p>
             </div>
             <div className="flex  flex-col flex-wrap gap-4 col-span-full lg:col-span-3">
-              <div className="flex gap-10">
+              <div className="flex flex-col 2xl:flex-row gap-10">
                 <div className="col-span-full sm:col-span-3">
                   <p className="font-bold font-mono text-sm underline">
                     Upload Product Image
@@ -229,7 +229,6 @@ export default function AddProduct() {
                       )}
                     </button>
                   </Uploader>
-                  <div data-lastpass-icon-root="true"></div>
                 </div>
 
                 <div className="col-span-full">
@@ -252,7 +251,7 @@ export default function AddProduct() {
               </div>
             </div>
           </fieldset>
-          <fieldset className="grid grid-cols-4 gap-6 px-24 py-5 border-l-8 border-l-indigo-400 border-b-2 border-t hover:shadow-md rounded-md shadow-sm bg-base-50">
+          <fieldset className="  grid grid-cols-4 gap-6 px-16 2xl:px-24 py-5 border-l-8 border-l-indigo-400 border-b-2 border-t hover:shadow-md rounded-md shadow-sm bg-base-50">
             <div className="space-y-2 col-span-full lg:col-span-1">
               <Breadcrumb className="text-sm">
                 <Breadcrumb.Item as={Link} to="/dashbord">
@@ -271,7 +270,11 @@ export default function AddProduct() {
               <div className="col-span-full sm:col-span-3 flex flex-col gap-1">
                 <label className="text-sm font-bold">Product Name</label>
 
-                <Input required className="w-[14.5rem]" {...register("name")} />
+                <Input
+                  required
+                  className="w-[12rem] 2xl:w-[14.5rem]"
+                  {...register("name")}
+                />
                 <div data-lastpass-icon-root="true"></div>
               </div>
               <div className="flex flex-col col-span-full sm:col-span-3 gap-1">
@@ -287,7 +290,7 @@ export default function AddProduct() {
                       {...field}
                       size="md"
                       data={brand_f_data}
-                      className="w-[14.5rem]"
+                      className="w-[12rem] 2xl:w-[14.5rem]"
                       onChange={(value, data) => {
                         field.onChange(value);
                         SetSelectedBrandId(value);
@@ -310,7 +313,7 @@ export default function AddProduct() {
                       {...field}
                       size="md"
                       data={category_f_data}
-                      className="w-[14.5rem]"
+                      className="w-[12rem] 2xl:w-[14.5rem]"
                       onChange={(value, data) => {
                         field.onChange(value);
                         SetCategoryName(data.target.innerHTML);
@@ -333,7 +336,7 @@ export default function AddProduct() {
                       {...field}
                       size="md"
                       data={sub_cat_data}
-                      className="w-[14.5rem]"
+                      className="w-[12rem] 2xl:w-[14.5rem]"
                       onChange={(value, data) => {
                         SetSubCategoryName(data.target.innerHTML);
                         field.onChange(value);
@@ -346,7 +349,7 @@ export default function AddProduct() {
               <div className="flex flex-col col-span-full sm:col-span-2 gap-1">
                 <label className="text-sm font-bold">Price</label>
                 <input
-                  className="w-[14.5rem] h-[2.24rem] rounded-md border border-gray-200 p-3"
+                  className="w-[12rem] 2xl:w-[14.5rem] h-[2.24rem] rounded-md border border-gray-200 p-3"
                   required
                   type="number"
                   {...register("price")}
@@ -356,7 +359,7 @@ export default function AddProduct() {
               <div className="col-span-full sm:col-span-2 flex flex-col gap-1">
                 <label className="text-sm font-bold">Minimum Purchase</label>
                 <input
-                  className="w-[14.5rem] h-[2.24rem] rounded-md border border-gray-200 p-3"
+                  className="w-[12rem] 2xl:w-[14.5rem] h-[2.24rem] rounded-md border border-gray-200 p-3"
                   type="number"
                   {...register("min_purchease")}
                   onChange={handleNumberChange}
@@ -367,38 +370,25 @@ export default function AddProduct() {
                   Maximum Purchase
                 </label>
                 <input
-                  className="w-[14.5rem] h-[2.24rem] rounded-md border border-gray-200 p-3"
+                  className="w-[12rem] 2xl:w-[14.5rem] h-[2.24rem] rounded-md border border-gray-200 p-3"
                   required
                   type="number"
                   {...register("max_purchease")}
                   onChange={handleNumberChange}
                 />
               </div>
-              <div className="col-span-full sm:col-span-2 flex flex-col gap-1">
-                <label htmlFor="zip" className="text-sm font-bold">
-                  Maximum Purchase
-                </label>
+              <div className="flex flex-col">
+                <label className="text-sm font-bold">Discount</label>
                 <input
-                  className="w-[14.5rem] h-[2.24rem] rounded-md border border-gray-200 p-3"
+                  className="w-[12rem] 2xl:w-[14.5rem] h-[2.24rem] rounded-md border border-gray-200 p-3"
                   required
                   type="number"
-                  {...register("max_purchease")}
+                  {...register("discount")}
                   onChange={handleNumberChange}
                 />
               </div>
               <div className="col-span-full sm:col-span-2 flex flex-col gap-1">
                 <div className="flex flex-col gap-5">
-                  <div className="flex flex-col">
-                    <label className="text-sm font-bold">Discount</label>
-                    <input
-                      className="w-[14.5rem] h-[2.24rem] rounded-md border border-gray-200 p-3"
-                      required
-                      type="number"
-                      {...register("discount")}
-                      onChange={handleNumberChange}
-                    />
-                  </div>
-
                   <div className="2xl:w-[100vh]">
                     <label className="text-sm font-bold">
                       Product Information

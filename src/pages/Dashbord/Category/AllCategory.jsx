@@ -10,6 +10,7 @@ import {
   Avatar,
   Button,
   Dropdown,
+  Input,
   Message,
   Modal,
   Table,
@@ -70,6 +71,7 @@ export default function AllCategory() {
             <Message type="success">Category deleted successfully</Message>
           );
           refetch();
+          setOpen(false);
         },
         onError: (error) => {
           console.log(error.response);
@@ -267,19 +269,37 @@ export default function AllCategory() {
     setPage((prevPage) => Math.max(prevPage - 1, 1));
     refetch();
   };
-
+  const [confirm, setConfirm] = useState(false);
+  const handleConfirm = (e) => {
+    if (e.target.value === "confirm") {
+      setConfirm(true);
+    } else {
+      setConfirm(false);
+    }
+  };
   return (
     <div>
       <Toaster />
       <Modal open={open} onClose={handleClose}>
         <Modal.Header className="p-5">
           <Modal.Title className="font-bold font-mono">
-            All subcategory will be deleted . Are you sure ?
+            Are you sure ?
           </Modal.Title>
+          <div className="flex flex-col gap-2">
+            <p>
+              All subcategory and product under this category will be deleted !
+            </p>
+            <Input
+              className="border-red-300"
+              onChange={(value, event) => handleConfirm(event)}
+              placeholder="Type 'confirm' to delete"
+            />
+          </div>
         </Modal.Header>
 
         <Modal.Footer>
           <Button
+            disabled={confirm ? false : true}
             onClick={handleOk}
             className="bg-blue-500 w-20"
             appearance="primary"

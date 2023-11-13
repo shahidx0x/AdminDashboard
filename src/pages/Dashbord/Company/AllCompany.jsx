@@ -11,6 +11,7 @@ import {
   Avatar,
   Button,
   Dropdown,
+  Input,
   Message,
   Modal,
   Table,
@@ -289,17 +290,34 @@ export default function AllCompany() {
     setPage((prevPage) => Math.max(prevPage - 1, 1));
     refetch();
   };
-
+  const [confirm, setConfirm] = useState(false);
+  const handleConfirm = (e) => {
+    if (e.target.value === "confirm") {
+      setConfirm(true);
+    } else {
+      setConfirm(false);
+    }
+  };
   return (
     <div>
       <Toaster />
       <Modal open={open} onClose={handleClose}>
         <Modal.Header className="p-5">
           <Modal.Title>Are you sure you want delete company ?</Modal.Title>
+          <div className="flex flex-col gap-2">
+            <p className="mt-2">
+              All Category and Product will be deleted under this company
+            </p>
+            <Input
+              onChange={(value, event) => handleConfirm(event)}
+              placeholder="Type 'confirm' to delete"
+            />
+          </div>
         </Modal.Header>
 
         <Modal.Footer>
           <Button
+            disabled={confirm ? false : true}
             onClick={handleOk}
             className="bg-blue-500 w-20"
             appearance="primary"
