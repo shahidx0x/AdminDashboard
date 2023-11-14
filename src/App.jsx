@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import Loading from "./components/Loading";
 import NavbarHeader from "./components/Navbar";
 import SideNavigation from "./components/Sidebar";
 
@@ -112,7 +113,11 @@ function App() {
       ],
     },
   ]);
-  return <RouterProvider router={routers} />;
+  return (
+    <Suspense fallback={<Loading />}>
+      <RouterProvider router={routers} />
+    </Suspense>
+  );
 }
 function Root() {
   return (
@@ -157,9 +162,7 @@ function Dashbord() {
               }
             `}
           </style>
-          <Suspense fallback={<Loading />}>
-            <Outlet />
-          </Suspense>
+          <Outlet />
         </div>
       </div>
     </>
@@ -167,12 +170,3 @@ function Dashbord() {
 }
 
 export default App;
-const Loading = () => {
-  return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="text-7xl 2xl:text-9xl font-bold font-mono animate-pulse text-violet-600">
-        FGY-Y2J
-      </div>
-    </div>
-  );
-};
