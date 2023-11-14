@@ -248,8 +248,9 @@ export default function SubcategoryList() {
         <Modal open={open} onClose={handleClose}>
           <Modal.Header className="p-5">
             <Modal.Title className="font-bold font-mono">
-              Subcategory will be deleted . Are you sure ?
+              Are you sure ?
             </Modal.Title>
+            <p>All Subcategory and releted product will be deleted</p>
           </Modal.Header>
 
           <Modal.Footer>
