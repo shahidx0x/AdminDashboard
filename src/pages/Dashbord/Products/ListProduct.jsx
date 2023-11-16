@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
+import DOMPurify from "dompurify";
 import { Settings } from "lucide-react";
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
@@ -27,6 +28,11 @@ function previewFile(file, callback) {
   };
   reader.readAsDataURL(file);
 }
+function HtmlContentRenderer({ htmlContent }) {
+  const sanitizedHtml = DOMPurify.sanitize(htmlContent);
+
+  return <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />;
+}
 
 export default function ProductList() {
   const [compact, setCompact] = useState(true);
@@ -42,10 +48,9 @@ export default function ProductList() {
   const [isSearching, setIsSearching] = useState(false);
   const [open, setOpen] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
-
-  const { Column, HeaderCell, Cell } = Table;
   const navigate = useNavigate();
 
+  const { Column, HeaderCell, Cell } = Table;
   const CompactCell = (props) => <Cell {...props} style={{ padding: 4 }} />;
   const CompactHeaderCell = (props) => (
     <HeaderCell {...props} style={{ padding: 4 }}>
@@ -69,6 +74,31 @@ export default function ProductList() {
           {PriceIcon + " " + rowData[dataKey]}
         </p>
       </Cell>
+    );
+  };
+  const DesCell = ({ rowData, icon, dataKey, ...props }) => {
+    let PriceIcon = "";
+    if (icon) PriceIcon = icon;
+
+    const serverHtmlContent = rowData[dataKey];
+    const decodedHtml = serverHtmlContent
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">");
+
+    return (
+      <>
+        <Cell {...props}>
+          <p
+            className={
+              PriceIcon
+                ? `flex justify-center items-center font-bold`
+                : `flex justify-center items-center`
+            }
+          >
+            <HtmlContentRenderer htmlContent={decodedHtml} />
+          </p>
+        </Cell>
+      </>
     );
   };
   const NameCell = ({ rowData, ...props }) => {
@@ -183,7 +213,7 @@ export default function ProductList() {
       key: "product_information",
       label: "Description",
       cellRenderer: (props) => (
-        <TextCell {...props} dataKey="product_information" />
+        <DesCell {...props} dataKey="product_information" />
       ),
       width: 200,
     },
@@ -195,6 +225,15 @@ export default function ProductList() {
       width: 200,
     },
   ];
+  const [columnKeys, setColumnKeys] = useState(
+    defaultColumns.map((column) => column.key)
+  );
+
+  const columns = defaultColumns.filter((column) =>
+    columnKeys.some((key) => key === column.key)
+  );
+  const CustomCell = compact ? CompactCell : Cell;
+  const CustomHeaderCell = compact ? CompactHeaderCell : HeaderCell;
 
   const { data, status, refetch, error } = useQuery(
     ["products", page, user.jwt],
@@ -255,16 +294,6 @@ export default function ProductList() {
   const displayedData =
     isSearching && mutation_search?.data ? [mutation_search?.data] : data?.data;
 
-  const [columnKeys, setColumnKeys] = useState(
-    defaultColumns.map((column) => column.key)
-  );
-
-  const columns = defaultColumns.filter((column) =>
-    columnKeys.some((key) => key === column.key)
-  );
-  const CustomCell = compact ? CompactCell : Cell;
-  const CustomHeaderCell = compact ? CompactHeaderCell : HeaderCell;
-
   const handleLoadMore = () => {
     setPage((prevPage) => {
       if (prevPage < data?.meta?.total_pages) {
@@ -303,7 +332,6 @@ export default function ProductList() {
         </Modal.Footer>
       </Modal>
       <div>
-        <hr />
         <div className="p-5">
           <div className="flex gap-3 flex-col 2xl:flex-row 2xl:justify-between">
             <div className="">
@@ -397,7 +425,6 @@ export default function ProductList() {
           </div>
         </div>
 
-        <hr />
         <div
           className="mt-5 ml-5"
           style={{ height: autoHeight ? "auto" : 400 }}

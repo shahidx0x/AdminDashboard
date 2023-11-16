@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
+import axios from "axios";
 import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
@@ -19,7 +20,7 @@ import {
 } from "rsuite";
 import { getBrandsIdAndName } from "../../../api/BrandServices";
 import { getCategoryByBrandId } from "../../../api/CategoryService";
-import { createProduct } from "../../../api/ProductService";
+import { updateProduct } from "../../../api/ProductService";
 import { getSubCategoryByCategoryId } from "../../../api/SubCategoryServices";
 import { config } from "../../../configs/api.config";
 
@@ -90,9 +91,9 @@ export default function EditProduct() {
     reset,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({});
 
-  const mutation = useMutation(createProduct);
+  const mutation = useMutation(updateProduct);
   const [brandName, SetBrandName] = useState("No Brand");
   const [categoryName, SetCategoryName] = useState("No Category");
   const [subCategoryName, SetSubCategoryName] = useState("No Sub Category");
@@ -103,8 +104,10 @@ export default function EditProduct() {
     data.brand_name = brandName;
     data.category_name = categoryName;
     data.subcategory_name = subCategoryName;
+    let id = editData._id;
+    console.table(data);
     mutation.mutate(
-      { data: data, token: user.jwt },
+      { data: data, token: user.jwt, id: id },
       {
         onSuccess: (data) => {
           toaster.push(
@@ -113,6 +116,7 @@ export default function EditProduct() {
           setFileInfo(null);
           setCoverUploadResponse(null);
           setUploadResponse(null);
+          navigate(-1);
         },
         onError: (error) => {
           toaster.push(<Message type="error">Product update failed !</Message>);
@@ -131,7 +135,17 @@ export default function EditProduct() {
   const navigate = useNavigate();
   const [updatedFetImage, setUpdatedFetImage] = useState(null);
   const handleImageDelete = (image) => {
-    console.log(image);
+    axios
+      .delete(`${config.endpoints.host}/delete-image/${image}`)
+      .then((res) =>
+        axios
+          .patch(
+            `${config.endpoints.host}/update/products/fet-img/${editData._id}?imageUrl=${config.endpoints.host}/uploads/${image}`
+          )
+          .then((res) => console.log("image deleted from product", res))
+          .catch((e) => console.log(e))
+      )
+      .catch((e) => console.log(e));
   };
 
   return (
@@ -225,6 +239,7 @@ export default function EditProduct() {
                   <p className="font-bold">Product Name</p>
                   <Input
                     required
+                    defaultValue={editData.name}
                     className="w-[14.5rem]"
                     {...register("name")}
                   />
@@ -239,6 +254,7 @@ export default function EditProduct() {
                       <SelectPicker
                         searchable={true}
                         {...field}
+                        placeholder={editData.brand_name}
                         size="md"
                         data={brand_f_data}
                         className="w-[14.5rem]"
@@ -263,6 +279,7 @@ export default function EditProduct() {
                         searchable={true}
                         {...field}
                         size="md"
+                        placeholder={editData.category_name}
                         data={category_f_data}
                         className="w-[14.5rem]"
                         onChange={(value, data) => {
@@ -287,6 +304,7 @@ export default function EditProduct() {
                       <SelectPicker
                         searchable={true}
                         {...field}
+                        placeholder={editData.subcategory_name}
                         size="md"
                         data={sub_cat_data}
                         className="w-[14.5rem]"
@@ -303,7 +321,7 @@ export default function EditProduct() {
                   <p className="font-bold">Price</p>
                   <Input
                     className="w-[14.5rem]"
-                    required
+                    defaultValue={editData?.price}
                     {...register("price")}
                   />
                 </div>
@@ -311,7 +329,7 @@ export default function EditProduct() {
                   <p className="font-bold">Minimum Purchase</p>
                   <Input
                     className="w-[14.5rem]"
-                    required
+                    defaultValue={editData?.min_purchease}
                     {...register("min_purchease")}
                   />
                 </div>
@@ -322,23 +340,24 @@ export default function EditProduct() {
                   <p className="font-bold">Maximum Purchase</p>
                   <Input
                     className="w-[14.5rem]"
-                    required
+                    defaultValue={editData?.max_purchease}
                     {...register("max_purchease")}
                   />
                 </div>
-                <div>
+                {/* <div>
                   <p className="font-bold">Base Price</p>
                   <Input
                     className="w-[14.5rem]"
                     required
+                    defaultValue={editData?.base_price}
                     {...register("base_price")}
                   />
-                </div>
+                </div> */}
                 <div>
                   <p className="font-bold">Discount</p>
                   <Input
                     className="w-[14.5rem]"
-                    required
+                    defaultValue={editData?.discount}
                     {...register("discount")}
                   />
                 </div>
@@ -348,7 +367,6 @@ export default function EditProduct() {
 
                 <Input
                   as="textarea"
-                  required
                   {...register("des")}
                   rows={3}
                   placeholder=""

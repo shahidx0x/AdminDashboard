@@ -62,7 +62,7 @@ const CustomSidenav = ({
                   <p className="font-bold">Inventory</p>
                 </div>
               </Nav.Item>
-              <Nav.Item as={Link} to="/" eventKey="3-3">
+              <Nav.Item as={Link} to="/dashbord/manage/orders" eventKey="3-3">
                 <div className="flex gap-2">
                   <PiShoppingCartSimple className="text-xl" />
                   <p className="font-bold">Orders</p>

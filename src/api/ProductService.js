@@ -52,6 +52,37 @@ export async function createProduct({ data, token }) {
   }
 }
 
+export async function updateProduct({ data, token, id }) {
+  try {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    };
+    const response = await axios.patch(
+      config.endpoints.host + `/update/products/${id}`,
+      data,
+      {
+        headers,
+      }
+    );
+
+    if (response.status !== 200) {
+      throw new Error("Error updating product");
+    }
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      console.error("Server Error:", error.response.data);
+    } else if (error.request) {
+      console.error("No response received from the server.");
+    } else {
+      console.error("Error:", error.message);
+    }
+
+    throw error;
+  }
+}
+
 export async function deleteProduct({ id, token }) {
   try {
     const headers = {

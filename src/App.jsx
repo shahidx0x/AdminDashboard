@@ -3,6 +3,7 @@ import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import Loading from "./components/Loading";
 import NavbarHeader from "./components/Navbar";
 import SideNavigation from "./components/Sidebar";
+import Order from "./pages/Dashbord/Orders/Order";
 
 // Lazy load the components
 const AddCategory = lazy(() => import("./pages/Dashbord/Category/AddCategory"));
@@ -52,7 +53,11 @@ function App() {
       children: [
         {
           path: "status",
-          element: <MainDashbord />,
+          element: (
+            <Suspense fallback={<Loading />}>
+              <MainDashbord />
+            </Suspense>
+          ),
         },
         {
           path: "user-table",
@@ -109,6 +114,10 @@ function App() {
         {
           path: "product/edit",
           element: <EditProduct />,
+        },
+        {
+          path: "manage/orders",
+          element: <Order />,
         },
       ],
     },
