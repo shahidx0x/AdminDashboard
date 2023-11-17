@@ -76,7 +76,7 @@ const CustomSidenav = ({
               <Nav.Item
                 as={Link}
                 to="/dashbord/manage/transaction"
-                eventKey="3-2"
+                eventKey="3-4"
               >
                 <div className="flex gap-2">
                   <FaRegMoneyBillAlt className="text-xl" />
