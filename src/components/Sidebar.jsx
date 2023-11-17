@@ -8,9 +8,10 @@ import DashboardIcon from "@rsuite/icons/legacy/Dashboard";
 import { useState } from "react";
 import { AiOutlineFileAdd } from "react-icons/ai";
 import { BsListUl } from "react-icons/bs";
+import { FaRegMoneyBillAlt } from "react-icons/fa";
 import { HiOutlineUsers } from "react-icons/hi";
+import { MdOutlineInventory } from "react-icons/md";
 import { PiShoppingCartSimple } from "react-icons/pi";
-import { RiProductHuntLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { Nav, Sidenav } from "rsuite";
 
@@ -56,9 +57,13 @@ const CustomSidenav = ({
                   <p className="font-bold">Users</p>
                 </div>
               </Nav.Item>
-              <Nav.Item as={Link} to="/" eventKey="3-2">
+              <Nav.Item
+                as={Link}
+                to="/dashbord/manage/inventory"
+                eventKey="3-2"
+              >
                 <div className="flex gap-2">
-                  <RiProductHuntLine className="text-xl" />
+                  <MdOutlineInventory className="text-xl" />
                   <p className="font-bold">Inventory</p>
                 </div>
               </Nav.Item>
@@ -66,6 +71,16 @@ const CustomSidenav = ({
                 <div className="flex gap-2">
                   <PiShoppingCartSimple className="text-xl" />
                   <p className="font-bold">Orders</p>
+                </div>
+              </Nav.Item>
+              <Nav.Item
+                as={Link}
+                to="/dashbord/manage/transaction"
+                eventKey="3-2"
+              >
+                <div className="flex gap-2">
+                  <FaRegMoneyBillAlt className="text-xl" />
+                  <p className="font-bold">Transaction</p>
                 </div>
               </Nav.Item>
             </Nav.Menu>

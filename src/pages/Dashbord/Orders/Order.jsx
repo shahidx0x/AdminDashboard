@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import CollaspedOutlineIcon from "@rsuite/icons/CollaspedOutline";
 import ExpandOutlineIcon from "@rsuite/icons/ExpandOutline";
+import axios from "axios";
 import { Filter, SearchIcon, Settings } from "lucide-react";
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
@@ -8,18 +9,19 @@ import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import {
-  AutoComplete,
   Dropdown,
   IconButton,
+  Input,
   InputGroup,
   InputPicker,
   Message,
   Table,
   TagPicker,
   Toggle,
-  toaster,
+  useToaster,
 } from "rsuite";
 import { getOrders, updateOrder } from "../../../api/OrderServices";
+import { config } from "../../../configs/api.config";
 const { Column, HeaderCell, Cell } = Table;
 const rowKey = "_id";
 const ExpandCell = ({ rowData, expandedRowKeys, onChange, ...props }) => (
@@ -112,6 +114,7 @@ const renderRowExpanded = (rowData) => {
   );
 };
 export default function Order() {
+  const toaster = useToaster();
   const [compact, setCompact] = useState(true);
   const [bordered, setBordered] = useState(true);
   const [noData, setNoData] = useState(false);
@@ -121,12 +124,21 @@ export default function Order() {
   const [fillHeight, setFillHeight] = useState(false);
   const [hover, setHover] = useState(true);
   const user = useSelector((state) => state.user.user);
+
   const [inputValue, setInputValue] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [open, setOpen] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const navigate = useNavigate();
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
+
+  const {
+    data,
+    status,
+    refetch: data_refetch,
+  } = useQuery(["orders", page, user.jwt], getOrders, {
+    cacheTime: 0,
+  });
   const handleExpanded = (rowData, dataKey) => {
     let open = false;
     const nextExpandedRowKeys = [];
@@ -161,26 +173,56 @@ export default function Order() {
     );
   };
 
-  const ActionsCell = ({ rowData, refetch, ...props }) => {
+  const ActionsCell = ({ rowData, ...props }) => {
     const mutation = useMutation(updateOrder);
-
     const handleUpdate = (data) => {
       mutation.mutate(
         { data: data, token: user.jwt, id: rowData._id },
         {
           onSuccess: (data) => {
-            toaster.push(<Message type="success">Order Updated</Message>);
-            refetch();
+            data_refetch();
           },
 
           onError: (error) => {
+            console.log(error);
             toaster.push(
               <Message type="error">Order update failed ! Try Again.</Message>
             );
-            refetch();
           },
         }
       );
+    };
+    const handleUpandInv = (data) => {
+      if (data.order_status === 1) {
+        handleUpdate(data);
+        toast.promise(
+          axios.post(
+            config.endpoints.host + `/product/invoice/${rowData.user_email}`,
+            { rowData }
+          ),
+          {
+            loading: "loading...",
+            success: <b>Order approved and user notified !</b>,
+            error: <b>Something went wrong !</b>,
+          }
+        );
+      } else if (data.order_status === 2) {
+        handleUpdate(data);
+        toast.promise(
+          axios.post(
+            config.endpoints.host +
+              `/send/order-status?email=${rowData.user_email}&status=cancled`,
+            { rowData }
+          ),
+          {
+            loading: "loading...",
+            success: <b>Order cancled and user notified !</b>,
+            error: <b>Something went wrong !</b>,
+          }
+        );
+      } else if (data.order_status === 3) {
+        handleUpdate(data);
+      }
     };
 
     return (
@@ -192,12 +234,12 @@ export default function Order() {
             <>
               <button
                 className="text-white font-bold bg-indigo-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-900 rounded-lg"
-                onClick={() => handleUpdate({ order_status: 1 })}
+                onClick={() => handleUpandInv({ order_status: 1 })}
               >
                 Confirm
               </button>
               <button
-                onClick={() => handleUpdate({ order_status: 2 })}
+                onClick={() => handleUpandInv({ order_status: 2 })}
                 className="text-white font-bold bg-red-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-red-900 rounded-lg"
               >
                 Cancle
@@ -207,7 +249,7 @@ export default function Order() {
             <>
               <p
                 className="text-red-500 font-bold  rounded-lg"
-                onClick={() => handleUpdate({ order_status: 3 })}
+                onClick={() => handleUpandInv({ order_status: 3 })}
               >
                 order cancled
               </p>
@@ -216,7 +258,7 @@ export default function Order() {
             <>
               <button
                 className="text-white font-bold bg-indigo-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-400 rounded-lg"
-                onClick={() => handleUpdate({ order_status: 3 })}
+                onClick={() => handleUpandInv({ order_status: 3 })}
               >
                 Mark as Deliverd
               </button>
@@ -300,7 +342,7 @@ export default function Order() {
       key: "actions",
       label: "Actions",
       cellRenderer: (props) => (
-        <ActionsCell {...props} dataKey="actions" refetch={refetch} />
+        <ActionsCell {...props} dataKey="actions" refetch={data_refetch} />
       ),
       width: 200,
     },
@@ -314,22 +356,14 @@ export default function Order() {
   );
   const CustomCell = compact ? CompactCell : Cell;
   const CustomHeaderCell = compact ? CompactHeaderCell : HeaderCell;
-  const { data, status, refetch } = useQuery(
-    ["orders", page, user.jwt],
-    getOrders,
-    {
-      cacheTime: 0,
-    }
-  );
 
   const mutation_search = useMutation(getOrders);
 
   const handleInputChange = (value, event) => {
-    console.log(value.nativeEvent.data);
     setInputValue(value);
 
     if (value === "") {
-      refetch();
+      data_refetch();
       setIsSearching(false);
     }
   };
@@ -352,6 +386,7 @@ export default function Order() {
     (item) => ({ label: item, value: item })
   );
   const handleChnage = (value, event) => {
+    console.log(value);
     handleFilterChange(value);
   };
 
@@ -361,7 +396,10 @@ export default function Order() {
         [...mutation_search?.data?.data]
       : [...(data?.data || [])]
   ).reverse();
-  refetch();
+  data_refetch();
+  const handleButtonClick = () => {
+    handleFilterChange();
+  };
   return (
     <div>
       <Toaster />
@@ -438,11 +476,9 @@ export default function Order() {
 
           <div>
             <div className="w-80 2xl:w-full">
-              <InputGroup
-                onChange={(value, event) => handleInputChange(value, event)}
-              >
-                <AutoComplete />
-                <InputGroup.Button tabIndex={-1}>
+              <InputGroup>
+                <Input onChange={(value) => handleInputChange(value)} />
+                <InputGroup.Button onClick={handleButtonClick} tabIndex={-1}>
                   <SearchIcon className="text-indigo-500 font-bold" />
                 </InputGroup.Button>
               </InputGroup>
@@ -476,9 +512,6 @@ export default function Order() {
           rowHeight={compact ? 56 : 30}
           rowExpandedHeight={500}
           expandedRowKeys={expandedRowKeys}
-          onRowClick={(data) => {
-            console.log(data);
-          }}
           renderRowExpanded={renderRowExpanded}
         >
           <Column width={70} align="center">

@@ -3,7 +3,9 @@ import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import Loading from "./components/Loading";
 import NavbarHeader from "./components/Navbar";
 import SideNavigation from "./components/Sidebar";
+import Inventory from "./pages/Dashbord/Inventory/Inventory";
 import Order from "./pages/Dashbord/Orders/Order";
+import Transaction from "./pages/Dashbord/Transaction/Transaction";
 
 // Lazy load the components
 const AddCategory = lazy(() => import("./pages/Dashbord/Category/AddCategory"));
@@ -118,6 +120,14 @@ function App() {
         {
           path: "manage/orders",
           element: <Order />,
+        },
+        {
+          path: "manage/transaction",
+          element: <Transaction />,
+        },
+        {
+          path: "manage/inventory",
+          element: <Inventory />,
         },
       ],
     },
