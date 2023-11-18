@@ -47,11 +47,15 @@ export default function EditCategory() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      brand_id: myData.brand_id,
+    },
+  });
 
   const mutation = useMutation(updateCategory);
   const [brandId, SetBrandId] = useState(null);
-  const [brandName, SetBrandName] = useState(null);
+  const [brandName, SetBrandName] = useState(myData.brand_name);
   const onSubmit = (data) => {
     if (uploadResponse.fileUrl !== "") {
       data.image = uploadResponse.fileUrl;
@@ -69,6 +73,7 @@ export default function EditCategory() {
           toaster.push(
             <Message type="success">Category updated successfully</Message>
           );
+          navigate(-1);
         },
         onError: (error) => {
           console.log(error);
@@ -170,9 +175,9 @@ export default function EditCategory() {
                       name="brand_id"
                       {...register("brand_id")}
                       control={control}
-                      defaultValue={myData?.brand_name}
                       render={({ field }) => (
                         <SelectPicker
+                          placeholder={myData?.brand_name}
                           searchable={true}
                           {...field}
                           size="md"

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import axios from "axios";
@@ -44,9 +44,38 @@ export default function EditProduct() {
   });
   const [uploadResponse, setUploadResponse] = useState([]);
   const [coverUploadResponse, setCoverUploadResponse] = useState(null);
-  const [selectedBrandId, SetSelectedBrandId] = useState("brand");
-  const [selectedCatId, SetSelectedCatId] = useState("");
+  const [selectedBrandId, setSelectedBrandId] = useState(
+    editData.brand_id || ""
+  );
+  const [selectedCatId, setSelectedCatId] = useState(
+    editData.category_id || ""
+  );
+  const [selectedSubCatId, setSelectedSubCatId] = useState(
+    editData.subcategory_id || ""
+  );
+  const [categoryPlaceholder, setCategoryPlaceholder] = useState(
+    editData.categoryName
+  );
+  const [subCategoryPlaceholder, setSubCategoryPlaceholder] = useState(
+    editData.subCategoryName
+  );
 
+  useEffect(() => {
+    if (selectedBrandId !== editData.brand_id) {
+      setCategoryPlaceholder("Select Category");
+      setSelectedCatId("");
+      setSelectedSubCatId("");
+      setSubCategoryPlaceholder("Select Subcategory");
+    }
+  }, [selectedBrandId, editData.brand_id]);
+
+  useEffect(() => {
+    if (selectedCatId !== editData.category_id) {
+      setSelectedSubCatId("");
+      setSubCategoryPlaceholder("Select Subcategory");
+      SetSubCategoryName("Not Sub Category");
+    }
+  }, [selectedCatId, editData.category_id]);
   const { data: brand } = useQuery(
     ["brandsIdName", user.jwt],
     getBrandsIdAndName
@@ -91,12 +120,21 @@ export default function EditProduct() {
     reset,
     handleSubmit,
     formState: { errors },
-  } = useForm({});
+  } = useForm({
+    defaultValues: {
+      brand_id: editData.brand_id,
+      category_id: editData.category_id,
+      subcategory_id: editData.subcategory_id,
+      brand_name: editData.brand_name,
+    },
+  });
 
   const mutation = useMutation(updateProduct);
-  const [brandName, SetBrandName] = useState("No Brand");
-  const [categoryName, SetCategoryName] = useState("No Category");
-  const [subCategoryName, SetSubCategoryName] = useState("No Sub Category");
+  const [brandName, SetBrandName] = useState(editData.brand_name);
+  const [categoryName, SetCategoryName] = useState(editData.category_name);
+  const [subCategoryName, SetSubCategoryName] = useState(
+    editData.subcategory_name
+  );
 
   const onSubmit = (data) => {
     data.fet_image = [...uploadResponse];
@@ -105,7 +143,7 @@ export default function EditProduct() {
     data.category_name = categoryName;
     data.subcategory_name = subCategoryName;
     let id = editData._id;
-    console.table(data);
+    console.log(data);
     mutation.mutate(
       { data: data, token: user.jwt, id: id },
       {
@@ -250,6 +288,7 @@ export default function EditProduct() {
                     name="brand_id"
                     {...register("brand_id")}
                     control={control}
+                    defaultValue={editData.brand_id}
                     render={({ field }) => (
                       <SelectPicker
                         searchable={true}
@@ -260,7 +299,7 @@ export default function EditProduct() {
                         className="w-[14.5rem]"
                         onChange={(value, data) => {
                           field.onChange(value);
-                          SetSelectedBrandId(value);
+                          setSelectedBrandId(value);
                           SetBrandName(data.target.innerHTML);
                         }}
                         onBlur={() => field.onBlur()}
@@ -274,18 +313,19 @@ export default function EditProduct() {
                     name="category_id"
                     {...register("category_id")}
                     control={control}
+                    defaultValue={editData.category_id}
                     render={({ field }) => (
                       <SelectPicker
                         searchable={true}
                         {...field}
                         size="md"
-                        placeholder={editData.category_name}
+                        placeholder={categoryPlaceholder}
                         data={category_f_data}
                         className="w-[14.5rem]"
                         onChange={(value, data) => {
                           field.onChange(value);
                           SetCategoryName(data.target.innerHTML);
-                          SetSelectedCatId(value);
+                          setSelectedCatId(value);
                         }}
                         onBlur={() => field.onBlur()}
                       />
@@ -300,11 +340,13 @@ export default function EditProduct() {
                     name="sub_category_id"
                     {...register("subcategory_id")}
                     control={control}
+                    defaultValue={editData.subcategory_id}
                     render={({ field }) => (
                       <SelectPicker
+                        loading={false}
                         searchable={true}
                         {...field}
-                        placeholder={editData.subcategory_name}
+                        placeholder={subCategoryPlaceholder}
                         size="md"
                         data={sub_cat_data}
                         className="w-[14.5rem]"
@@ -374,7 +416,9 @@ export default function EditProduct() {
               </div>
 
               <div className="mt-10 flex gap-2">
-                <Button appearance="ghost">Cancel</Button>
+                <Button onClick={() => navigate(-1)} appearance="ghost">
+                  Cancel
+                </Button>
 
                 <Button
                   type="submit"
