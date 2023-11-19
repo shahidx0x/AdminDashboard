@@ -40,6 +40,7 @@ export default function EditCategory() {
 
   const location = useLocation();
   const myData = location.state?.myData;
+  console.log(location.state?.myData);
 
   const {
     register,
@@ -58,14 +59,15 @@ export default function EditCategory() {
   const [brandName, SetBrandName] = useState(myData.brand_name);
   const onSubmit = (data) => {
     if (uploadResponse.fileUrl !== "") {
-      data.image = uploadResponse.fileUrl;
+      data.image = uploadResponse.fileUrl || myData.image;
     } else {
-      data.image = "";
+      data.image = myData.image;
     }
     data.brand_id = brandId;
     data.brand_name = brandName;
     data.id = myData?._id;
     let id = myData?._id;
+    console.table(data);
     mutation.mutate(
       { data: data, token: user.jwt, id },
       {
