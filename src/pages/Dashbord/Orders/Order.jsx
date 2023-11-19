@@ -42,55 +42,54 @@ const ExpandCell = ({ rowData, expandedRowKeys, onChange, ...props }) => (
     />
   </Cell>
 );
+const ItemRow = ({ props }) => {
+  console.log(props);
+  return (
+    <>
+      <li className="flex flex-col sm:flex-row sm:justify-between border-b pb-3">
+        <div className="flex w-full space-x-2 sm:space-x-4">
+          <img
+            className="flex-shrink-0 w-20 h-20 object-cover border-transparent rounded outline-none  bg-gray-500"
+            src={props.product_image}
+            alt="PI"
+          />
+          <div className="flex flex-col justify-between w-full pb-4">
+            <div className="flex justify-between w-full  ">
+              <div className="space-y-1">
+                <h3 className="text-lg font-semibold leadi sm:pr-8">
+                  {props.product_name}
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Product Id :{props.product_id}
+                </p>
+                <p className="text-sm text-gray-600">Order Time :</p>
+              </div>
+              <div className="text-right mr-[8rem]">
+                <p className="text-lg font-semibold">
+                  {props.product_price} x {props.product_quantity} pcs
+                </p>
+                <p className="text-sm  text-gray-400">
+                  {props.product_price * props.product_quantity} USD
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+    </>
+  );
+};
 const renderRowExpanded = (rowData) => {
+  console.log(rowData.items);
   return (
     <div className="w-full rounded-md p-2">
       <div>
         <div className="rounded-md">
           <div className="flex flex-col   p-6 space-y-4 sm:p-10 border rounded-md  w-full text-gray-800 ">
             <ul className="flex flex-col gap-2 w-full  overflow-auto max-h-[20rem]">
-              {rowData.items.map((item) => {
-                return (
-                  <>
-                    <li className="flex flex-col sm:flex-row sm:justify-between border-b pb-3">
-                      <div className="flex w-full space-x-2 sm:space-x-4">
-                        <img
-                          className="flex-shrink-0 w-20 h-20 object-cover border-transparent rounded outline-none  bg-gray-500"
-                          src={
-                            item.product_img ||
-                            "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-1.2.1&amp;ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&amp;auto=format&amp;fit=crop&amp;w=1350&amp;q=80"
-                          }
-                          alt="PI"
-                        />
-                        <div className="flex flex-col justify-between w-full pb-4">
-                          <div className="flex justify-between w-full  ">
-                            <div className="space-y-1">
-                              <h3 className="text-lg font-semibold leadi sm:pr-8">
-                                Polaroid camera
-                              </h3>
-                              <p className="text-sm text-gray-600">
-                                Product Id : {item.product_id}
-                              </p>
-                              <p className="text-sm text-gray-600">
-                                Order Time : {item.createdAt}
-                              </p>
-                            </div>
-                            <div className="text-right mr-[8rem]">
-                              <p className="text-lg font-semibold">
-                                {item.product_price} x {item.product_quantity}{" "}
-                                pcs
-                              </p>
-                              <p className="text-sm  text-gray-400">
-                                {item.product_price * item.product_quantity} USD
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                  </>
-                );
-              })}
+              {rowData.items.map((item, index) => (
+                <ItemRow key={index} props={item} />
+              ))}
             </ul>
             <div className="flex justify-between">
               <div>

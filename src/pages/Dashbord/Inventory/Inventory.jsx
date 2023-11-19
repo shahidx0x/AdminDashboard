@@ -18,8 +18,11 @@ import {
   Toggle,
   useToaster,
 } from "rsuite";
-import { getOrders } from "../../../api/OrderServices";
-import { getProducts, updateSku } from "../../../api/ProductService";
+import {
+  getProducts,
+  searchProduct,
+  updateSku,
+} from "../../../api/ProductService";
 const { Column, HeaderCell, Cell } = Table;
 const rowKey = "_id";
 const ExpandCell = ({ rowData, expandedRowKeys, onChange, ...props }) => (
@@ -51,13 +54,10 @@ export default function Inventory() {
   const [fillHeight, setFillHeight] = useState(false);
   const [hover, setHover] = useState(true);
   const user = useSelector((state) => state.user.user);
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
 
   const [inputValue, setInputValue] = useState();
   const [isSearching, setIsSearching] = useState(false);
-  const [deleteId, setDeleteId] = useState(null);
+  const [stockValue, setStockValue] = useState(null);
   const navigate = useNavigate();
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [searchValue, setSearchValue] = useState();
@@ -73,16 +73,16 @@ export default function Inventory() {
   const update_mutation = useMutation(updateSku);
 
   const handle_update = (id) => {
-    console.log(inputValue);
-    if (inputValue < 0 || inputValue === undefined) {
+    let stock = parseInt(stockValue, 10);
+    if (typeof stock !== "number" || stock < 0 || isNaN(stock)) {
       toaster.push(
         <Message type="error">Negetive or empty value not accepted</Message>
       );
     } else {
       update_mutation.mutate(
-        { data: { stock: inputValue }, token: user.jwt, id: id },
+        { data: { stock: stock }, token: user.jwt, id: id },
         {
-          onSuccess: (data) => {
+          onSuccess: () => {
             toaster.push(
               <Message type="success">stock update successfully</Message>
             );
@@ -107,7 +107,7 @@ export default function Inventory() {
           <div className=" w-80">
             <InputGroup>
               <Input
-                 onChange={(value, event) => setInputValue(value)}
+                onChange={(value, event) => setStockValue(value)}
                 defaultValue={rowData.sku[0].stock}
               />
               <InputGroup.Button>
@@ -124,7 +124,7 @@ export default function Inventory() {
       </div>
     );
   };
-  const handleExpanded = (rowData, dataKey) => {
+  const handleExpanded = (rowData) => {
     let open = false;
     const nextExpandedRowKeys = [];
 
@@ -184,7 +184,6 @@ export default function Inventory() {
       </Cell>
     );
   };
-
   const defaultColumns = [
     {
       key: "name",
@@ -234,55 +233,47 @@ export default function Inventory() {
   const [columnKeys, setColumnKeys] = useState(
     defaultColumns.map((column) => column.key)
   );
-
   const columns = defaultColumns.filter((column) =>
     columnKeys.some((key) => key === column.key)
   );
   const CustomCell = compact ? CompactCell : Cell;
   const CustomHeaderCell = compact ? CompactHeaderCell : HeaderCell;
 
-  const mutation_search = useMutation(getOrders);
+  const mutation_search = useMutation(searchProduct);
+  const { data: search, refetch: search_refetch } = useQuery(
+    ["search", inputValue],
+    () => searchProduct({ queryKey: ["search", inputValue, user.jwt] }),
+    {
+      enabled: false,
+    }
+  );
 
-  const handleInputChange = (value, event) => {
+  const handleInputChange = (value) => {
     setInputValue(value);
-
     if (value === "") {
       data_refetch();
       setIsSearching(false);
+    } else {
+      setIsSearching(true);
+      search_refetch();
     }
   };
 
-  const [currentFilter, setCurrentFilter] = useState(null);
-  const handleFilterChange = (filter, search) => {
-    setCurrentFilter(filter);
-    toast.promise(
-      mutation_search.mutateAsync({
-        queryKey: [`${filter}_filter`, filter.toLowerCase(), user.jwt, search],
-      }),
-      {
-        loading: "loading...",
-        error: <b>Something went wrong !</b>,
-      }
-    );
-  };
-
-  const input_picker = ["Approved", "Pending", "Cancled", "Deliverd"].map(
-    (item) => ({ label: item, value: item })
-  );
-  const handleChnage = (value, event) => {
-    console.log(value);
-    handleFilterChange(value);
+  const handle_search_button = () => {
+    toast.promise(search_refetch(), {
+      loading: "Searching...",
+      success: <b>Product found!</b>,
+      error: <b>Product not found in the database!</b>,
+    });
   };
 
   const displayedData =
-    currentFilter && mutation_search?.data
+    isSearching && search?.data
       ? // eslint-disable-next-line no-unsafe-optional-chaining
-        [...mutation_search?.data?.data]
+        [...(search?.data || [])]
       : [...(data?.data || [])];
   data_refetch();
-  const handleButtonClick = () => {
-    handleFilterChange();
-  };
+  search_refetch();
 
   const handleLoadMore = () => {
     setPage((prevPage) => {
@@ -298,6 +289,7 @@ export default function Inventory() {
     setPage((prevPage) => Math.max(prevPage - 1, 1));
     data_refetch();
   };
+  console.log(isSearching);
   return (
     <div>
       <Toaster />
@@ -376,8 +368,11 @@ export default function Inventory() {
           <div>
             <div className="w-80 2xl:w-full">
               <InputGroup>
-                <Input onChange={(value) => handleInputChange(value)} />
-                <InputGroup.Button onClick={handleButtonClick} tabIndex={-1}>
+                <Input onChange={(value, event) => handleInputChange(value)} />
+                <InputGroup.Button
+                  onClick={() => handle_search_button()}
+                  tabIndex={-1}
+                >
                   <SearchIcon className="text-indigo-500 font-bold" />
                 </InputGroup.Button>
               </InputGroup>
