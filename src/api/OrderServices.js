@@ -6,23 +6,23 @@ export async function getOrders(data) {
 
   switch (data.queryKey[1]) {
     case "pending":
-      url = config.endpoints.host + `/orders?limit=10&order_status=0`;
+      url = config.endpoints.host + `/orders?limit=-1&order_status=0`;
       break;
     case "approved":
-      url = config.endpoints.host + `/orders?limit=10&order_status=1`;
+      url = config.endpoints.host + `/orders?limit=-1&order_status=1`;
       break;
     case "cancled":
-      url = config.endpoints.host + `/orders?limit=10&order_status=2`;
+      url = config.endpoints.host + `/orders?limit=-1&order_status=2`;
       break;
     case "deliverd":
-      url = config.endpoints.host + `/orders?limit=10&order_status=3`;
+      url = config.endpoints.host + `/orders?limit=-1&order_status=3`;
       break;
     case "search":
       url =
-        config.endpoints.host + `/orders?limit=10&search=${data.queryKey[3]}`;
+        config.endpoints.host + `/orders?limit=-1&search=${data.queryKey[3]}`;
       break;
     default:
-      url = config.endpoints.host + `/orders?limit=10`;
+      url = config.endpoints.host + `/orders?limit=-1`;
       break;
   }
   const headers = {

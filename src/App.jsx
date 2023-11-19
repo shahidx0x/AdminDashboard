@@ -173,7 +173,7 @@ function Dashbord() {
         >
           <SideNavigation />
         </div>
-        <div style={scrollableStyle} className="main-content">
+        <div style={scrollableStyle} className="main-content ">
           <style>
             {`
               .main-content::-webkit-scrollbar {

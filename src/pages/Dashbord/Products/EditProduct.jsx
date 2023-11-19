@@ -138,12 +138,12 @@ export default function EditProduct() {
 
   const onSubmit = (data) => {
     data.fet_image = [...uploadResponse];
-    data.product_image = coverUploadResponse;
+    data.product_image = coverUploadResponse || fileInfo.product_image;
     data.brand_name = brandName;
     data.category_name = categoryName;
     data.subcategory_name = subCategoryName;
     let id = editData._id;
-    console.log(data);
+    console.table(data);
     mutation.mutate(
       { data: data, token: user.jwt, id: id },
       {

@@ -1,8 +1,7 @@
 /* eslint-disable react/prop-types */
 import CollaspedOutlineIcon from "@rsuite/icons/CollaspedOutline";
 import ExpandOutlineIcon from "@rsuite/icons/ExpandOutline";
-import axios from "axios";
-import { Filter, SearchIcon, Settings } from "lucide-react";
+import { SearchIcon, Settings } from "lucide-react";
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
@@ -13,15 +12,14 @@ import {
   IconButton,
   Input,
   InputGroup,
-  InputPicker,
   Message,
   Table,
   TagPicker,
   Toggle,
   useToaster,
 } from "rsuite";
-import { getOrders, updateOrder } from "../../../api/OrderServices";
-import { config } from "../../../configs/api.config";
+import { getOrders } from "../../../api/OrderServices";
+import { getProducts, updateSku } from "../../../api/ProductService";
 const { Column, HeaderCell, Cell } = Table;
 const rowKey = "_id";
 const ExpandCell = ({ rowData, expandedRowKeys, onChange, ...props }) => (
@@ -41,78 +39,7 @@ const ExpandCell = ({ rowData, expandedRowKeys, onChange, ...props }) => (
     />
   </Cell>
 );
-const renderRowExpanded = (rowData) => {
-  return (
-    <div className="w-full rounded-md p-2">
-      <div>
-        <div className="rounded-md">
-          <div className="flex flex-col   p-6 space-y-4 sm:p-10 border rounded-md  w-full text-gray-800 ">
-            <ul className="flex flex-col gap-2 w-full  overflow-auto max-h-[20rem]">
-              {rowData.items.map((item) => {
-                return (
-                  <>
-                    <li className="flex flex-col sm:flex-row sm:justify-between border-b pb-3">
-                      <div className="flex w-full space-x-2 sm:space-x-4">
-                        <img
-                          className="flex-shrink-0 w-20 h-20 object-cover border-transparent rounded outline-none  bg-gray-500"
-                          src={
-                            item.product_img ||
-                            "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-1.2.1&amp;ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&amp;auto=format&amp;fit=crop&amp;w=1350&amp;q=80"
-                          }
-                          alt="PI"
-                        />
-                        <div className="flex flex-col justify-between w-full pb-4">
-                          <div className="flex justify-between w-full  ">
-                            <div className="space-y-1">
-                              <h3 className="text-lg font-semibold leadi sm:pr-8">
-                                Polaroid camera
-                              </h3>
-                              <p className="text-sm text-gray-600">
-                                Product Id : {item.product_id}
-                              </p>
-                              <p className="text-sm text-gray-600">
-                                Order Time : {item.createdAt}
-                              </p>
-                            </div>
-                            <div className="text-right mr-[8rem]">
-                              <p className="text-lg font-semibold">
-                                {item.product_price} x {item.product_quantity}{" "}
-                                pcs
-                              </p>
-                              <p className="text-sm  text-gray-400">
-                                {item.product_price * item.product_quantity} USD
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                  </>
-                );
-              })}
-            </ul>
-            <div className="flex justify-between">
-              <div>
-                <p className="font-bold underline">Additional Instruction</p>
-                <p className="text-sm text-gray-600">
-                  {rowData.additional_information || "No instruction provided"}
-                </p>
-              </div>
-              <div className=" mr-[8rem]">
-                <p>
-                  Total amount:{" "}
-                  <span className="font-semibold">
-                    {rowData.totalCost || "Not Calculated"} USD
-                  </span>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+
 export default function Inventory() {
   const toaster = useToaster();
   const [compact, setCompact] = useState(true);
@@ -124,21 +51,79 @@ export default function Inventory() {
   const [fillHeight, setFillHeight] = useState(false);
   const [hover, setHover] = useState(true);
   const user = useSelector((state) => state.user.user);
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState();
   const [isSearching, setIsSearching] = useState(false);
-  const [open, setOpen] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const navigate = useNavigate();
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
+  const [searchValue, setSearchValue] = useState();
 
   const {
     data,
     status,
     refetch: data_refetch,
-  } = useQuery(["orders", page, user.jwt], getOrders, {
+  } = useQuery(["products", page, user.jwt], getProducts, {
     cacheTime: 0,
   });
+
+  const update_mutation = useMutation(updateSku);
+
+  const handle_update = (id) => {
+    console.log(inputValue);
+    if (inputValue < 0 || inputValue === undefined) {
+      toaster.push(
+        <Message type="error">Negetive or empty value not accepted</Message>
+      );
+    } else {
+      update_mutation.mutate(
+        { data: { stock: inputValue }, token: user.jwt, id: id },
+        {
+          onSuccess: (data) => {
+            toaster.push(
+              <Message type="success">stock update successfully</Message>
+            );
+          },
+          onError: (error) => {
+            console.log(error);
+            toaster.push(
+              <Message type="error">stock update failed ! Try Again.</Message>
+            );
+          },
+        }
+      );
+    }
+  };
+  const renderRowExpanded = (rowData) => {
+    return (
+      <div className="w-full rounded-md p-2">
+        <div className="flex flex-col gap-2">
+          <div>
+            <p className="font-bold text-md">Udate Product Stock</p>
+          </div>
+          <div className=" w-80">
+            <InputGroup>
+              <Input
+                 onChange={(value, event) => setInputValue(value)}
+                defaultValue={rowData.sku[0].stock}
+              />
+              <InputGroup.Button>
+                <p
+                  onClick={() => handle_update(rowData._id)}
+                  className="font-bold hover:text-black text-blue-500"
+                >
+                  UPDATE
+                </p>
+              </InputGroup.Button>
+            </InputGroup>
+          </div>
+        </div>
+      </div>
+    );
+  };
   const handleExpanded = (rowData, dataKey) => {
     let open = false;
     const nextExpandedRowKeys = [];
@@ -172,179 +157,78 @@ export default function Inventory() {
       </Cell>
     );
   };
-
-  const ActionsCell = ({ rowData, ...props }) => {
-    const mutation = useMutation(updateOrder);
-    const handleUpdate = (data) => {
-      mutation.mutate(
-        { data: data, token: user.jwt, id: rowData._id },
-        {
-          onSuccess: (data) => {
-            data_refetch();
-          },
-
-          onError: (error) => {
-            console.log(error);
-            toaster.push(
-              <Message type="error">Order update failed ! Try Again.</Message>
-            );
-          },
-        }
-      );
-    };
-    const handleUpandInv = (data) => {
-      if (data.order_status === 1) {
-        handleUpdate(data);
-        toast.promise(
-          axios.post(
-            config.endpoints.host + `/product/invoice/${rowData.user_email}`,
-            { rowData }
-          ),
-          {
-            loading: "loading...",
-            success: <b>Order approved and user notified !</b>,
-            error: <b>Something went wrong !</b>,
-          }
-        );
-      } else if (data.order_status === 2) {
-        handleUpdate(data);
-        toast.promise(
-          axios.post(
-            config.endpoints.host +
-              `/send/order-status?email=${rowData.user_email}&status=cancled`,
-            { rowData }
-          ),
-          {
-            loading: "loading...",
-            success: <b>Order cancled and user notified !</b>,
-            error: <b>Something went wrong !</b>,
-          }
-        );
-      } else if (data.order_status === 3) {
-        handleUpdate(data);
-      }
-    };
-
+  const TextCellPending = ({ rowData, dataKey, ...props }) => {
     return (
       <Cell {...props}>
-        <div className="flex justify-center gap-3">
-          {rowData.order_status === 3 ? (
-            <p className="underline fontbold">already deliverd</p>
-          ) : rowData?.order_status === 0 ? (
-            <>
-              <button
-                className="text-white font-bold bg-indigo-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-900 rounded-lg"
-                onClick={() => handleUpandInv({ order_status: 1 })}
-              >
-                Confirm
-              </button>
-              <button
-                onClick={() => handleUpandInv({ order_status: 2 })}
-                className="text-white font-bold bg-red-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-red-900 rounded-lg"
-              >
-                Cancle
-              </button>
-            </>
-          ) : rowData.order_status === 2 ? (
-            <>
-              <p
-                className="text-red-500 font-bold  rounded-lg"
-                onClick={() => handleUpandInv({ order_status: 3 })}
-              >
-                order cancled
-              </p>
-            </>
-          ) : (
-            <>
-              <button
-                className="text-white font-bold bg-indigo-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-400 rounded-lg"
-                onClick={() => handleUpandInv({ order_status: 3 })}
-              >
-                Mark as Deliverd
-              </button>
-            </>
-          )}
-        </div>
-      </Cell>
-    );
-  };
-  const OrderStatusCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center">
-          <span>
-            {rowData[dataKey] === 3 ? (
-              <span className="px-5 py-1 font-bold text-xs rounded-full border-1 bg-gray-400 text-white">
-                Deliverd
-              </span>
-            ) : rowData[dataKey] === 0 ? (
-              <span className="px-5 py-1 font-bold text-xs rounded-full border-1 bg-yellow-400 text-white">
-                Pending
-              </span>
-            ) : rowData[dataKey] === 1 ? (
-              <span className="px-5 py-1 font-bold text-xs rounded-full border-1 bg-green-400 text-white">
-                Approved
-              </span>
-            ) : (
-              rowData[dataKey] === 2 && (
-                <span className="px-5 py-1 font-bold text-xs rounded-full border-1 bg-red-400 text-white">
-                  Cancled
-                </span>
-              )
-            )}
-          </span>
+        <p className="flex justify-center font-bold">
+          {rowData[dataKey][0].booked}
         </p>
       </Cell>
     );
   };
+  const TextCellOngoing = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <p className="flex justify-center font-bold">
+          {rowData[dataKey][0].ongoing}
+        </p>
+      </Cell>
+    );
+  };
+  const TextCellStock = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <p className="flex justify-center font-bold">
+          {rowData[dataKey][0].stock}
+        </p>
+      </Cell>
+    );
+  };
+
   const defaultColumns = [
     {
-      key: "_id",
-      label: "Order Id",
-      cellRenderer: (props) => <TextCell {...props} dataKey="_id" />,
-      width: 220,
-    },
-
-    {
-      key: "user_name",
-      label: "Name",
-      cellRenderer: (props) => <TextCell {...props} dataKey="user_name" />,
-      width: 190,
+      key: "name",
+      label: "Product Name",
+      cellRenderer: (props) => <TextCell {...props} dataKey="name" />,
+      width: 300,
     },
     {
-      key: "user_email",
-      label: "Email",
-      cellRenderer: (props) => <TextCell {...props} dataKey="user_email" />,
+      key: "brand_name",
+      label: "Company",
+      cellRenderer: (props) => <TextCell {...props} dataKey="brand_name" />,
       width: 250,
     },
     {
-      key: "user_address",
-      label: "Delivery Address",
-      cellRenderer: (props) => <TextCell {...props} dataKey="user_address" />,
-      width: 350,
+      key: "category_name",
+      label: "Category",
+      cellRenderer: (props) => <TextCell {...props} dataKey="category_name" />,
+      width: 250,
     },
     {
-      key: "order_status",
-      label: "Order Status",
+      key: "subcategory_name",
+      label: "Subcategory",
       cellRenderer: (props) => (
-        <OrderStatusCell {...props} dataKey="order_status" />
+        <TextCell {...props} dataKey="subcategory_name" />
       ),
       width: 150,
     },
     {
-      key: "pickup_time",
-      label: "Pickup Time",
-      cellRenderer: (props) => <TextCell {...props} dataKey="pickup_time" />,
+      key: "pending",
+      label: "Pending",
+      cellRenderer: (props) => <TextCellPending {...props} dataKey="sku" />,
       width: 150,
     },
-
     {
-      key: "actions",
-      label: "Actions",
-      cellRenderer: (props) => (
-        <ActionsCell {...props} dataKey="actions" refetch={data_refetch} />
-      ),
-      width: 200,
+      key: "ongoing",
+      label: "Ongoing",
+      cellRenderer: (props) => <TextCellOngoing {...props} dataKey="sku" />,
+      width: 150,
+    },
+    {
+      key: "stock",
+      label: "Stock",
+      cellRenderer: (props) => <TextCellStock {...props} dataKey="sku" />,
+      width: 150,
     },
   ];
   const [columnKeys, setColumnKeys] = useState(
@@ -390,19 +274,34 @@ export default function Inventory() {
     handleFilterChange(value);
   };
 
-  const displayedData = (
+  const displayedData =
     currentFilter && mutation_search?.data
       ? // eslint-disable-next-line no-unsafe-optional-chaining
         [...mutation_search?.data?.data]
-      : [...(data?.data || [])]
-  ).reverse();
+      : [...(data?.data || [])];
   data_refetch();
   const handleButtonClick = () => {
     handleFilterChange();
   };
+
+  const handleLoadMore = () => {
+    setPage((prevPage) => {
+      if (prevPage < data?.meta?.total_pages) {
+        return prevPage + 1;
+      }
+      return prevPage;
+    });
+    data_refetch();
+  };
+
+  const handleLoadPrevious = () => {
+    setPage((prevPage) => Math.max(prevPage - 1, 1));
+    data_refetch();
+  };
   return (
     <div>
       <Toaster />
+
       <div className="p-5">
         <div className="flex gap-3 flex-col 2xl:flex-row 2xl:justify-between">
           <div className="">
@@ -483,14 +382,6 @@ export default function Inventory() {
                 </InputGroup.Button>
               </InputGroup>
             </div>
-            <div className="flex gap-2 mt-3">
-              <Filter className="mt-2" />
-              <InputPicker
-                className="w-72 2xl:w-full"
-                data={input_picker}
-                onChange={(value, event) => handleChnage(value, event)}
-              />
-            </div>
           </div>
         </div>
       </div>
@@ -510,7 +401,7 @@ export default function Inventory() {
           cellBordered={bordered}
           headerHeight={compact ? 40 : 30}
           rowHeight={compact ? 56 : 30}
-          rowExpandedHeight={500}
+          rowExpandedHeight={100}
           expandedRowKeys={expandedRowKeys}
           renderRowExpanded={renderRowExpanded}
         >
@@ -538,6 +429,91 @@ export default function Inventory() {
             );
           })}
         </Table>
+      </div>
+      <div className="border-b">
+        <div className="flex items-center justify-center py-10 lg:px-0 sm:px-6 px-4">
+          <div className="lg:w-3/5 w-full  flex items-center justify-between border-t border-gray-200">
+            <div className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
+              <svg
+                width={14}
+                height={8}
+                viewBox="0 0 14 8"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1.1665 4H12.8332"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M1.1665 4L4.49984 7.33333"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M1.1665 4.00002L4.49984 0.666687"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <p
+                onClick={handleLoadPrevious}
+                className="text-sm ml-3 font-medium leading-none "
+              >
+                Previous
+              </p>
+            </div>
+            <div className="sm:flex hidden">
+              <p className="text-sm font-bold leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2">
+                pages : {page}/{data?.meta?.total_pages}
+              </p>
+            </div>
+            <div className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
+              <p
+                onClick={handleLoadMore}
+                className="text-sm font-medium leading-none mr-3"
+              >
+                Next
+              </p>
+              <svg
+                width={14}
+                height={8}
+                viewBox="0 0 14 8"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1.1665 4H12.8332"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M9.5 7.33333L12.8333 4"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M9.5 0.666687L12.8333 4.00002"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -223,9 +223,39 @@ export default function Order() {
         );
       } else if (data.order_status === 3) {
         handleUpdate(data);
+
+        toast.promise(
+          axios
+            .post(config.endpoints.host + `/create/transaction`, {
+              user: rowData.user_name,
+              email: rowData.user_email,
+              address: rowData.user_address,
+              items: [...rowData.items],
+              amount: rowData.totalCost,
+              deliveryStatus: "deliverd",
+              purchaseStatus: "paid",
+            })
+            .then((res) => {
+              if (res.status === 200 || res.status === 201) {
+                return axios.delete(
+                  config.endpoints.host + `/orders/${rowData._id}`
+                );
+              } else {
+                throw new Error("Transaction creation failed");
+              }
+            })
+            .then((deleteRes) => {
+              console.log("Order deleted successfully", deleteRes);
+            }),
+          {
+            loading: "Processing...",
+            success: <b>Transaction successful and order deleted!</b>,
+            error: <b>Something went wrong!</b>,
+          }
+        );
       }
     };
-
+    data_refetch();
     return (
       <Cell {...props}>
         <div className="flex justify-center gap-3">
@@ -391,13 +421,12 @@ export default function Order() {
     handleFilterChange(value);
   };
 
-  const displayedData = (
+  const displayedData =
     currentFilter && mutation_search?.data
       ? // eslint-disable-next-line no-unsafe-optional-chaining
         [...mutation_search?.data?.data]
-      : [...(data?.data || [])]
-  ).reverse();
-  data_refetch();
+      : [...(data?.data || [])];
+
   const handleButtonClick = () => {
     handleFilterChange();
   };
@@ -496,16 +525,15 @@ export default function Order() {
         </div>
       </div>
 
-      <div className="mt-5 ml-5" style={{ height: autoHeight ? "auto" : 700 }}>
+      <div className="mt-5 ml-5" style={{ height: autoHeight ? "auto" : 400 }}>
         <Table
-          shouldUpdateScroll={true}
+          // shouldUpdateScroll={true}
           rowKey={rowKey}
           loading={status === "loading" ? true : false}
-          height={800}
+          height={600}
           hover={hover}
           fillHeight={fillHeight}
           showHeader={showHeader}
-          autoHeight={true}
           data={noData ? [] : displayedData}
           bordered={bordered}
           cellBordered={bordered}
