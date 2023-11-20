@@ -63,80 +63,144 @@ function App() {
         },
         {
           path: "user-table",
-          element: <UserTable />,
+          element: (
+            <Suspense fallback={<Loading />}>
+              <UserTable />
+            </Suspense>
+          ),
         },
         {
           path: "user-table/edit",
-          element: <UserInfoEdit />,
+          element: (
+            <Suspense fallback={<Loading />}>
+              <UserInfoEdit />
+            </Suspense>
+          ),
         },
         {
           path: "all-company/edit",
-          element: <EditCompany />,
+          element: (
+            <Suspense fallback={<Loading />}>
+              <EditCompany />
+            </Suspense>
+          ),
         },
         {
           path: "company/add",
-          element: <AddCompany />,
+          element: (
+            <Suspense fallback={<Loading />}>
+              <AddCompany />
+            </Suspense>
+          ),
         },
         {
           path: "all-company",
-          element: <AllCompany />,
+          element: (
+            <Suspense fallback={<Loading />}>
+              <AllCompany />
+            </Suspense>
+          ),
         },
         {
           path: "category/all",
-          element: <AllCategory />,
+          element: (
+            <Suspense fallback={<Loading />}>
+              <AllCategory />
+            </Suspense>
+          ),
         },
         {
           path: "category/add",
-          element: <AddCategory />,
+          element: (
+            <Suspense fallback={<Loading />}>
+              <AddCategory />
+            </Suspense>
+          ),
         },
         {
           path: "category/edit",
-          element: <EditCategory />,
+          element: (
+            <Suspense fallback={<Loading />}>
+              <EditCategory />
+            </Suspense>
+          ),
         },
         {
           path: "subcategory/list/:category_name/:category_id",
-          element: <SubcategoryList />,
+          element: (
+            <Suspense fallback={<Loading />}>
+              <SubcategoryList />
+            </Suspense>
+          ),
         },
         {
           path: "subcategory/:brand_id/:category_id/add",
-          element: <AddSubCategory />,
+          element: (
+            <Suspense fallback={<Loading />}>
+              <AddSubCategory />
+            </Suspense>
+          ),
         },
         {
           path: "subcategory/edit",
-          element: <EditSubCategory />,
+          element: (
+            <Suspense fallback={<Loading />}>
+              <EditSubCategory />
+            </Suspense>
+          ),
         },
         {
           path: "product/add",
-          element: <AddProduct />,
+          element: (
+            <Suspense fallback={<Loading />}>
+              <AddProduct />
+            </Suspense>
+          ),
         },
         {
           path: "product/list",
-          element: <ProductList />,
+          element: (
+            <Suspense fallback={<Loading />}>
+              <ProductList />
+            </Suspense>
+          ),
         },
         {
           path: "product/edit",
-          element: <EditProduct />,
+          element: (
+            <Suspense fallback={<Loading />}>
+              <EditProduct />
+            </Suspense>
+          ),
         },
         {
           path: "manage/orders",
-          element: <Order />,
+          element: (
+            <Suspense fallback={<Loading />}>
+              <Order />
+            </Suspense>
+          ),
         },
         {
           path: "manage/transaction",
-          element: <Transaction />,
+          element: (
+            <Suspense fallback={<Loading />}>
+              <Transaction />
+            </Suspense>
+          ),
         },
         {
           path: "manage/inventory",
-          element: <Inventory />,
+          element: (
+            <Suspense fallback={<Loading />}>
+              <Inventory />
+            </Suspense>
+          ),
         },
       ],
     },
   ]);
-  return (
-    <Suspense fallback={<Loading />}>
-      <RouterProvider router={routers} />
-    </Suspense>
-  );
+  return <RouterProvider router={routers} />;
 }
 function Root() {
   return (
