@@ -6,6 +6,7 @@ import SideNavigation from "./components/Sidebar";
 import Inventory from "./pages/Dashbord/Inventory/Inventory";
 import Order from "./pages/Dashbord/Orders/Order";
 import Transaction from "./pages/Dashbord/Transaction/Transaction";
+import Login from "./pages/Login";
 
 // Lazy load the components
 const AddCategory = lazy(() => import("./pages/Dashbord/Category/AddCategory"));
@@ -31,7 +32,6 @@ const SubcategoryList = lazy(() =>
 );
 const UserInfoEdit = lazy(() => import("./pages/Dashbord/Users/UserInfoEdit"));
 const UserTable = lazy(() => import("./pages/Dashbord/Users/UserTable"));
-const Login = lazy(() => import("./pages/Login"));
 
 function App() {
   const routers = createBrowserRouter([
