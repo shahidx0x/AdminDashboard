@@ -3,22 +3,19 @@ import CollaspedOutlineIcon from "@rsuite/icons/CollaspedOutline";
 import ExpandOutlineIcon from "@rsuite/icons/ExpandOutline";
 import { SearchIcon, Settings } from "lucide-react";
 import React, { useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
-import { useMutation, useQuery } from "react-query";
+import toast, { Toaster, useToaster } from "react-hot-toast";
+import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import {
   Dropdown,
   IconButton,
   Input,
   InputGroup,
-  Message,
-  Panel,
   Table,
   TagPicker,
   Toggle,
-  useToaster,
 } from "rsuite";
-import { searchProduct, updateSku } from "../../../api/ProductService";
+import { searchProduct } from "../../../api/ProductService";
 import { getTransaction } from "../../../api/TransactionService";
 const { Column, HeaderCell, Cell } = Table;
 const rowKey = "_id";
@@ -39,6 +36,56 @@ const ExpandCell = ({ rowData, expandedRowKeys, onChange, ...props }) => (
     />
   </Cell>
 );
+
+const renderRowExpanded = (rowData) => {
+  return (
+    <>
+      <div className="w-full rounded-md p-2 border-2">
+        <div>
+          <div className="container p-2 mx-auto sm:p-4 text-gray-800">
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-xs">
+                <colgroup>
+                  <col />
+                  <col />
+                  <col />
+                  <col />
+                  <col />
+                </colgroup>
+                <thead className="">
+                  <tr className="text-left">
+                    <th className="p-3">Invoice #</th>
+                    <th className="p-3">Item Bougth</th>
+                    <th className="p-3">Issued</th>
+                    <th className="p-3">Due</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-opacity-20 border-gray-300 bg-gray-50">
+                    <td className="p-3">
+                      <p>{rowData.invoice_id}</p>
+                    </td>
+                    <td className="p-3">
+                      <p className="font-bold ml-8">{rowData.items.length}</p>
+                    </td>
+                    <td className="p-3">
+                      <p>14 Jan 2022</p>
+                      <p className="text-gray-600">Friday</p>
+                    </td>
+                    <td className="p-3">
+                      <p>01 Feb 2022</p>
+                      <p className="text-gray-600">Tuesday</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
 
 export default function Transaction() {
   const toaster = useToaster();
@@ -62,37 +109,13 @@ export default function Transaction() {
   } = useQuery(["transaction", page, user.jwt], getTransaction, {
     cacheTime: 0,
   });
-
-  const update_mutation = useMutation(updateSku);
-
-  const handle_update = (id) => {
-    let stock = parseInt(stockValue, 10);
-    if (typeof stock !== "number" || stock < 0 || isNaN(stock)) {
-      toaster.push(
-        <Message type="error">Negetive or empty value not accepted</Message>
-      );
-    } else {
-      update_mutation.mutate(
-        { data: { stock: stock }, token: user.jwt, id: id },
-        {
-          onSuccess: () => {
-            toaster.push(
-              <Message type="success">stock update successfully</Message>
-            );
-          },
-          onError: (error) => {
-            console.log(error);
-            toaster.push(
-              <Message type="error">stock update failed ! Try Again.</Message>
-            );
-          },
-        }
-      );
+  const { data: search, refetch: search_refetch } = useQuery(
+    ["search", inputValue],
+    () => searchProduct({ queryKey: ["search", inputValue, user.jwt] }),
+    {
+      enabled: false,
     }
-  };
-  const renderRowExpanded = (rowData) => {
-    return <div className="w-full rounded-md p-2"></div>;
-  };
+  );
   const handleExpanded = (rowData) => {
     let open = false;
     const nextExpandedRowKeys = [];
@@ -126,6 +149,14 @@ export default function Transaction() {
       </Cell>
     );
   };
+
+  const UserInfoCell = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <p className="flex justify-center font-bold">{rowData[dataKey]}</p>
+      </Cell>
+    );
+  };
   const AmountCell = ({ rowData, dataKey, ...props }) => {
     return (
       <Cell {...props}>
@@ -150,8 +181,8 @@ export default function Transaction() {
 
     return (
       <Cell {...props}>
-        <p className="break-all whitespace-normal font-mono">
-          {rowData["address"]}
+        <p className="flex justify-center font-bold font-mono">
+          {rowData["items"].length}
         </p>
       </Cell>
     );
@@ -159,28 +190,39 @@ export default function Transaction() {
 
   const defaultColumns = [
     {
-      key: "name",
-      label: "Customer Name",
-      cellRenderer: (props) => <CustomerCell {...props} dataKey="name" />,
+      key: "id",
+      label: "Order Id",
+      cellRenderer: (props) => <TextCell {...props} dataKey="_id" />,
       width: 200,
     },
     {
-      key: "items",
-      label: "Delivery Address",
-      cellRenderer: (props) => <ItemCell {...props} dataKey="items" />,
-      width: 600,
+      key: "invoice_id",
+      label: "Invoice Id",
+      cellRenderer: (props) => <TextCell {...props} dataKey="invoice_id" />,
+      width: 250,
     },
-
+    {
+      key: "name",
+      label: "Reciver Info",
+      cellRenderer: (props) => <CustomerCell {...props} dataKey="name" />,
+      width: 250,
+    },
+    {
+      key: "items",
+      label: "Items",
+      cellRenderer: (props) => <ItemCell {...props} dataKey="items" />,
+      width: 100,
+    },
+    {
+      key: "delevery_address",
+      label: "Delevery Address",
+      cellRenderer: (props) => <TextCell {...props} dataKey="address" />,
+      width: 500,
+    },
     {
       key: "amount",
       label: "Amount",
       cellRenderer: (props) => <AmountCell {...props} dataKey="amount" />,
-      width: 150,
-    },
-    {
-      key: "status",
-      label: "Status",
-      cellRenderer: (props) => <TextCell {...props} dataKey="deliveryStatus" />,
       width: 150,
     },
   ];
@@ -193,13 +235,13 @@ export default function Transaction() {
   const CustomCell = compact ? CompactCell : Cell;
   const CustomHeaderCell = compact ? CompactHeaderCell : HeaderCell;
 
-  const { data: search, refetch: search_refetch } = useQuery(
-    ["search", inputValue],
-    () => searchProduct({ queryKey: ["search", inputValue, user.jwt] }),
-    {
-      enabled: false,
-    }
-  );
+  // const { data: search, refetch: search_refetch } = useQuery(
+  //   ["search", inputValue],
+  //   () => searchProduct({ queryKey: ["search", inputValue, user.jwt] }),
+  //   {
+  //     enabled: false,
+  //   }
+  // );
 
   const handleInputChange = (value) => {
     setInputValue(value);
@@ -246,6 +288,65 @@ export default function Transaction() {
       <Toaster />
 
       <div className="p-5">
+        <div className="flex flex-wrap gap-2 ">
+          {/* <div className=" w-80 flex justify-center items-center">
+            <div>
+              <Panel className="border w-[20rem]   hover:bg-gradient-to-l ">
+                <div className="flex flex-col gap-8 justify-between items-center">
+                  <div className="text-2xl font-bold  text-black underline">
+                    Total Sell
+                  </div>
+                  <div className="text-black text-5xl font-bold font-mono">
+                    ${data?.meta.totals.totalSell}
+                  </div>
+                </div>
+              </Panel>
+            </div>
+          </div> */}
+          {/* <div className=" w-80 flex justify-center items-center">
+            <div>
+              <Panel className="border w-[20rem]   hover:bg-gradient-to-l ">
+                <div className="flex flex-col gap-8 justify-between items-center">
+                  <div className="text-2xl font-bold  text-black underline">
+                    Today Sell
+                  </div>
+                  <div className="text-black text-5xl font-bold font-mono">
+                    ${data?.meta.totals.totalSell}
+                  </div>
+                </div>
+              </Panel>
+            </div>
+          </div>
+          <div className=" w-80 flex justify-center items-center">
+            <div>
+              <Panel className="border w-[20rem]   hover:bg-gradient-to-l ">
+                <div className="flex flex-col gap-8 justify-between items-center">
+                  <div className="text-2xl font-bold  text-black underline">
+                    Weekly Sell
+                  </div>
+                  <div className="text-black text-5xl font-bold font-mono">
+                    ${data?.meta.totals.totalSell}
+                  </div>
+                </div>
+              </Panel>
+            </div>
+          </div>
+          <div className=" w-80 flex justify-center items-center">
+            <div>
+              <Panel className="border w-[20rem]   hover:bg-gradient-to-l ">
+                <div className="flex flex-col gap-8 justify-between items-center">
+                  <div className="text-2xl font-bold  text-black underline">
+                    Monthly Sell
+                  </div>
+                  <div className="text-black text-5xl font-bold font-mono">
+                    ${data?.meta.totals.totalSell}
+                  </div>
+                </div>
+              </Panel>
+            </div>
+          </div> */}
+        </div>
+
         <div className="flex gap-3 flex-col 2xl:flex-row 2xl:justify-between">
           <div className="">
             <TagPicker
@@ -336,10 +437,10 @@ export default function Transaction() {
       </div>
 
       <div
-        className="mt-5 ml-5 flex flex-wrap gap-2"
+        className="mt-5 ml-5 flex flex-col gap-2"
         style={{ height: autoHeight ? "auto" : 700 }}
       >
-        <div className=" w-3/4">
+        <div className=" w-full">
           <Table
             shouldUpdateScroll={true}
             rowKey={rowKey}
@@ -352,19 +453,19 @@ export default function Transaction() {
             bordered={bordered}
             cellBordered={bordered}
             headerHeight={compact ? 40 : 30}
-            rowHeight={100}
-            rowExpandedHeight={100}
+            rowHeight={70}
+            rowExpandedHeight={150}
             expandedRowKeys={expandedRowKeys}
             renderRowExpanded={renderRowExpanded}
           >
-            <Column width={70} align="center">
+            {/* <Column width={70} align="center">
               <HeaderCell>#</HeaderCell>
               <ExpandCell
                 dataKey="id"
                 expandedRowKeys={expandedRowKeys}
                 onChange={handleExpanded}
               />
-            </Column>
+            </Column> */}
             {columns.map((column) => {
               const { key, label, cellRenderer, ...rest } = column;
               return (
@@ -381,21 +482,6 @@ export default function Transaction() {
               );
             })}
           </Table>
-        </div>
-
-        <div className=" w-80 flex justify-center items-center">
-          <div>
-            <Panel className="border w-[20rem] py-10  hover:bg-gradient-to-l ">
-              <div className="flex flex-col gap-8 justify-between items-center">
-                <div className="text-2xl font-bold  text-black underline">
-                  Total Sell
-                </div>
-                <div className="text-black text-5xl font-bold font-mono">
-                  ${data?.meta.totals.totalSell}
-                </div>
-              </div>
-            </Panel>
-          </div>
         </div>
       </div>
       <div className="border-b">

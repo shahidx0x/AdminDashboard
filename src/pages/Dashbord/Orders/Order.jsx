@@ -232,12 +232,15 @@ export default function Order() {
         );
       } else if (data.order_status === 3) {
         handleUpdate(data);
-
+        // axios.delete(
+        //   config.endpoints.host + `/orders/${rowData._id}`
+        // );
         toast.promise(
           axios
             .post(config.endpoints.host + `/create/transaction`, {
               user: rowData.user_name,
               email: rowData.user_email,
+              invoice_id: rowData._id,
               address: rowData.user_address,
               items: [...rowData.items],
               amount: rowData.totalCost,
@@ -246,9 +249,7 @@ export default function Order() {
             })
             .then((res) => {
               if (res.status === 200 || res.status === 201) {
-                return axios.delete(
-                  config.endpoints.host + `/orders/${rowData._id}`
-                );
+                return 0;
               } else {
                 throw new Error("Transaction creation failed");
               }
@@ -269,7 +270,7 @@ export default function Order() {
       <Cell {...props}>
         <div className="flex justify-center gap-3">
           {rowData.order_status === 3 ? (
-            <p className="underline fontbold">already deliverd</p>
+            <p className=" fontbold">paid & deliverd</p>
           ) : rowData?.order_status === 0 ? (
             <>
               <button

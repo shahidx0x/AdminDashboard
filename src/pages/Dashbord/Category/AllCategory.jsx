@@ -91,6 +91,14 @@ export default function AllCategory() {
       <p className="flex justify-center items-center">{content}</p>
     </Cell>
   );
+
+  const ProductCountCell = ({ content, rowData, ...props }) => (
+    <Cell {...props}>
+      <p className="flex justify-center items-center font-bold">
+        {rowData.productCount}
+      </p>
+    </Cell>
+  );
   const ImageCell = ({ rowData, ...props }) => (
     <Cell {...props}>
       <div className="flex justify-center -mt-2">
@@ -116,7 +124,7 @@ export default function AllCategory() {
       <Cell {...props}>
         <p
           onClick={handleSubCategories}
-          className="flex justify-center items-center text-blue-500 font-bold hover:underline hover:cursor-pointer"
+          className="flex justify-center items-center text-blue-500 underline cursor-pointer font-bold hover:underline hover:cursor-pointer"
         >
           {rowData?.category_label}
         </p>
@@ -185,6 +193,12 @@ export default function AllCategory() {
       cellRenderer: CategoryNameCell,
       width: 200,
     },
+    {
+      key: "product_count",
+      label: "Product Count",
+      cellRenderer: ProductCountCell,
+      width: 200,
+    },
 
     {
       key: "category_label",
@@ -204,7 +218,7 @@ export default function AllCategory() {
       cellRenderer: (props) => (
         <GenericCell {...props} content={props.rowData?.brand_name} />
       ),
-      width: 150,
+      width: 250,
     },
 
     {

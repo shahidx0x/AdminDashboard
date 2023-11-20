@@ -112,6 +112,16 @@ export default function AllCompany() {
     );
   };
 
+  const CategoryCountCell = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <p className="flex justify-center font-bold items-center">
+          {rowData?.categoryCount}
+        </p>
+      </Cell>
+    );
+  };
+
   const BrandDescriptionCell = ({ rowData, dataKey, ...props }) => {
     return (
       <Cell {...props}>
@@ -203,6 +213,12 @@ export default function AllCompany() {
       label: "Company Name",
       cellRenderer: BrandNameCell,
       width: 250,
+    },
+    {
+      key: "categoryCount",
+      label: "Category Count",
+      cellRenderer: CategoryCountCell,
+      width: 150,
     },
     {
       key: "productCount",
