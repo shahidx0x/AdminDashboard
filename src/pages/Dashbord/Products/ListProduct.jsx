@@ -15,16 +15,20 @@ import {
   InputGroup,
   Message,
   Modal,
+  SelectPicker,
   Table,
   TagPicker,
   Toggle,
   toaster,
 } from "rsuite";
+import { getBrandsIdAndName } from "../../../api/BrandServices";
+import { getCategoryByBrandId } from "../../../api/CategoryService";
 import {
   deleteProduct,
   getProducts,
   searchProduct,
 } from "../../../api/ProductService";
+import { getSubCategoryByCategoryId } from "../../../api/SubCategoryServices";
 
 function previewFile(file, callback) {
   const reader = new FileReader();
@@ -54,6 +58,46 @@ export default function ProductList() {
   const [open, setOpen] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const navigate = useNavigate();
+  const [selectedBrandId, SetSelectedBrandId] = useState("brand");
+  const [selectedCatId, SetSelectedCatId] = useState("");
+  const [selectedSubCatId, SetSelectedSubCatId] = useState("");
+  const { data: brand } = useQuery(
+    ["brandsIdName", user.jwt],
+    getBrandsIdAndName
+  );
+
+  const { data: category_data } = useQuery(
+    ["categoryIdName", "", user.jwt, selectedBrandId, -1],
+    getCategoryByBrandId
+  );
+  console.log(category_data);
+  const { data: sub_category_data } = useQuery(
+    ["subCategoryIdName", "", user.jwt, selectedCatId, -1],
+    getSubCategoryByCategoryId
+  );
+
+  const cate_data = category_data?.data?.map((each) => {
+    return { label: each?.category_label, value: each._id };
+  });
+
+  const sub_cat_data = sub_category_data?.data?.map((each) => {
+    return { label: each?.subcategory_name, value: each._id };
+  });
+
+  const brand_data = brand?.data?.map((each) => {
+    return { label: each?.name, value: each.id };
+  });
+  const brand_f_data = [...(brand_data || ["loading"])].map((item) => ({
+    label: item?.label,
+    value: item?.value,
+  }));
+
+  const category_f_data = [
+    ...(cate_data || [{ label: "No Category", value: "no-category" }]),
+  ].map((item) => ({
+    label: item?.label,
+    value: item?.value,
+  }));
 
   const { Column, HeaderCell, Cell } = Table;
   const CompactCell = (props) => <Cell {...props} style={{ padding: 4 }} />;
@@ -72,12 +116,21 @@ export default function ProductList() {
         <p
           className={
             PriceIcon
-              ? `flex justify-center items-center font-bold`
+              ? `flex justify-center items-center  font-mono font-bold`
               : `flex justify-center items-center`
           }
         >
-          {PriceIcon + " " + rowData[dataKey]}
+          {dataKey === "discount"
+            ? rowData[dataKey] + " " + PriceIcon
+            : PriceIcon + " " + rowData[dataKey]}
         </p>
+      </Cell>
+    );
+  };
+  const AfterDiscountCell = ({ rowData, icon, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <p className={`flex justify-center items-center`}>{rowData[dataKey]}</p>
       </Cell>
     );
   };
@@ -199,20 +252,36 @@ export default function ProductList() {
       key: "price",
       label: "Price",
       cellRenderer: (props) => <TextCell {...props} dataKey="price" icon="$" />,
-      width: 140,
+      width: 100,
+    },
+    {
+      key: "discount",
+      label: "Discount",
+      cellRenderer: (props) => (
+        <TextCell {...props} dataKey="discount" icon="%" />
+      ),
+      width: 100,
+    },
+    {
+      key: "after_discount",
+      label: "After Discount",
+      cellRenderer: (props) => (
+        <TextCell {...props} dataKey="afterDiscount" icon="$" />
+      ),
+      width: 150,
     },
     {
       key: "min_purchease",
-      label: "Minimum Purchase",
+      label: "Min Purchase",
       cellRenderer: (props) => <TextCell {...props} dataKey="min_purchease" />,
-      width: 140,
+      width: 100,
     },
 
     {
       key: "max_purchease",
-      label: "Maximum Purchase",
+      label: "Max Purchase",
       cellRenderer: (props) => <TextCell {...props} dataKey="max_purchease" />,
-      width: 140,
+      width: 100,
     },
     // {
     //   key: "product_information",
@@ -294,7 +363,7 @@ export default function ProductList() {
       }
     );
   };
-  console.log(mutation_search.data);
+
   const displayedData =
     isSearching && mutation_search?.data
       ? [...(mutation_search?.data?.data || [])]
@@ -409,7 +478,7 @@ export default function ProductList() {
               </Dropdown>
             </div>
 
-            <div>
+            <div className="flex flex-col gap-2">
               <div className=" ">
                 <InputGroup>
                   <Input
@@ -423,6 +492,38 @@ export default function ProductList() {
                     <SearchIcon className="text-indigo-500 font-bold" />
                   </InputGroup.Button>
                 </InputGroup>
+              </div>
+              <div className="flex gap-2">
+                <SelectPicker
+                  placeholder="filter by brand"
+                  searchable={true}
+                  size="md"
+                  data={brand_f_data}
+                  className="w-[12rem] 2xl:w-[14.5rem]"
+                  onChange={(value, data) => {
+                    SetSelectedBrandId(value);
+                  }}
+                />
+                <SelectPicker
+                  placeholder="filter by category"
+                  searchable={true}
+                  size="md"
+                  data={category_f_data}
+                  className="w-[12rem] 2xl:w-[14.5rem]"
+                  onChange={(value, data) => {
+                    SetSelectedCatId(value);
+                  }}
+                />
+                <SelectPicker
+                  placeholder="filter by subcategory"
+                  searchable={true}
+                  size="md"
+                  data={sub_cat_data}
+                  className="w-[12rem] 2xl:w-[14.5rem]"
+                  onChange={(value, data) => {
+                    SetSelectedSubCatId(value);
+                  }}
+                />
               </div>
             </div>
           </div>

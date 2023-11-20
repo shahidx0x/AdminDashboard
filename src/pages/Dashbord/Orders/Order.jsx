@@ -455,6 +455,7 @@ export default function Order() {
     setPage((prevPage) => Math.max(prevPage - 1, 1));
     data_refetch();
   };
+  data_refetch();
   return (
     <div>
       <Toaster />
