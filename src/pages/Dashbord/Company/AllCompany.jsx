@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { Settings } from "lucide-react";
+import { SearchIcon, Settings } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
@@ -12,6 +12,7 @@ import {
   Button,
   Dropdown,
   Input,
+  InputGroup,
   Message,
   Modal,
   Table,
@@ -97,6 +98,15 @@ export default function AllCompany() {
       <Cell {...props}>
         <p className="flex justify-center items-center">
           {rowData?.brand_label}
+        </p>
+      </Cell>
+    );
+  };
+  const ProductCountCell = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <p className="flex justify-center font-bold items-center">
+          {rowData?.productCount}
         </p>
       </Cell>
     );
@@ -195,6 +205,12 @@ export default function AllCompany() {
       width: 250,
     },
     {
+      key: "productCount",
+      label: "Product Count",
+      cellRenderer: ProductCountCell,
+      width: 150,
+    },
+    {
       key: "brand_description",
       label: "Company Description",
       cellRenderer: BrandDescriptionCell,
@@ -237,8 +253,7 @@ export default function AllCompany() {
 
   const mutation_search = useMutation(getBrandsSearched);
 
-  const handleInputChange = (event) => {
-    const value = event.target.value;
+  const handleInputChange = (value) => {
     setInputValue(value);
 
     if (value === "") {
@@ -404,21 +419,18 @@ export default function AllCompany() {
 
             <div>
               <div className=" ">
-                <div className="flex space-x-4  rounded-md">
-                  <div className="flex rounded-md overflow-hidden h-12 w-full">
-                    <input
-                      onChange={(event) => handleInputChange(event)}
-                      type="text"
-                      className="w-[20rem] text-md  rounded-md rounded-r-none border-2"
-                    />
-                    <button
-                      onClick={handleButtonClick}
-                      className="bg-indigo-600 text-white px-6 text-lg font-semibold py-2 rounded-r-md"
-                    >
-                      Search
-                    </button>
-                  </div>
-                </div>
+                <InputGroup>
+                  <Input
+                    placeholder="Search by Company Name"
+                    onChange={(value) => handleInputChange(value)}
+                  />
+                  <InputGroup.Button
+                    onClick={() => handleButtonClick()}
+                    tabIndex={-1}
+                  >
+                    <SearchIcon className="text-indigo-500 font-bold" />
+                  </InputGroup.Button>
+                </InputGroup>
               </div>
             </div>
           </div>

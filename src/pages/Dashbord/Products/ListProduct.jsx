@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import DOMPurify from "dompurify";
-import { Settings } from "lucide-react";
+import { SearchIcon, Settings } from "lucide-react";
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
@@ -11,6 +11,8 @@ import {
   Avatar,
   Button,
   Dropdown,
+  Input,
+  InputGroup,
   Message,
   Modal,
   Table,
@@ -18,8 +20,11 @@ import {
   Toggle,
   toaster,
 } from "rsuite";
-import { deleteProduct, getProducts } from "../../../api/ProductService";
-import { getUsersByEmail } from "../../../api/UserServices";
+import {
+  deleteProduct,
+  getProducts,
+  searchProduct,
+} from "../../../api/ProductService";
 
 function previewFile(file, callback) {
   const reader = new FileReader();
@@ -76,31 +81,31 @@ export default function ProductList() {
       </Cell>
     );
   };
-  const DesCell = ({ rowData, icon, dataKey, ...props }) => {
-    let PriceIcon = "";
-    if (icon) PriceIcon = icon;
+  // const DesCell = ({ rowData, icon, dataKey, ...props }) => {
+  //   let PriceIcon = "";
+  //   if (icon) PriceIcon = icon;
 
-    const serverHtmlContent = rowData[dataKey];
-    const decodedHtml = serverHtmlContent
-      .replace(/&lt;/g, "<")
-      .replace(/&gt;/g, ">");
+  //   const serverHtmlContent = rowData[dataKey];
+  //   const decodedHtml = serverHtmlContent
+  //     .replace(/&lt;/g, "<")
+  //     .replace(/&gt;/g, ">");
 
-    return (
-      <>
-        <Cell {...props}>
-          <p
-            className={
-              PriceIcon
-                ? `flex justify-center items-center font-bold`
-                : `flex justify-center items-center`
-            }
-          >
-            <HtmlContentRenderer htmlContent={decodedHtml} />
-          </p>
-        </Cell>
-      </>
-    );
-  };
+  //   return (
+  //     <>
+  //       <Cell {...props}>
+  //         <p
+  //           className={
+  //             PriceIcon
+  //               ? `flex justify-center items-center font-bold`
+  //               : `flex justify-center items-center`
+  //           }
+  //         >
+  //           <HtmlContentRenderer htmlContent={decodedHtml} />
+  //         </p>
+  //       </Cell>
+  //     </>
+  //   );
+  // };
   const NameCell = ({ rowData, ...props }) => {
     return (
       <Cell {...props}>
@@ -209,14 +214,14 @@ export default function ProductList() {
       cellRenderer: (props) => <TextCell {...props} dataKey="max_purchease" />,
       width: 140,
     },
-    {
-      key: "product_information",
-      label: "Description",
-      cellRenderer: (props) => (
-        <DesCell {...props} dataKey="product_information" />
-      ),
-      width: 200,
-    },
+    // {
+    //   key: "product_information",
+    //   label: "Description",
+    //   cellRenderer: (props) => (
+    //     <DesCell {...props} dataKey="product_information" />
+    //   ),
+    //   width: 200,
+    // },
 
     {
       key: "actions",
@@ -266,9 +271,8 @@ export default function ProductList() {
     refetch();
   };
 
-  const mutation_search = useMutation(getUsersByEmail);
-  const handleInputChange = (event) => {
-    const value = event.target.value;
+  const mutation_search = useMutation(searchProduct);
+  const handleInputChange = (value) => {
     setInputValue(value);
 
     if (value === "") {
@@ -290,9 +294,11 @@ export default function ProductList() {
       }
     );
   };
-
+  console.log(mutation_search.data);
   const displayedData =
-    isSearching && mutation_search?.data ? [mutation_search?.data] : data?.data;
+    isSearching && mutation_search?.data
+      ? [...(mutation_search?.data?.data || [])]
+      : data?.data || [];
 
   const handleLoadMore = () => {
     setPage((prevPage) => {
@@ -405,21 +411,18 @@ export default function ProductList() {
 
             <div>
               <div className=" ">
-                <div className="flex space-x-4  rounded-md">
-                  <div className="flex rounded-md overflow-hidden h-12 w-full">
-                    <input
-                      onChange={(event) => handleInputChange(event)}
-                      type="text"
-                      className="w-[20rem] border-2 text-md p-2 text-xl  rounded-md rounded-r-none"
-                    />
-                    <button
-                      onClick={handleButtonClick}
-                      className="bg-indigo-600 text-white px-6 text-lg font-semibold py-2 rounded-r-md"
-                    >
-                      Search
-                    </button>
-                  </div>
-                </div>
+                <InputGroup>
+                  <Input
+                    placeholder="Search by Product Name"
+                    onChange={(value) => handleInputChange(value)}
+                  />
+                  <InputGroup.Button
+                    onClick={() => handleButtonClick()}
+                    tabIndex={-1}
+                  >
+                    <SearchIcon className="text-indigo-500 font-bold" />
+                  </InputGroup.Button>
+                </InputGroup>
               </div>
             </div>
           </div>

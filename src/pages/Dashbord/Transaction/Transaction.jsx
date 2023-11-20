@@ -320,7 +320,7 @@ export default function Transaction() {
             <div className="w-80 2xl:w-full">
               <InputGroup>
                 <Input
-                  placeholder="Search by Product Name"
+                  placeholder="Search by Email Address"
                   onChange={(value) => handleInputChange(value)}
                 />
                 <InputGroup.Button
@@ -385,7 +385,7 @@ export default function Transaction() {
 
         <div className=" w-80 flex justify-center items-center">
           <div>
-            <Panel className="border w-[20rem] py-10  hover:bg-gradient-to-l hover:from-blue-400 hover:to-indigo-500 hover:delay-75 hover:animate-pulse">
+            <Panel className="border w-[20rem] py-10  hover:bg-gradient-to-l ">
               <div className="flex flex-col gap-8 justify-between items-center">
                 <div className="text-2xl font-bold  text-black underline">
                   Total Sell
