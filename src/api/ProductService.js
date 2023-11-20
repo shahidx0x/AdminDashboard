@@ -12,7 +12,7 @@ export async function getProducts(data) {
       config.endpoints.get_all_product + `/?product_id=${data.queryKey[3]}`;
   } else {
     urls =
-      config.endpoints.get_all_product + `?limit=8&page=${data.queryKey[1]}`;
+      config.endpoints.get_all_product + `?limit=10&page=${data.queryKey[1]}`;
   }
 
   try {
@@ -102,7 +102,37 @@ export async function updateProduct({ data, token, id }) {
     throw error;
   }
 }
+export async function updateProductStatus({ data, token, id }) {
+  console.log(data);
+  try {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    };
+    const response = await axios.patch(
+      config.endpoints.host + `/update/products/${id}`,
+      data,
+      {
+        headers,
+      }
+    );
 
+    if (response.status !== 200) {
+      throw new Error("Error updating product");
+    }
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      console.error("Server Error:", error.response.data);
+    } else if (error.request) {
+      console.error("No response received from the server.");
+    } else {
+      console.error("Error:", error.message);
+    }
+
+    throw error;
+  }
+}
 export async function deleteProduct({ id, token }) {
   try {
     const headers = {

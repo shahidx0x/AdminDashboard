@@ -6,7 +6,6 @@ import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router";
 import {
   Dropdown,
   IconButton,
@@ -21,6 +20,7 @@ import {
 import {
   getProducts,
   searchProduct,
+  updateProductStatus,
   updateSku,
 } from "../../../api/ProductService";
 const { Column, HeaderCell, Cell } = Table;
@@ -47,20 +47,16 @@ export default function Inventory() {
   const toaster = useToaster();
   const [compact, setCompact] = useState(true);
   const [bordered, setBordered] = useState(true);
-  const [noData, setNoData] = useState(false);
   const [page, setPage] = useState(1);
   const [showHeader, setShowHeader] = useState(true);
   const [autoHeight, setAutoHeight] = useState(true);
-  const [fillHeight, setFillHeight] = useState(false);
   const [hover, setHover] = useState(true);
   const user = useSelector((state) => state.user.user);
 
   const [inputValue, setInputValue] = useState();
   const [isSearching, setIsSearching] = useState(false);
   const [stockValue, setStockValue] = useState(null);
-  const navigate = useNavigate();
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
-  const [searchValue, setSearchValue] = useState();
 
   const {
     data,
@@ -107,7 +103,7 @@ export default function Inventory() {
           <div className=" w-80">
             <InputGroup>
               <Input
-                onChange={(value, event) => setStockValue(value)}
+                onChange={(value) => setStockValue(value)}
                 defaultValue={rowData.sku[0].stock}
               />
               <InputGroup.Button>
@@ -157,15 +153,7 @@ export default function Inventory() {
       </Cell>
     );
   };
-  const TextCellPending = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center font-bold">
-          {rowData[dataKey][0].booked}
-        </p>
-      </Cell>
-    );
-  };
+
   const TextCellOngoing = ({ rowData, dataKey, ...props }) => {
     return (
       <Cell {...props}>
@@ -181,6 +169,62 @@ export default function Inventory() {
         <p className="flex justify-center font-bold">
           {rowData[dataKey][0].stock}
         </p>
+      </Cell>
+    );
+  };
+  const ed_mutation = useMutation(updateProductStatus);
+  const handle_enable_disable_product = (status, id) => {
+    let mutation_data;
+    let data;
+    if (status == "enable") {
+      data = { isDisable: true };
+      mutation_data = { data: data, token: user.jwt, id };
+    } else if (status == "disable") {
+      data = { isDisable: false };
+      mutation_data = { data: data, token: user.jwt, id };
+    }
+    console.log(status, id);
+    console.log(mutation_data);
+    ed_mutation.mutate(mutation_data, {
+      onSuccess: () => {
+        toaster.push(<Message type="success">Product Status Updated</Message>);
+      },
+      onError: (error) => {
+        console.log(error);
+        toaster.push(
+          <Message type="error"> update failed ! Try Again.</Message>
+        );
+      },
+    });
+  };
+  const ActionsCell = ({ rowData, ...props }) => {
+    const handleEnable = () => {
+      handle_enable_disable_product("disable", rowData._id);
+    };
+    const handleDisable = () => {
+      handle_enable_disable_product("enable", rowData._id);
+    };
+
+    return (
+      <Cell {...props}>
+        <div className="flex justify-center gap-2">
+          {rowData.isDisable ? (
+            <p
+              className="text-red-500  border px-3 cursor-pointer py-2 -mt-1  rounded-lg"
+              onClick={() => handleEnable()}
+            >
+              Disabled
+            </p>
+          ) : (
+            <p
+              type="button"
+              onClick={() => handleDisable()}
+              className="text-green-500 border px-3 cursor-pointer py-2 -mt-1 rounded-lg"
+            >
+              Enabled
+            </p>
+          )}
+        </div>
       </Cell>
     );
   };
@@ -211,12 +255,7 @@ export default function Inventory() {
       ),
       width: 150,
     },
-    {
-      key: "pending",
-      label: "Pending",
-      cellRenderer: (props) => <TextCellPending {...props} dataKey="sku" />,
-      width: 150,
-    },
+
     {
       key: "ongoing",
       label: "Ongoing",
@@ -229,6 +268,12 @@ export default function Inventory() {
       cellRenderer: (props) => <TextCellStock {...props} dataKey="sku" />,
       width: 150,
     },
+    {
+      key: "action",
+      label: "Action",
+      cellRenderer: (props) => <ActionsCell {...props} />,
+      width: 150,
+    },
   ];
   const [columnKeys, setColumnKeys] = useState(
     defaultColumns.map((column) => column.key)
@@ -239,7 +284,6 @@ export default function Inventory() {
   const CustomCell = compact ? CompactCell : Cell;
   const CustomHeaderCell = compact ? CompactHeaderCell : HeaderCell;
 
-  const mutation_search = useMutation(searchProduct);
   const { data: search, refetch: search_refetch } = useQuery(
     ["search", inputValue],
     () => searchProduct({ queryKey: ["search", inputValue, user.jwt] }),
@@ -272,7 +316,7 @@ export default function Inventory() {
       ? // eslint-disable-next-line no-unsafe-optional-chaining
         [...(search?.data || [])]
       : [...(data?.data || [])];
-  data_refetch();
+
   search_refetch();
 
   const handleLoadMore = () => {
@@ -289,7 +333,7 @@ export default function Inventory() {
     setPage((prevPage) => Math.max(prevPage - 1, 1));
     data_refetch();
   };
-  console.log(isSearching);
+  data_refetch();
   return (
     <div>
       <Toaster />
@@ -368,7 +412,10 @@ export default function Inventory() {
           <div>
             <div className="w-80 2xl:w-full">
               <InputGroup>
-                <Input onChange={(value, event) => handleInputChange(value)} />
+                <Input
+                  placeholder="Search by Product Name"
+                  onChange={(value) => handleInputChange(value)}
+                />
                 <InputGroup.Button
                   onClick={() => handle_search_button()}
                   tabIndex={-1}
@@ -388,10 +435,9 @@ export default function Inventory() {
           loading={status === "loading" ? true : false}
           height={800}
           hover={hover}
-          fillHeight={fillHeight}
           showHeader={showHeader}
           autoHeight={true}
-          data={noData ? [] : displayedData}
+          data={displayedData}
           bordered={bordered}
           cellBordered={bordered}
           headerHeight={compact ? 40 : 30}

@@ -22,7 +22,7 @@ export async function getOrders(data) {
         config.endpoints.host + `/orders?limit=-1&search=${data.queryKey[3]}`;
       break;
     default:
-      url = config.endpoints.host + `/orders?limit=-1`;
+      url = config.endpoints.host + `/orders?limit=10&page=${data.queryKey[1]}`;
       break;
   }
   const headers = {

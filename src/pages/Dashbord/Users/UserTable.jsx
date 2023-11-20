@@ -1,12 +1,20 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { Settings } from "lucide-react";
+import { SearchIcon, Settings } from "lucide-react";
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import { Avatar, Dropdown, Table, TagPicker, Toggle } from "rsuite";
+import {
+  Avatar,
+  Dropdown,
+  Input,
+  InputGroup,
+  Table,
+  TagPicker,
+  Toggle,
+} from "rsuite";
 import { getUsers, getUsersByEmail } from "../../../api/UserServices";
 
 function previewFile(file, callback) {
@@ -82,11 +90,11 @@ export default function UserTable() {
       <Cell {...props}>
         <p className="flex justify-center items-center">
           {rowData?.isAccountActive ? (
-            <p className="text-blue-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-500 rounded-lg">
+            <p className="text-green-500  px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-500 rounded-lg">
               Active
             </p>
           ) : (
-            <p className="text-red-600 border border-red-400 px-2 py-2 -mt-1 hover:text-white hover:bg-red-500 rounded-lg">
+            <p className="text-red-600  border-red-400 px-2 py-2 -mt-1 hover:text-white hover:bg-red-500 rounded-lg">
               Not Active
             </p>
           )}
@@ -193,8 +201,7 @@ export default function UserTable() {
 
   const mutation_search = useMutation(getUsersByEmail);
 
-  const handleInputChange = (event) => {
-    const value = event.target.value;
+  const handleInputChange = (value) => {
     setInputValue(value);
 
     if (value === "") {
@@ -323,7 +330,7 @@ export default function UserTable() {
 
             <div>
               <div className=" ">
-                <div className="flex space-x-4  rounded-md">
+                {/* <div className="flex space-x-4  rounded-md">
                   <div className="flex rounded-md overflow-hidden h-12 w-full">
                     <input
                       onChange={(event) => handleInputChange(event)}
@@ -337,7 +344,16 @@ export default function UserTable() {
                       Search
                     </button>
                   </div>
-                </div>
+                </div> */}
+                <InputGroup>
+                  <Input
+                    placeholder="Search by User Email"
+                    onChange={(value) => handleInputChange(value)}
+                  />
+                  <InputGroup.Button onClick={handleButtonClick} tabIndex={-1}>
+                    <SearchIcon className="text-indigo-500 font-bold" />
+                  </InputGroup.Button>
+                </InputGroup>
               </div>
             </div>
           </div>

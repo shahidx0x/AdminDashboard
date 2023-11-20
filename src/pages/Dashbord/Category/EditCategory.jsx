@@ -67,7 +67,7 @@ export default function EditCategory() {
     data.brand_name = brandName;
     data.id = myData?._id;
     let id = myData?._id;
-    console.table(data);
+  
     mutation.mutate(
       { data: data, token: user.jwt, id },
       {

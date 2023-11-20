@@ -80,7 +80,6 @@ const ItemRow = ({ props }) => {
   );
 };
 const renderRowExpanded = (rowData) => {
-  console.log(rowData.items);
   return (
     <div className="w-full rounded-md p-2">
       <div>
@@ -168,7 +167,18 @@ export default function Order() {
   const TextCell = ({ rowData, dataKey, ...props }) => {
     return (
       <Cell {...props}>
-        <p className="flex justify-center font-bold">{rowData[dataKey]}</p>
+        <p className="flex justify-center font-medium">{rowData[dataKey]}</p>
+      </Cell>
+    );
+  };
+  const AddressCell = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <div className="">
+          <p className="text-xs font-medium break-words whitespace-normal">
+            {rowData[dataKey]}
+          </p>
+        </div>
       </Cell>
     );
   };
@@ -328,12 +338,12 @@ export default function Order() {
     );
   };
   const defaultColumns = [
-    {
-      key: "_id",
-      label: "Order Id",
-      cellRenderer: (props) => <TextCell {...props} dataKey="_id" />,
-      width: 220,
-    },
+    // {
+    //   key: "_id",
+    //   label: "Order Id",
+    //   cellRenderer: (props) => <TextCell {...props} dataKey="_id" />,
+    //   width: 220,
+    // },
 
     {
       key: "user_name",
@@ -350,8 +360,10 @@ export default function Order() {
     {
       key: "user_address",
       label: "Delivery Address",
-      cellRenderer: (props) => <TextCell {...props} dataKey="user_address" />,
-      width: 350,
+      cellRenderer: (props) => (
+        <AddressCell {...props} dataKey="user_address" />
+      ),
+      width: 450,
     },
     {
       key: "order_status",
@@ -365,7 +377,7 @@ export default function Order() {
       key: "pickup_time",
       label: "Pickup Time",
       cellRenderer: (props) => <TextCell {...props} dataKey="pickup_time" />,
-      width: 150,
+      width: 250,
     },
 
     {
@@ -428,6 +440,20 @@ export default function Order() {
 
   const handleButtonClick = () => {
     handleFilterChange();
+  };
+  const handleLoadMore = () => {
+    setPage((prevPage) => {
+      if (prevPage < data?.meta?.totalPages) {
+        return prevPage + 1;
+      }
+      return prevPage;
+    });
+    data_refetch();
+  };
+
+  const handleLoadPrevious = () => {
+    setPage((prevPage) => Math.max(prevPage - 1, 1));
+    data_refetch();
   };
   return (
     <div>
@@ -526,7 +552,7 @@ export default function Order() {
 
       <div className="mt-5 ml-5" style={{ height: autoHeight ? "auto" : 400 }}>
         <Table
-          // shouldUpdateScroll={true}
+          shouldUpdateScroll={true}
           rowKey={rowKey}
           loading={status === "loading" ? true : false}
           height={600}
@@ -566,6 +592,91 @@ export default function Order() {
             );
           })}
         </Table>
+      </div>
+      <div className="border-b">
+        <div className="flex items-center justify-center py-10 lg:px-0 sm:px-6 px-4">
+          <div className="lg:w-3/5 w-full  flex items-center justify-between border-t border-gray-200">
+            <div className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
+              <svg
+                width={14}
+                height={8}
+                viewBox="0 0 14 8"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1.1665 4H12.8332"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M1.1665 4L4.49984 7.33333"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M1.1665 4.00002L4.49984 0.666687"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <p
+                onClick={handleLoadPrevious}
+                className="text-sm ml-3 font-medium leading-none "
+              >
+                Previous
+              </p>
+            </div>
+            <div className="sm:flex hidden">
+              <p className="text-sm font-bold leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2">
+                pages : {page}/{data?.meta?.totalPages}
+              </p>
+            </div>
+            <div className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
+              <p
+                onClick={handleLoadMore}
+                className="text-sm font-medium leading-none mr-3"
+              >
+                Next
+              </p>
+              <svg
+                width={14}
+                height={8}
+                viewBox="0 0 14 8"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1.1665 4H12.8332"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M9.5 7.33333L12.8333 4"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M9.5 0.666687L12.8333 4.00002"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

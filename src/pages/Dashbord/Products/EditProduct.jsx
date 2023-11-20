@@ -143,7 +143,7 @@ export default function EditProduct() {
     data.category_name = categoryName;
     data.subcategory_name = subCategoryName;
     let id = editData._id;
-    console.table(data);
+
     mutation.mutate(
       { data: data, token: user.jwt, id: id },
       {
