@@ -44,6 +44,7 @@ export default function AddProduct() {
   const [coverUploadResponse, setCoverUploadResponse] = useState(null);
   const [selectedBrandId, SetSelectedBrandId] = useState("brand");
   const [selectedCatId, SetSelectedCatId] = useState("");
+  const [selectedSubCatId, SetSelectedSubCatId] = useState("");
 
   const { data: brand } = useQuery(
     ["brandsIdName", user.jwt],
@@ -51,36 +52,43 @@ export default function AddProduct() {
   );
 
   const { data: category_data } = useQuery(
-    ["categoryIdName", "", user.jwt, selectedBrandId, -1],
+    ["categoryIdName", "", user.jwt, selectedBrandId.split(",")[0], -1],
     getCategoryByBrandId
   );
-  console.log(category_data);
+
   const { data: sub_category_data } = useQuery(
-    ["subCategoryIdName", "", user.jwt, selectedCatId, -1],
+    ["subCategoryIdName", "", user.jwt, selectedCatId.split(",")[0], -1],
     getSubCategoryByCategoryId
   );
 
   const cate_data = category_data?.data?.map((each) => {
-    return { label: each?.category_label, value: each._id };
+    return {
+      label: each?.category_label,
+      value: each._id,
+      slug: each.category_slug,
+    };
   });
 
   const sub_cat_data = sub_category_data?.data?.map((each) => {
-    return { label: each?.subcategory_name, value: each._id };
+    return {
+      label: each?.subcategory_name,
+      value: each._id + "," + each.subcategory_slug,
+    };
   });
 
   const brand_data = brand?.data?.map((each) => {
-    return { label: each?.name, value: each.id };
+    return { label: each?.name, value: each.id, slug: each.slug };
   });
   const brand_f_data = [...(brand_data || ["loading"])].map((item) => ({
     label: item?.label,
-    value: item?.value,
+    value: item?.value + "," + item?.slug,
   }));
 
   const category_f_data = [
     ...(cate_data || [{ label: "No Category", value: "no-category" }]),
   ].map((item) => ({
     label: item?.label,
-    value: item?.value,
+    value: item?.value + "," + item?.slug,
   }));
   const [editorValue, setEditorValue] = useState(
     RichTextEditor.createEmptyValue()
@@ -115,13 +123,19 @@ export default function AddProduct() {
   );
   const onSubmit = (data) => {
     const htmlContent = editorValue.toString("html");
-    data.fet_image = [...uploadResponse];
+    (data.brand_id = selectedBrandId.split(",")[0]),
+      (data.subcategory_id = selectedSubCatId.split(",")[0]),
+      (data.category_id = selectedCatId.split(",")[0]),
+      (data.fet_image = [...uploadResponse]);
     data.product_image = coverUploadResponse;
     data.brand_name = brandName;
     data.category_name = categoryName;
     data.subcategory_name = subCategoryName;
     data.product_information = htmlContent;
-
+    data.brand_slug = selectedBrandId.split(",")[1];
+    data.category_slug = selectedCatId.split(",")[1];
+    data.subcategory_slug = selectedSubCatId.split(",")[1];
+    console.log(data);
     mutation.mutate(
       { data: data, token: user.jwt },
       {
@@ -340,6 +354,7 @@ export default function AddProduct() {
                       onChange={(value, data) => {
                         SetSubCategoryName(data.target.innerHTML);
                         field.onChange(value);
+                        SetSelectedSubCatId(value);
                       }}
                       onBlur={() => field.onBlur()}
                     />

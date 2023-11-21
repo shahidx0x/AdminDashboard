@@ -52,15 +52,17 @@ export default function AddCategory() {
   const mutation = useMutation(createCategory);
   const [brandId, SetBrandId] = useState(null);
   const [brandName, SetBrandName] = useState(null);
+
   const onSubmit = (data) => {
     if (uploadResponse.fileUrl !== "") {
       data.image = uploadResponse.fileUrl;
     } else {
       data.image = "";
     }
-    data.brand_id = brandId;
+    data.brand_id = brandId.split(",")[0];
+    data.brand_slug = brandId.split(",")[1];
     data.brand_name = brandName;
-    console.table(data);
+
     mutation.mutate(
       { data: data, token: user.jwt },
       {
@@ -72,8 +74,11 @@ export default function AddCategory() {
           reset();
         },
         onError: (error) => {
+          console.log(error);
           toaster.push(
-            <Message type="error">Category Add failed ! Try Again.</Message>
+            <Message type="error">
+              {error.response.data.message || error.message}
+            </Message>
           );
         },
       }
@@ -85,11 +90,11 @@ export default function AddCategory() {
     getBrandsIdAndName
   );
   const brand_data = brand?.data?.map((each) => {
-    return { label: each?.name, value: each.id };
+    return { label: each?.name, value: each.id, slug: each.slug };
   });
   const brand_f_data = [...(brand_data || ["loading"])].map((item) => ({
     label: item?.label,
-    value: item?.value,
+    value: item?.value + "," + item.slug,
   }));
 
   const navigate = useNavigate();
