@@ -3,6 +3,8 @@ import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import Loading from "./components/Loading";
 import NavbarHeader from "./components/Navbar";
 import SideNavigation from "./components/Sidebar";
+import AddAdmin from "./pages/Dashbord/Admin/AddAdmin";
+import AdminTable from "./pages/Dashbord/Admin/AdminTable";
 import Inventory from "./pages/Dashbord/Inventory/Inventory";
 import Order from "./pages/Dashbord/Orders/Order";
 import Transaction from "./pages/Dashbord/Transaction/Transaction";
@@ -66,6 +68,22 @@ function App() {
           element: (
             <Suspense fallback={<Loading />}>
               <UserTable />
+            </Suspense>
+          ),
+        },
+        {
+          path: "add-new-admin",
+          element: (
+            <Suspense fallback={<Loading />}>
+              <AddAdmin />
+            </Suspense>
+          ),
+        },
+        {
+          path: "admin-table",
+          element: (
+            <Suspense fallback={<Loading />}>
+              <AdminTable />
             </Suspense>
           ),
         },

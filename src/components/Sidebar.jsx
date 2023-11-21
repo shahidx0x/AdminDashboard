@@ -10,7 +10,11 @@ import { AiOutlineFileAdd } from "react-icons/ai";
 import { BsListUl } from "react-icons/bs";
 import { FaRegMoneyBillAlt } from "react-icons/fa";
 import { HiOutlineUsers } from "react-icons/hi";
-import { MdOutlineInventory } from "react-icons/md";
+import { IoNotificationsOutline } from "react-icons/io5";
+import {
+  MdOutlineAdminPanelSettings,
+  MdOutlineInventory,
+} from "react-icons/md";
 import { PiShoppingCartSimple } from "react-icons/pi";
 import { Link } from "react-router-dom";
 import { Nav, Sidenav } from "rsuite";
@@ -57,9 +61,9 @@ const CustomSidenav = ({
                   <p className="font-bold">Users</p>
                 </div>
               </Nav.Item>
-              <Nav.Item as={Link} to="/dashbord/user-table" eventKey="3-2">
+              <Nav.Item as={Link} to="/dashbord/admin-table" eventKey="3-2">
                 <div className="flex gap-2">
-                  <HiOutlineUsers className="text-xl" />
+                  <MdOutlineAdminPanelSettings className="text-xl" />
                   <p className="font-bold">Admins</p>
                 </div>
               </Nav.Item>
@@ -85,8 +89,18 @@ const CustomSidenav = ({
                 eventKey="3-5"
               >
                 <div className="flex gap-2">
+                  <IoNotificationsOutline className="text-xl" />
+                  <p className="font-bold">Notifications</p>
+                </div>
+              </Nav.Item>
+              <Nav.Item
+                as={Link}
+                to="/dashbord/manage/transaction"
+                eventKey="3-6"
+              >
+                <div className="flex gap-2">
                   <FaRegMoneyBillAlt className="text-xl" />
-                  <p className="font-bold">Transaction</p>
+                  <p className="font-bold">Transactions</p>
                 </div>
               </Nav.Item>
             </Nav.Menu>

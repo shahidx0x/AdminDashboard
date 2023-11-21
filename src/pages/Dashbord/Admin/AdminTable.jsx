@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import {
   Avatar,
+  Button,
   Dropdown,
   Input,
   InputGroup,
@@ -15,7 +16,8 @@ import {
   TagPicker,
   Toggle,
 } from "rsuite";
-import { getUsers, getUsersByEmail } from "../../../api/UserServices";
+import { getAdmins } from "../../../api/AdminSignUp";
+import { getUsersByEmail } from "../../../api/UserServices";
 
 function previewFile(file, callback) {
   const reader = new FileReader();
@@ -25,7 +27,7 @@ function previewFile(file, callback) {
   reader.readAsDataURL(file);
 }
 
-export default function UserTable() {
+export default function AdminTable() {
   const [compact, setCompact] = useState(true);
   const [bordered, setBordered] = useState(true);
   const [noData, setNoData] = useState(false);
@@ -138,18 +140,6 @@ export default function UserTable() {
       width: 190,
     },
     {
-      key: "cartNumber",
-      label: "Carts",
-      cellRenderer: (props) => <TextCell {...props} dataKey="cartNumber" />,
-      width: 130,
-    },
-    {
-      key: "company",
-      label: "Company",
-      cellRenderer: (props) => <TextCell {...props} dataKey="company" />,
-      width: 200,
-    },
-    {
       key: "phoneNumber",
       label: "Contact",
       cellRenderer: (props) => <TextCell {...props} dataKey="phoneNumber" />,
@@ -167,24 +157,24 @@ export default function UserTable() {
     //   cellRenderer: (props) => <TextCell {...props} dataKey="subscription" />,
     //   width: 150,
     // },
-    {
-      key: "location",
-      label: "Location",
-      cellRenderer: (props) => <TextCell {...props} dataKey="location" />,
-      width: 300,
-    },
+    // {
+    //   key: "location",
+    //   label: "Location",
+    //   cellRenderer: (props) => <TextCell {...props} dataKey="location" />,
+    //   width: 300,
+    // },
     // {
     //   key: "role",
     //   label: "Role",
     //   cellRenderer: (props) => <TextCell {...props} dataKey="role" />,
     //   width: 150,
     // },
-    {
-      key: "status",
-      label: "Status",
-      cellRenderer: StatusCell,
-      width: 150,
-    },
+    // {
+    //   key: "status",
+    //   label: "Status",
+    //   cellRenderer: StatusCell,
+    //   width: 150,
+    // },
     {
       key: "actions",
       label: "Actions",
@@ -194,8 +184,8 @@ export default function UserTable() {
   ];
 
   const { data, status, refetch, error } = useQuery(
-    ["users", page, user.jwt],
-    getUsers,
+    ["admins", page, user.jwt],
+    getAdmins,
     {
       cacheTime: 0, // Data is not cached
     }
@@ -331,7 +321,7 @@ export default function UserTable() {
             </div>
 
             <div>
-              <div className=" ">
+              <div className=" flex flex-col gap-2">
                 {/* <div className="flex space-x-4  rounded-md">
                   <div className="flex rounded-md overflow-hidden h-12 w-full">
                     <input
@@ -356,6 +346,14 @@ export default function UserTable() {
                     <SearchIcon className="text-indigo-500 font-bold" />
                   </InputGroup.Button>
                 </InputGroup>
+                <Button
+                  onClick={() => {
+                    navigate(`/dashbord/add-new-admin`);
+                  }}
+                  className="bg-indigo-600 w-60 text-white font-bold"
+                >
+                  Add Admin
+                </Button>
               </div>
             </div>
           </div>

@@ -9,7 +9,8 @@ export async function getUsers(data) {
 
   try {
     const response = await axios.get(
-      config.endpoints.users + `?limit=${10}&page=${data.queryKey[1]}`,
+      config.endpoints.users +
+        `?limit=${10}&page=${data.queryKey[1]}&user=user`,
       { headers }
     );
     return response.data;
