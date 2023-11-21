@@ -57,17 +57,23 @@ const CustomSidenav = ({
                   <p className="font-bold">Users</p>
                 </div>
               </Nav.Item>
+              <Nav.Item as={Link} to="/dashbord/user-table" eventKey="3-2">
+                <div className="flex gap-2">
+                  <HiOutlineUsers className="text-xl" />
+                  <p className="font-bold">Admins</p>
+                </div>
+              </Nav.Item>
               <Nav.Item
                 as={Link}
                 to="/dashbord/manage/inventory"
-                eventKey="3-2"
+                eventKey="3-3"
               >
                 <div className="flex gap-2">
                   <MdOutlineInventory className="text-xl" />
                   <p className="font-bold">Inventory</p>
                 </div>
               </Nav.Item>
-              <Nav.Item as={Link} to="/dashbord/manage/orders" eventKey="3-3">
+              <Nav.Item as={Link} to="/dashbord/manage/orders" eventKey="3-4">
                 <div className="flex gap-2">
                   <PiShoppingCartSimple className="text-xl" />
                   <p className="font-bold">Orders</p>
@@ -76,7 +82,7 @@ const CustomSidenav = ({
               <Nav.Item
                 as={Link}
                 to="/dashbord/manage/transaction"
-                eventKey="3-4"
+                eventKey="3-5"
               >
                 <div className="flex gap-2">
                   <FaRegMoneyBillAlt className="text-xl" />

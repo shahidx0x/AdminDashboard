@@ -53,6 +53,7 @@ export default function AddCompany() {
     } else {
       data.brand_image = "";
     }
+    console.table(data);
     mutation.mutate(
       { data: data, token: user.jwt },
       {
@@ -66,7 +67,9 @@ export default function AddCompany() {
         },
         onError: (error) => {
           toaster.push(
-            <Message type="error">Company Add failed ! Try Again.</Message>
+            <Message type="error">
+              {error.response.data.message || error.message}
+            </Message>
           );
         },
       }
@@ -244,15 +247,28 @@ export default function AddCompany() {
                     </Uploader>
                     <div className="flex flex-col gap-5">
                       <div>
-                        <p className="font-bold">Company Name</p>
+                        <p className="font-bold"> Name</p>
                         <Input
                           {...register("brand_label")}
-                          defaultValue={myData?.firstName}
                           className="2xl:w-96"
                         />
                       </div>
                       <div>
-                        <p className="font-bold">Product Information</p>
+                        <p className="font-bold"> Email</p>
+                        <Input
+                          {...register("brand_email")}
+                          className="2xl:w-96"
+                        />
+                      </div>
+                      <div>
+                        <p className="font-bold">Address</p>
+                        <Input
+                          {...register("brand_address")}
+                          className="2xl:w-96"
+                        />
+                      </div>
+                      <div>
+                        <p className="font-bold">Information</p>
                         <RichTextEditor
                           className="mt-2"
                           toolbarConfig={toolbarConfig}

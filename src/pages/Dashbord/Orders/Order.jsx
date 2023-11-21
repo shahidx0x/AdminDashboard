@@ -43,7 +43,7 @@ const ExpandCell = ({ rowData, expandedRowKeys, onChange, ...props }) => (
   </Cell>
 );
 const ItemRow = ({ props }) => {
-  console.log(props);
+  console.table(props);
   return (
     <>
       <li className="flex flex-col sm:flex-row sm:justify-between border-b pb-3">
@@ -239,6 +239,7 @@ export default function Order() {
           axios
             .post(config.endpoints.host + `/create/transaction`, {
               user: rowData.user_name,
+              user_id: rowData.user_id,
               email: rowData.user_email,
               invoice_id: rowData._id,
               address: rowData.user_address,
