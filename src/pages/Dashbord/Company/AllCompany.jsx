@@ -329,6 +329,7 @@ export default function AllCompany() {
       setConfirm(false);
     }
   };
+  refetch();
   return (
     <div>
       <Toaster />
