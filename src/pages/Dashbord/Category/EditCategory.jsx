@@ -40,7 +40,6 @@ export default function EditCategory() {
 
   const location = useLocation();
   const myData = location.state?.myData;
-  console.log(location.state?.myData);
 
   const {
     register,
@@ -67,7 +66,7 @@ export default function EditCategory() {
     data.brand_name = brandName;
     data.id = myData?._id;
     let id = myData?._id;
-  
+
     mutation.mutate(
       { data: data, token: user.jwt, id },
       {

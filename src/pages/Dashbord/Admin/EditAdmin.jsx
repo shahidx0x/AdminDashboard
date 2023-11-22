@@ -3,17 +3,14 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import EyeIcon from "@rsuite/icons/legacy/Eye";
-import EyeSlashIcon from "@rsuite/icons/legacy/EyeSlash";
 import { useMutation } from "react-query";
 import { useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import {
   Breadcrumb,
   Button,
   Input,
-  InputGroup,
   Loader,
   Message,
   Panel,
@@ -21,7 +18,7 @@ import {
   Uploader,
   useToaster,
 } from "rsuite";
-import { createUser } from "../../../api/UserServices";
+import { updateUser } from "../../../api/UserServices";
 import { config } from "../../../configs/api.config";
 
 function previewFile(file, callback) {
@@ -32,7 +29,7 @@ function previewFile(file, callback) {
   reader.readAsDataURL(file);
 }
 
-export default function AddAdmin() {
+export default function EditAdmin() {
   const styles = {
     width: 300,
   };
@@ -41,9 +38,12 @@ export default function AddAdmin() {
   const [uploading, setUploading] = useState(false);
   const [fileInfo, setFileInfo] = useState(null);
   const [uploadResponse, setUploadResponse] = useState({ fileUrl: "" });
-  const navigate = useNavigate();
+
   const [visible, setVisible] = useState(false);
   const toast = useToaster();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const myData = location.state?.myData;
 
   const handleChangeCon = () => {
     setVisible(!visible);
@@ -62,7 +62,7 @@ export default function AddAdmin() {
     formState: { errors },
   } = useForm();
 
-  const mutation = useMutation(createUser);
+  const mutation = useMutation(updateUser);
   const signup_data = {
     cartNumber: "1",
     company: "A",
@@ -100,7 +100,7 @@ export default function AddAdmin() {
       {
         onSuccess: (data) => {
           toaster.push(
-            <Message type="success">Admin added successfully</Message>
+            <Message type="success">Admin updated successfully</Message>
           );
           navigate(-1);
         },
@@ -138,24 +138,20 @@ export default function AddAdmin() {
           header={
             <>
               <Breadcrumb className="text-xs font-mono ">
-                <Breadcrumb.Item as={Link} to="/dashbord/admin-table">
+                <Breadcrumb.Item as={Link} to="/dashbord">
                   Home
                 </Breadcrumb.Item>
-                <Breadcrumb.Item as={Link} to="/dashbord/admin-table">
+                <Breadcrumb.Item as={Link} to="/dashbord/all-company">
                   Admins
                 </Breadcrumb.Item>
 
                 <Breadcrumb.Item active className="text-blue-400">
-                  Admin-creation
+                  Admin-Update
                 </Breadcrumb.Item>
               </Breadcrumb>
               <div className="font-bold bg-indigo-500 p-8 text-2xl text-white rounded-lg">
-                Add A New Admin
+                Update Admin Information
               </div>
-              <Message showIcon type="info" header="Informational">
-                An automated email will be sent to the registered email account
-                with credentials.
-              </Message>
             </>
           }
         >
@@ -197,17 +193,32 @@ export default function AddAdmin() {
                 <div className="flex flex-col gap-5">
                   <div>
                     <p className="font-bold">Name</p>
-                    <Input {...register("name")} className="w-96" required />
+                    <Input
+                      defaultValue={myData?.firstName}
+                      {...register("name")}
+                      className="w-96"
+                      required
+                    />
                   </div>
                   <div>
                     <p className="font-bold">Email</p>
-                    <Input {...register("email")} className="w-96" required />
+                    <Input
+                      defaultValue={myData?.email}
+                      {...register("email")}
+                      className="w-96"
+                      required
+                    />
                   </div>
                   <div>
                     <p className="font-bold">Contact</p>
-                    <Input {...register("contact")} className="w-96" required />
+                    <Input
+                      defaultValue={myData?.phoneNumber}
+                      {...register("contact")}
+                      className="w-96"
+                      required
+                    />
                   </div>
-                  <div>
+                  {/* <div>
                     <p className="font-bold">Password</p>
                     <InputGroup inside required>
                       <Input
@@ -230,7 +241,7 @@ export default function AddAdmin() {
                         {visible ? <EyeIcon /> : <EyeSlashIcon />}
                       </InputGroup.Button>
                     </InputGroup>
-                  </div>
+                  </div> */}
 
                   <div className="2xl:mb-4 flex gap-2">
                     <Button appearance="ghost" onClick={() => Return()}>
@@ -242,7 +253,7 @@ export default function AddAdmin() {
                       appearance="primary"
                       className="bg-blue-600"
                     >
-                      Add Admin
+                      Upadte Admin Info
                     </Button>
                   </div>
                 </div>

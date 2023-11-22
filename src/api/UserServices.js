@@ -75,6 +75,28 @@ export async function createUser({ data, token }) {
   return response.data;
 }
 
+export async function removeUser(data) {
+  const headers = {
+    "Cache-Control": "no-cache",
+    Authorization: `Bearer ${data.queryKey[2]}`,
+  };
+  try {
+    const response = await axios.delete(
+      config.endpoints.host + `/remove/user/${data.queryKey[1]}`,
+      { headers }
+    );
+    if (response.status === 404) {
+      throw new Error("Error Removing User !");
+    }
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      throw new Error("Error Removing User !");
+    }
+    throw error;
+  }
+}
+
 export async function checkSession(data) {
   const headers = {
     Authorization: `Bearer ${data.queryKey[1]}`,

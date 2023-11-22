@@ -17,7 +17,7 @@ import {
   Toggle,
 } from "rsuite";
 import { getAdmins } from "../../../api/AdminSignUp";
-import { getUsersByEmail } from "../../../api/UserServices";
+import { getUsersByEmail, removeUser } from "../../../api/UserServices";
 
 function previewFile(file, callback) {
   const reader = new FileReader();
@@ -42,6 +42,19 @@ export default function AdminTable() {
 
   const { Column, HeaderCell, Cell } = Table;
   const navigate = useNavigate();
+  const mutation = useMutation(removeUser);
+  const handleRemoveAdmin = (id) => {
+    toast.promise(
+      mutation.mutateAsync({
+        queryKey: ["user_remove", id, user.jwt],
+      }),
+      {
+        loading: "removing...",
+        success: <b>Admin removed!</b>,
+        error: <b>Admin not found in the database!</b>,
+      }
+    );
+  };
 
   const CompactCell = (props) => <Cell {...props} style={{ padding: 4 }} />;
   const CompactHeaderCell = (props) => (
@@ -88,85 +101,99 @@ export default function AdminTable() {
 
   const ActionsCell = ({ rowData, ...props }) => {
     const handleEdit = () => {
-      navigate("edit", { state: { myData: rowData } });
+      navigate("/dashbord/update-admin-info", { state: { myData: rowData } });
     };
 
     return (
       <Cell {...props}>
-        <div className="flex justify-center">
+        <div className="flex justify-center gap-2">
           <button
             className="text-blue-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-500 rounded-lg"
             onClick={handleEdit}
           >
             Edit
           </button>
+          <button
+            className="text-red-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-500 rounded-lg"
+            onClick={() => handleRemoveAdmin(rowData._id)}
+          >
+            Remove
+          </button>
         </div>
       </Cell>
     );
   };
+  let defaultColumns;
+  user.role === "super-admin"
+    ? (defaultColumns = [
+        {
+          key: "profilePicture",
+          label: "Profile Image",
+          cellRenderer: ImageCell,
+          width: 90,
+        },
+        {
+          key: "name",
+          label: "Name",
+          cellRenderer: NameCell,
+          width: 190,
+        },
+        {
+          key: "phoneNumber",
+          label: "Contact",
+          cellRenderer: (props) => (
+            <TextCell {...props} dataKey="phoneNumber" />
+          ),
+          width: 150,
+        },
+        {
+          key: "email",
+          label: "Email",
+          cellRenderer: (props) => <TextCell {...props} dataKey="email" />,
+          width: 300,
+        },
 
-  const defaultColumns = [
-    {
-      key: "profilePicture",
-      label: "Profile Image",
-      cellRenderer: ImageCell,
-      width: 90,
-    },
-    {
-      key: "name",
-      label: "Name",
-      cellRenderer: NameCell,
-      width: 190,
-    },
-    {
-      key: "phoneNumber",
-      label: "Contact",
-      cellRenderer: (props) => <TextCell {...props} dataKey="phoneNumber" />,
-      width: 150,
-    },
-    {
-      key: "email",
-      label: "Email",
-      cellRenderer: (props) => <TextCell {...props} dataKey="email" />,
-      width: 300,
-    },
-    // {
-    //   key: "subscription",
-    //   label: "Subscription",
-    //   cellRenderer: (props) => <TextCell {...props} dataKey="subscription" />,
-    //   width: 150,
-    // },
-    // {
-    //   key: "location",
-    //   label: "Location",
-    //   cellRenderer: (props) => <TextCell {...props} dataKey="location" />,
-    //   width: 300,
-    // },
-    // {
-    //   key: "role",
-    //   label: "Role",
-    //   cellRenderer: (props) => <TextCell {...props} dataKey="role" />,
-    //   width: 150,
-    // },
-    // {
-    //   key: "status",
-    //   label: "Status",
-    //   cellRenderer: StatusCell,
-    //   width: 150,
-    // },
-    {
-      key: "actions",
-      label: "Actions",
-      cellRenderer: ActionsCell,
-      width: 100,
-    },
-  ];
+        {
+          key: "actions",
+          label: "Actions",
+          cellRenderer: ActionsCell,
+          width: 200,
+        },
+      ])
+    : (defaultColumns = [
+        {
+          key: "profilePicture",
+          label: "Profile Image",
+          cellRenderer: ImageCell,
+          width: 90,
+        },
+        {
+          key: "name",
+          label: "Name",
+          cellRenderer: NameCell,
+          width: 190,
+        },
+        {
+          key: "phoneNumber",
+          label: "Contact",
+          cellRenderer: (props) => (
+            <TextCell {...props} dataKey="phoneNumber" />
+          ),
+          width: 150,
+        },
+        {
+          key: "email",
+          label: "Email",
+          cellRenderer: (props) => <TextCell {...props} dataKey="email" />,
+          width: 300,
+        },
+      ]);
 
   const { data, status, refetch, error } = useQuery(
     ["admins", page, user.jwt],
     getAdmins,
     {
-      cacheTime: 0, // Data is not cached
+      cacheTime: 0,
     }
   );
 
@@ -222,7 +249,7 @@ export default function AdminTable() {
     setPage((prevPage) => Math.max(prevPage - 1, 1));
     refetch();
   };
-
+  refetch();
   return (
     <div>
       <Toaster />
@@ -358,6 +385,7 @@ export default function AdminTable() {
               return (
                 <Column {...rest} key={key}>
                   <CustomHeaderCell>{label}</CustomHeaderCell>
+
                   {cellRenderer ? (
                     React.createElement(cellRenderer, {
                       dataKey: key,

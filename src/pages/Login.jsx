@@ -12,14 +12,17 @@ export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user.user);
+
   useEffect(() => {
-    if (user !== null && user.role === "admin") {
-      toast.success("welcome admin !");
-      setTimeout(() => {
-        navigate("/dashbord/status");
-      }, 1000);
-    } else if (user) {
-      toast.error("You are not a Admin !");
+    if (user) {
+      if (user.role === "admin" || user.role === "super-admin") {
+        toast.success("welcome admin !");
+        setTimeout(() => {
+          navigate("/dashbord/status");
+        }, 1000);
+      } else {
+        toast.error("You are not an Admin !");
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
@@ -31,9 +34,9 @@ export default function Login() {
         dispatch(
           loginUser({
             jwt: res.data.jwt,
-            email: res.data.data.email,
-            name: res.data.data.firstName + " " + res.data.data.lastName,
-            role: res.data.data.role,
+            email: res.data?.data?.email,
+            name: res.data?.data?.firstName + " " + res.data?.data?.lastName,
+            role: res.data?.data?.role,
           })
         );
       },

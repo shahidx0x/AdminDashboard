@@ -5,6 +5,7 @@ import NavbarHeader from "./components/Navbar";
 import SideNavigation from "./components/Sidebar";
 import AddAdmin from "./pages/Dashbord/Admin/AddAdmin";
 import AdminTable from "./pages/Dashbord/Admin/AdminTable";
+import EditAdmin from "./pages/Dashbord/Admin/EditAdmin";
 import Inventory from "./pages/Dashbord/Inventory/Inventory";
 import Order from "./pages/Dashbord/Orders/Order";
 import Transaction from "./pages/Dashbord/Transaction/Transaction";
@@ -68,6 +69,14 @@ function App() {
           element: (
             <Suspense fallback={<Loading />}>
               <UserTable />
+            </Suspense>
+          ),
+        },
+        {
+          path: "update-admin-info",
+          element: (
+            <Suspense fallback={<Loading />}>
+              <EditAdmin />
             </Suspense>
           ),
         },
