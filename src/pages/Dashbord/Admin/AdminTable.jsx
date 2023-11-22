@@ -60,14 +60,11 @@ export default function AdminTable() {
     );
   };
   const NameCell = ({ rowData, ...props }) => {
-    const fullName =
-      rowData?.firstName && rowData?.lastName
-        ? `${rowData.firstName} ${rowData.lastName}`
-        : "";
-
     return (
       <Cell {...props}>
-        <p className="flex justify-center items-center">{fullName}</p>
+        <p className="flex justify-center items-center">
+          {rowData["firstName"]}
+        </p>
       </Cell>
     );
   };
@@ -85,24 +82,6 @@ export default function AdminTable() {
             alt="P"
           />
         </div>
-      </Cell>
-    );
-  };
-
-  const StatusCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center items-center">
-          {rowData?.isAccountActive ? (
-            <p className="text-green-500  px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-500 rounded-lg">
-              Active
-            </p>
-          ) : (
-            <p className="text-red-600  border-red-400 px-2 py-2 -mt-1 hover:text-white hover:bg-red-500 rounded-lg">
-              Not Active
-            </p>
-          )}
-        </p>
       </Cell>
     );
   };

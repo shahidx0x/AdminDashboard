@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
+import EyeIcon from "@rsuite/icons/legacy/Eye";
+import EyeSlashIcon from "@rsuite/icons/legacy/EyeSlash";
 import { useMutation } from "react-query";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
@@ -11,6 +13,7 @@ import {
   Breadcrumb,
   Button,
   Input,
+  InputGroup,
   Loader,
   Message,
   Panel,
@@ -18,7 +21,7 @@ import {
   Uploader,
   useToaster,
 } from "rsuite";
-import { CreateSubCategory } from "../../../api/SubCategoryServices";
+import { createUser } from "../../../api/UserServices";
 import { config } from "../../../configs/api.config";
 
 function previewFile(file, callback) {
@@ -30,13 +33,26 @@ function previewFile(file, callback) {
 }
 
 export default function AddAdmin() {
+  const styles = {
+    width: 300,
+  };
   const user = useSelector((state) => state.user.user);
   const toaster = useToaster();
   const [uploading, setUploading] = useState(false);
   const [fileInfo, setFileInfo] = useState(null);
   const [uploadResponse, setUploadResponse] = useState({ fileUrl: "" });
   const navigate = useNavigate();
+  const [visible, setVisible] = useState(false);
+  const toast = useToaster();
 
+  const handleChangeCon = () => {
+    setVisible(!visible);
+  };
+  const [visiblePass, setVisiblePass] = useState(false);
+
+  const handleChangePass = () => {
+    setVisiblePass(!visiblePass);
+  };
   const params = useParams();
 
   const {
@@ -46,29 +62,53 @@ export default function AddAdmin() {
     formState: { errors },
   } = useForm();
 
-  const mutation = useMutation(CreateSubCategory);
-
+  const mutation = useMutation(createUser);
+  const signup_data = {
+    cartNumber: "1",
+    company: "A",
+    company_slug: "a",
+    isAccountVerified: false,
+    isEmailVerified: false,
+    cardVerified: false,
+    isAccountActive: true,
+    location: "City, Country",
+    zipCode: "12345",
+    paymentMethod: "C",
+    cardNumber: "1",
+    firebaseFCM: ["device_token_1"],
+    role: "admin",
+  };
   const onSubmit = (data) => {
     if (uploadResponse.fileUrl !== "") {
       data.image = uploadResponse.fileUrl;
     } else {
       data.image = "";
     }
-    data.brand_id = params.brand_id;
-    data.category_id = params.category_id;
-    let id = params.category_id;
+    if (data.password !== data.con_password) {
+      toast.push(<Message type="error">Password is not matched !</Message>);
+    }
+    data.firstName = data.name;
+    data.phoneNumber = data.contact;
+
+    const f_data = {
+      ...signup_data,
+      ...data,
+    };
+
     mutation.mutate(
-      { data: data, token: user.jwt, id },
+      { data: f_data, token: user.jwt },
       {
         onSuccess: (data) => {
           toaster.push(
-            <Message type="success">Sub Category added successfully</Message>
+            <Message type="success">Admin added successfully</Message>
           );
         },
         onError: (error) => {
           console.log(error);
           toaster.push(
-            <Message type="error">Sub Category Add failed ! Try Again.</Message>
+            <Message type="error">
+              {error.response.data.message || error.message}
+            </Message>
           );
         },
       }
@@ -85,103 +125,128 @@ export default function AddAdmin() {
         justifyContent="center"
         alignItems="center"
         direction="column"
-        className="mt-20 2xl:mt-[-3rem] "
+        className="mt-20 2xl:mt-[-3rem] w-full "
         style={{
           height: "100vh",
         }}
       >
-        <Breadcrumb className="text-xl font-mono ">
-          <Breadcrumb.Item as={Link} to="/dashbord">
-            Home
-          </Breadcrumb.Item>
-          <Breadcrumb.Item as={Link} to="/dashbord/all-company">
-            Admins
-          </Breadcrumb.Item>
-
-          <Breadcrumb.Item active className="text-blue-400">
-            Admin-creation
-          </Breadcrumb.Item>
-        </Breadcrumb>
         <Panel
           bordered
-          className="shadow-sm w-[50rem] border-gray-300"
+          className="shadow-sm w-[70rem] border-gray-300"
           style={{ background: "#fff" }}
           header={
-            <h3 className="font-bold bg-indigo-500 p-8 text-2xl text-white rounded-lg">
-              Add A New Admin
-            </h3>
+            <>
+              <Breadcrumb className="text-xs font-mono ">
+                <Breadcrumb.Item as={Link} to="/dashbord">
+                  Home
+                </Breadcrumb.Item>
+                <Breadcrumb.Item as={Link} to="/dashbord/all-company">
+                  Admins
+                </Breadcrumb.Item>
+
+                <Breadcrumb.Item active className="text-blue-400">
+                  Admin-creation
+                </Breadcrumb.Item>
+              </Breadcrumb>
+              <div className="font-bold bg-indigo-500 p-8 text-2xl text-white rounded-lg">
+                Add A New Admin
+              </div>
+              <Message showIcon type="info" header="Informational">
+                An automated email will be sent to the registered email account
+                with credentials.
+              </Message>
+            </>
           }
         >
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex justify-center items-center mb-10 ">
-              <Uploader
-                fileListVisible={false}
-                listType="picture"
-                action={`${config.endpoints.host}/upload`}
-                onUpload={(file) => {
-                  setUploading(true);
-                  previewFile(file.blobFile, (value) => {
-                    setFileInfo(value);
-                  });
-                }}
-                onSuccess={(response, file) => {
-                  setUploading(false);
-                  toaster.push(<Message type="success"></Message>);
-                  setUploadResponse(response);
-                }}
-                onError={() => {
-                  setFileInfo(null);
-                  setUploading(false);
-                  toaster.push(<Message type="error"></Message>);
-                }}
-              >
-                <button type="button" style={{ width: 150, height: 150 }}>
-                  {uploading && <Loader backdrop center />}
-                  {fileInfo ? (
-                    <img src={fileInfo} width="100%" height="150%" />
-                  ) : (
-                    <img src={fileInfo} alt="Category Profile" />
-                  )}
-                </button>
-              </Uploader>
-            </div>
-            <div className="flex  gap-5 justify-center">
-              <div className="flex flex-col gap-5">
-                <div>
-                  <p className="font-bold">Name</p>
-                  <Input {...register("name")} className="w-96" />
-                </div>
-                <div>
-                  <p className="font-bold">Email</p>
-                  <Input {...register("email")} className="w-96" />
-                </div>
-                <div>
-                  <p className="font-bold">Contact</p>
-                  <Input {...register("contact")} className="w-96" />
-                </div>
-                <div>
-                  <p className="font-bold">Password</p>
-                  <Input {...register("password")} className="w-96" />
-                </div>
-                <div>
-                  <p className="font-bold">Confirm Password</p>
-                  <Input {...register("con_password")} className="w-96" />
-                </div>
+            <div className="flex gap-10 justify-center ">
+              <div className="flex  mb-10 ">
+                <Uploader
+                  fileListVisible={false}
+                  listType="picture"
+                  action={`${config.endpoints.host}/upload`}
+                  onUpload={(file) => {
+                    setUploading(true);
+                    previewFile(file.blobFile, (value) => {
+                      setFileInfo(value);
+                    });
+                  }}
+                  onSuccess={(response, file) => {
+                    setUploading(false);
+                    toaster.push(<Message type="success"></Message>);
+                    setUploadResponse(response);
+                  }}
+                  onError={() => {
+                    setFileInfo(null);
+                    setUploading(false);
+                    toaster.push(<Message type="error"></Message>);
+                  }}
+                >
+                  <button type="button" style={{ width: 150, height: 150 }}>
+                    {uploading && <Loader backdrop center />}
+                    {fileInfo ? (
+                      <img src={fileInfo} width="100%" height="150%" />
+                    ) : (
+                      <img src={fileInfo} alt="Category Profile" />
+                    )}
+                  </button>
+                </Uploader>
+              </div>
+              <div className="flex  gap-5 justify-center">
+                <div className="flex flex-col gap-5">
+                  <div>
+                    <p className="font-bold">Name</p>
+                    <Input {...register("name")} className="w-96" required />
+                  </div>
+                  <div>
+                    <p className="font-bold">Email</p>
+                    <Input {...register("email")} className="w-96" required />
+                  </div>
+                  <div>
+                    <p className="font-bold">Contact</p>
+                    <Input {...register("contact")} className="w-96" required />
+                  </div>
+                  <div>
+                    <p className="font-bold">Password</p>
+                    <InputGroup inside required>
+                      <Input
+                        {...register("password")}
+                        type={visiblePass ? "text" : "password"}
+                      />
+                      <InputGroup.Button onClick={handleChangePass}>
+                        {visiblePass ? <EyeIcon /> : <EyeSlashIcon />}
+                      </InputGroup.Button>
+                    </InputGroup>
+                  </div>
+                  <div>
+                    <p className="font-bold">Confirm Password</p>
+                    <InputGroup inside required>
+                      <Input
+                        {...register("con_password")}
+                        type={visible ? "text" : "password"}
+                      />
+                      <InputGroup.Button onClick={handleChangeCon}>
+                        {visible ? <EyeIcon /> : <EyeSlashIcon />}
+                      </InputGroup.Button>
+                    </InputGroup>
+                  </div>
 
-                <div className="2xl:mb-4 flex gap-2">
-                  <Button appearance="ghost" onClick={() => Return()}>
-                    Cancel
-                  </Button>
+                  <div className="2xl:mb-4 flex gap-2">
+                    <Button appearance="ghost" onClick={() => Return()}>
+                      Cancel
+                    </Button>
 
-                  <Button
-                    type="submit"
-                    appearance="primary"
-                    className="bg-blue-600"
-                  >
-                    Add Sub Category
-                  </Button>
+                    <Button
+                      type="submit"
+                      appearance="primary"
+                      className="bg-blue-600"
+                    >
+                      Add Admin
+                    </Button>
+                  </div>
                 </div>
               </div>
+              <div className="flex flex-col justify-center items-center"></div>
             </div>
           </form>
         </Panel>

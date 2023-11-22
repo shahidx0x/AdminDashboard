@@ -60,6 +60,21 @@ export async function updateUser({ data, token }) {
   return response.data;
 }
 
+export async function createUser({ data, token }) {
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+  const response = await axios.post(config.endpoints.host + "/signup", data, {
+    headers,
+  });
+
+  if (response.status !== 200) {
+    throw new Error("Error creating user");
+  }
+  return response.data;
+}
+
 export async function checkSession(data) {
   const headers = {
     Authorization: `Bearer ${data.queryKey[1]}`,

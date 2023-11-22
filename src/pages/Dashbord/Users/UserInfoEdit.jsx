@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
@@ -16,10 +16,10 @@ import {
   Panel,
   SelectPicker,
   Stack,
-  Toggle,
   Uploader,
   useToaster,
 } from "rsuite";
+import { getBrandsIdAndName } from "../../../api/BrandServices";
 import { updateUser } from "../../../api/UserServices";
 import { config } from "../../../configs/api.config";
 
@@ -39,6 +39,8 @@ export default function UserInfoEdit() {
   const [uploadResponse, setUploadResponse] = useState({ fileUrl: "" });
   const location = useLocation();
   const myData = location.state?.myData;
+  const [brandSlug, setBrandSlug] = useState(undefined);
+  const [brandName, setBrandName] = useState(undefined);
 
   const {
     register,
@@ -52,6 +54,17 @@ export default function UserInfoEdit() {
     },
   });
   const isAccountActive = watch("isAccountActive");
+  const { data: brand, status: brand_status } = useQuery(
+    ["brandsIdName", user.jwt],
+    getBrandsIdAndName
+  );
+  const brand_data = brand?.data?.map((each) => {
+    return { label: each?.name, value: each.id, slug: each.slug };
+  });
+  const brand_f_data = [...(brand_data || ["loading"])].map((item) => ({
+    label: item?.label,
+    value: item?.value + "," + item.slug,
+  }));
 
   const mutation = useMutation(updateUser);
 
@@ -61,6 +74,15 @@ export default function UserInfoEdit() {
     } else {
       data.profilePicture = "";
     }
+    data.company = brandName;
+
+    if (data.ac_status === undefined) data.ac_status = 0;
+    if (brandSlug) {
+      data.company_slug = brandSlug.split(",")[1];
+      data.companyAssignedBy = "Admin";
+    }
+    if (data.company === undefined) data.company = myData.company;
+    if (data.ac_status === 1) data.isAccountActive = true;
 
     mutation.mutate(
       { data: data, token: user.jwt },
@@ -76,15 +98,14 @@ export default function UserInfoEdit() {
     );
   };
 
-  const dropdown = ["admin", "user"].map((item) => ({
-    label: item,
-    value: item,
+  const dropdown = [
+    { label: "Active", value: 1 },
+    { label: "Reject", value: -1 },
+  ].map((item) => ({
+    label: item.label,
+    value: item.value,
   }));
 
-  const dropdownSub = ["Gold", "Bronze"].map((item) => ({
-    label: item,
-    value: item,
-  }));
   const navigate = useNavigate();
   function UserTable() {
     navigate("/dashbord/user-table");
@@ -186,43 +207,11 @@ export default function UserInfoEdit() {
                     />
                   </div>
                   <div>
-                    <div className="">
-                      <p className="font-bold">Subscription</p>
-                      <Controller
-                        name="subscription"
-                        control={control}
-                        defaultValue={myData?.subscription}
-                        render={({ field }) => (
-                          <SelectPicker
-                            searchable={false}
-                            {...field}
-                            size="md"
-                            data={dropdownSub}
-                            className="w-56"
-                            onChange={(value) => field.onChange(value)}
-                            onBlur={() => field.onBlur()}
-                          />
-                        )}
-                      />
-                    </div>
-                  </div>
-                  <div className="">
-                    <p className="font-bold">Role</p>
-                    <Controller
-                      name="role"
-                      control={control}
-                      defaultValue={myData?.role}
-                      render={({ field }) => (
-                        <SelectPicker
-                          searchable={false}
-                          {...field}
-                          size="md"
-                          data={dropdown}
-                          className="w-56"
-                          onChange={(value) => field.onChange(value)}
-                          onBlur={() => field.onBlur()}
-                        />
-                      )}
+                    <p className="font-bold">Phone Number</p>
+                    <Input
+                      {...register("phoneNumber")}
+                      defaultValue={myData?.phoneNumber || "Not Available"}
+                      className="w-56"
                     />
                   </div>
                 </div>
@@ -244,22 +233,30 @@ export default function UserInfoEdit() {
                     className="w-56"
                   />
                 </div>
-                <div>
+                <div className="">
                   <p className="font-bold">Company</p>
-                  <Input
-                    {...register("company")}
-                    defaultValue={myData?.company}
-                    className="w-56"
+                  <Controller
+                    name="company"
+                    control={control}
+                    render={({ field }) => (
+                      <SelectPicker
+                        placeholder={myData?.company}
+                        searchable={true}
+                        {...field}
+                        size="md"
+                        data={brand_f_data}
+                        className="w-56"
+                        onChange={(value, data) => {
+                          field.onChange(value);
+                          setBrandName(data.target.innerHTML);
+                          setBrandSlug(value);
+                        }}
+                        onBlur={() => field.onBlur()}
+                      />
+                    )}
                   />
                 </div>
-                <div>
-                  <p className="font-bold">Phone Number</p>
-                  <Input
-                    {...register("phoneNumber")}
-                    defaultValue={myData?.phoneNumber || "Not Available"}
-                    className="w-56"
-                  />
-                </div>
+
                 <div className="flex gap-5">
                   <div>
                     <p className="font-bold">Location</p>
@@ -274,16 +271,24 @@ export default function UserInfoEdit() {
               <div className="mt-10 flex gap-5">
                 <p className="font-bold">Account Activation Status :</p>
                 <Controller
-                  name="isAccountActive"
+                  name="ac_status"
                   control={control}
-                  render={({
-                    field: { onChange, onBlur, value, name, ref },
-                  }) => (
-                    <Toggle
-                      defaultChecked={value}
-                      onChange={onChange}
-                      checkedChildren="Active"
-                      unCheckedChildren="Not Active"
+                  render={({ field }) => (
+                    <SelectPicker
+                      searchable={false}
+                      placeholder={
+                        myData?.ac_status === 0
+                          ? "Pending"
+                          : myData?.ac_status === 1
+                          ? "Active"
+                          : "Rejected"
+                      }
+                      {...field}
+                      size="md"
+                      data={dropdown}
+                      className="w-56 -mt-2"
+                      onChange={(value) => field.onChange(value)}
+                      onBlur={() => field.onBlur()}
                     />
                   )}
                 />

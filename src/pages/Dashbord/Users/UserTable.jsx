@@ -57,6 +57,50 @@ export default function UserTable() {
       </Cell>
     );
   };
+  const CompanyCell = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <p className="flex justify-center items-center font-bold break-all ">
+          {rowData[dataKey]}
+        </p>
+        <p className="flex justify-center items-center break-all ">
+          <span className="font-mono">Assigned By :</span>
+          <span
+            className={`${
+              rowData["companyAssignedBy"] === "Admin" && "text-blue-500"
+            } font-bold ml-2 font-mono`}
+          >
+            {rowData["companyAssignedBy"]}
+          </span>
+        </p>
+      </Cell>
+    );
+  };
+  const AccountStatusCell = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <p className="flex justify-center">
+          <span>
+            {rowData[dataKey] === 0 ? (
+              <span className="px-5 py-1 font-bold text-xs rounded-full border-1 bg-yellow-400 text-white">
+                Pending
+              </span>
+            ) : rowData[dataKey] === 1 ? (
+              <span className="px-5 py-1 font-bold text-xs rounded-full border-1 bg-green-400 text-white">
+                Active
+              </span>
+            ) : (
+              rowData[dataKey] === -1 && (
+                <span className="px-5 py-1 font-bold text-xs rounded-full border-1 bg-red-400 text-white">
+                  Rejected
+                </span>
+              )
+            )}
+          </span>
+        </p>
+      </Cell>
+    );
+  };
   const NameCell = ({ rowData, ...props }) => {
     const fullName =
       rowData?.firstName && rowData?.lastName
@@ -83,24 +127,6 @@ export default function UserTable() {
             alt="P"
           />
         </div>
-      </Cell>
-    );
-  };
-
-  const StatusCell = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center items-center">
-          {rowData?.isAccountActive ? (
-            <p className="text-green-500  px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-500 rounded-lg">
-              Active
-            </p>
-          ) : (
-            <p className="text-red-600  border-red-400 px-2 py-2 -mt-1 hover:text-white hover:bg-red-500 rounded-lg">
-              Not Active
-            </p>
-          )}
-        </p>
       </Cell>
     );
   };
@@ -146,7 +172,7 @@ export default function UserTable() {
     {
       key: "company",
       label: "Company",
-      cellRenderer: (props) => <TextCell {...props} dataKey="company" />,
+      cellRenderer: (props) => <CompanyCell {...props} dataKey="company" />,
       width: 200,
     },
     {
@@ -162,7 +188,7 @@ export default function UserTable() {
       width: 300,
     },
     // {
-    //   key: "subscription",
+    //   key: "assignedBy",
     //   label: "Subscription",
     //   cellRenderer: (props) => <TextCell {...props} dataKey="subscription" />,
     //   width: 150,
@@ -182,7 +208,9 @@ export default function UserTable() {
     {
       key: "status",
       label: "Status",
-      cellRenderer: StatusCell,
+      cellRenderer: (props) => (
+        <AccountStatusCell {...props} dataKey="ac_status" />
+      ),
       width: 150,
     },
     {
@@ -374,7 +402,7 @@ export default function UserTable() {
             bordered={bordered}
             cellBordered={bordered}
             headerHeight={compact ? 40 : 30}
-            rowHeight={compact ? 56 : 30}
+            rowHeight={compact ? 70 : 30}
           >
             {columns.map((column) => {
               const { key, label, cellRenderer, ...rest } = column;
