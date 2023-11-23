@@ -1,16 +1,13 @@
 /* eslint-disable react/display-name */
 /* eslint-disable react/prop-types */
-import NoticeIcon from "@rsuite/icons/Notice";
 import React, { useContext, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import {
   Avatar,
-  Badge,
   Button,
   Divider,
-  IconButton,
   Loader,
   Modal,
   Nav,
@@ -77,20 +74,6 @@ export default function NavbarHeader() {
           </Navbar.Brand>
 
           <Nav pullRight className="mt-3 mr-3">
-            <Whisper
-              placement="bottomEnd"
-              trigger="click"
-              speaker={<RenderNoticeSpeaker />}
-            >
-              <IconButton
-                icon={
-                  <Badge content={5}>
-                    <NoticeIcon style={{ fontSize: 20 }} />
-                  </Badge>
-                }
-              />
-            </Whisper>
-
             <MenuComponent placement="bottomEnd" handleOpen={handleOpen}>
               <Avatar
                 circle
