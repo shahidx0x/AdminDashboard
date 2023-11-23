@@ -60,7 +60,7 @@ export default function Notification() {
       key: "notification",
       label: "Notification",
       cellRenderer: (props) => <TextCell {...props} dataKey="message" />,
-      width: 500,
+      width: 775,
     },
   ];
   const [columnKeys, setColumnKeys] = useState(
