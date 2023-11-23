@@ -7,6 +7,7 @@ import AddAdmin from "./pages/Dashbord/Admin/AddAdmin";
 import AdminTable from "./pages/Dashbord/Admin/AdminTable";
 import EditAdmin from "./pages/Dashbord/Admin/EditAdmin";
 import Inventory from "./pages/Dashbord/Inventory/Inventory";
+import Notification from "./pages/Dashbord/Notification/Notification";
 import Order from "./pages/Dashbord/Orders/Order";
 import Transaction from "./pages/Dashbord/Transaction/Transaction";
 import Login from "./pages/Login";
@@ -77,6 +78,14 @@ function App() {
           element: (
             <Suspense fallback={<Loading />}>
               <EditAdmin />
+            </Suspense>
+          ),
+        },
+        {
+          path: "notification-list",
+          element: (
+            <Suspense fallback={<Loading />}>
+              <Notification />
             </Suspense>
           ),
         },

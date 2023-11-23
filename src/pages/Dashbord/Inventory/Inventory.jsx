@@ -149,7 +149,9 @@ export default function Inventory() {
   const TextCell = ({ rowData, dataKey, ...props }) => {
     return (
       <Cell {...props}>
-        <p className="flex justify-center font-bold">{rowData[dataKey]}</p>
+        <p className="flex justify-center font-bold break-words whitespace-normal">
+          {rowData[dataKey]}
+        </p>
       </Cell>
     );
   };
@@ -157,7 +159,7 @@ export default function Inventory() {
   const TextCellOngoing = ({ rowData, dataKey, ...props }) => {
     return (
       <Cell {...props}>
-        <p className="flex justify-center font-bold">
+        <p className="flex justify-center font-bold break-words whitespace-normal">
           {rowData[dataKey][0].ongoing}
         </p>
       </Cell>
@@ -166,7 +168,7 @@ export default function Inventory() {
   const TextCellStock = ({ rowData, dataKey, ...props }) => {
     return (
       <Cell {...props}>
-        <p className="flex justify-center font-bold">
+        <p className="flex justify-center font-bold break-words whitespace-normal">
           {rowData[dataKey][0].stock}
         </p>
       </Cell>

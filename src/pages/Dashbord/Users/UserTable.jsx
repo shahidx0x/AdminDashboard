@@ -51,7 +51,7 @@ export default function UserTable() {
   const TextCell = ({ rowData, dataKey, ...props }) => {
     return (
       <Cell {...props}>
-        <p className="flex justify-center items-center break-all ">
+        <p className="flex justify-center items-center break-words whitespace-normal">
           {rowData[dataKey]}
         </p>
       </Cell>
@@ -60,10 +60,10 @@ export default function UserTable() {
   const CompanyCell = ({ rowData, dataKey, ...props }) => {
     return (
       <Cell {...props}>
-        <p className="flex justify-center items-center font-bold break-all ">
+        <p className="flex justify-center items-center font-bold break-words whitespace-normal">
           {rowData[dataKey]}
         </p>
-        <p className="flex justify-center items-center break-all ">
+        <p className="flex justify-center items-center break-words whitespace-normal">
           <span className="font-mono">Assigned By :</span>
           <span
             className={`${

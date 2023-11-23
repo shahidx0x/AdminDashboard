@@ -1,7 +1,8 @@
 /* eslint-disable react/display-name */
 /* eslint-disable react/prop-types */
 import NoticeIcon from "@rsuite/icons/Notice";
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
+import { useQuery } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import {
@@ -10,24 +11,33 @@ import {
   Button,
   Divider,
   IconButton,
-  List,
   Loader,
   Modal,
   Nav,
   Navbar,
   Popover,
-  Stack,
   Whisper,
 } from "rsuite";
+import { getNotification } from "../api/Notification";
 import { logOut } from "../redux/slices/user.slices";
-
+const NotificationContext = React.createContext();
 export default function NavbarHeader() {
+  const user = useSelector((state) => state.user.user);
+  const {
+    data,
+    status,
+    refetch: data_refetch,
+  } = useQuery(["notification", user.jwt], getNotification, {
+    cacheTime: 0,
+  });
   const trigger = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
   const handleLogout = () => {
     dispatch(logOut());
     navigate("/");
@@ -60,36 +70,37 @@ export default function NavbarHeader() {
           </Button>
         </Modal.Footer>
       </Modal>
-      <Navbar className="h-20">
-        <Navbar.Brand className="text-4xl font-bold" href="#">
-          FGY-Y2J
-        </Navbar.Brand>
+      <NotificationContext.Provider value={data}>
+        <Navbar className="h-20">
+          <Navbar.Brand className="text-4xl font-bold" href="#">
+            FGY-Y2J
+          </Navbar.Brand>
 
-        <Nav pullRight className="mt-3 mr-3">
-          <Whisper
-            placement="bottomEnd"
-            trigger="click"
-            ref={trigger}
-            speaker={renderNoticeSpeaker}
-          >
-            <IconButton
-              icon={
-                <Badge content={5}>
-                  <NoticeIcon style={{ fontSize: 20 }} />
-                </Badge>
-              }
-            />
-          </Whisper>
+          <Nav pullRight className="mt-3 mr-3">
+            <Whisper
+              placement="bottomEnd"
+              trigger="click"
+              speaker={<RenderNoticeSpeaker />}
+            >
+              <IconButton
+                icon={
+                  <Badge content={5}>
+                    <NoticeIcon style={{ fontSize: 20 }} />
+                  </Badge>
+                }
+              />
+            </Whisper>
 
-          <MenuComponent placement="bottomEnd" handleOpen={handleOpen}>
-            <Avatar
-              circle
-              src="https://avatars.githubusercontent.com/u/12592949"
-              alt="@superman66"
-            />
-          </MenuComponent>
-        </Nav>
-      </Navbar>
+            <MenuComponent placement="bottomEnd" handleOpen={handleOpen}>
+              <Avatar
+                circle
+                src="https://avatars.githubusercontent.com/u/12592949"
+                alt="@superman66"
+              />
+            </MenuComponent>
+          </Nav>
+        </Navbar>
+      </NotificationContext.Provider>
     </>
   );
 }
@@ -173,47 +184,21 @@ const MenuComponent = ({ placement, loading, children, handleOpen }) => (
   </Whisper>
 );
 
-const renderNoticeSpeaker = ({ onClose, left, top, className }, ref) => {
-  const notifications = [
-    [
-      "7 hours ago",
-      "The charts of the dashboard have been fully upgraded and are more visually pleasing.",
-    ],
-    [
-      "13 hours ago",
-      "The function of virtualizing large lists has been added, and the style of the list can be customized as required.",
-    ],
-    [
-      "3 days ago",
-      "Upgraded React Suite 5 to support TypeScript, which is more concise and efficient.",
-    ],
-    [
-      "3 days ago",
-      "Upgraded React Suite 5 to support TypeScript, which is more concise and efficient.",
-    ],
-  ];
+const RenderNoticeSpeaker = React.forwardRef(({ onClose }, ref) => {
+  const notifications = useContext(NotificationContext);
+
+  if (!notifications) {
+    return null;
+  }
 
   return (
     <Popover
       ref={ref}
-      className={className}
-      style={{ left, top, width: 300 }}
+      className="your-custom-class-name"
+      style={{ width: 300 }}
       title="Last updates"
     >
-      <List>
-        {notifications.map((item, index) => {
-          const [time, content] = item;
-          return (
-            <List.Item key={index}>
-              <Stack spacing={4}>
-                <Badge /> <span style={{ color: "#57606a" }}>{time}</span>
-              </Stack>
-
-              <p>{content}</p>
-            </List.Item>
-          );
-        })}
-      </List>
+      {/* Your notification list rendering logic */}
       <div style={{ textAlign: "center", marginTop: 20 }}>
         <Button className="bg-gray-300" onClick={onClose}>
           More notifications
@@ -221,4 +206,4 @@ const renderNoticeSpeaker = ({ onClose, left, top, className }, ref) => {
       </div>
     </Popover>
   );
-};
+});

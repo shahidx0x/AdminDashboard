@@ -1,20 +1,11 @@
 /* eslint-disable react/prop-types */
 import CollaspedOutlineIcon from "@rsuite/icons/CollaspedOutline";
 import ExpandOutlineIcon from "@rsuite/icons/ExpandOutline";
-import { SearchIcon, Settings } from "lucide-react";
 import React, { useState } from "react";
 import toast, { Toaster, useToaster } from "react-hot-toast";
 import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
-import {
-  Dropdown,
-  IconButton,
-  Input,
-  InputGroup,
-  Table,
-  TagPicker,
-  Toggle,
-} from "rsuite";
+import { IconButton, Panel, Table } from "rsuite";
 import { searchProduct } from "../../../api/ProductService";
 import { getTransaction } from "../../../api/TransactionService";
 const { Column, HeaderCell, Cell } = Table;
@@ -189,18 +180,18 @@ export default function Transaction() {
   };
 
   const defaultColumns = [
-    {
-      key: "id",
-      label: "Order Id",
-      cellRenderer: (props) => <TextCell {...props} dataKey="_id" />,
-      width: 200,
-    },
-    {
-      key: "invoice_id",
-      label: "Invoice Id",
-      cellRenderer: (props) => <TextCell {...props} dataKey="invoice_id" />,
-      width: 250,
-    },
+    // {
+    //   key: "id",
+    //   label: "Order Id",
+    //   cellRenderer: (props) => <TextCell {...props} dataKey="_id" />,
+    //   width: 200,
+    // },
+    // {
+    //   key: "invoice_id",
+    //   label: "Invoice Id",
+    //   cellRenderer: (props) => <TextCell {...props} dataKey="invoice_id" />,
+    //   width: 250,
+    // },
     {
       key: "name",
       label: "Reciver Info",
@@ -289,7 +280,7 @@ export default function Transaction() {
 
       <div className="p-5">
         <div className="flex flex-wrap gap-2 ">
-          {/* <div className=" w-80 flex justify-center items-center">
+          <div className=" w-80 flex justify-center items-center">
             <div>
               <Panel className="border w-[20rem]   hover:bg-gradient-to-l ">
                 <div className="flex flex-col gap-8 justify-between items-center">
@@ -302,8 +293,8 @@ export default function Transaction() {
                 </div>
               </Panel>
             </div>
-          </div> */}
-          {/* <div className=" w-80 flex justify-center items-center">
+          </div>
+          <div className=" w-80 flex justify-center items-center">
             <div>
               <Panel className="border w-[20rem]   hover:bg-gradient-to-l ">
                 <div className="flex flex-col gap-8 justify-between items-center">
@@ -344,10 +335,10 @@ export default function Transaction() {
                 </div>
               </Panel>
             </div>
-          </div> */}
+          </div>
         </div>
 
-        <div className="flex gap-3 flex-col 2xl:flex-row 2xl:justify-between">
+        {/* <div className="flex gap-3 flex-col 2xl:flex-row 2xl:justify-between">
           <div className="">
             <TagPicker
               className="h-12"
@@ -433,7 +424,7 @@ export default function Transaction() {
               </InputGroup>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div

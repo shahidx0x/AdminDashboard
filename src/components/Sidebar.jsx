@@ -85,7 +85,7 @@ const CustomSidenav = ({
               </Nav.Item>
               <Nav.Item
                 as={Link}
-                to="/dashbord/manage/transaction"
+                to="/dashbord/notification-list"
                 eventKey="3-5"
               >
                 <div className="flex gap-2">
