@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 
 import EyeIcon from "@rsuite/icons/legacy/Eye";
 import EyeSlashIcon from "@rsuite/icons/legacy/EyeSlash";
+import axios from "axios";
 import { useMutation } from "react-query";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
@@ -78,42 +79,93 @@ export default function AddAdmin() {
     firebaseFCM: ["device_token_1"],
     role: "admin",
   };
+  // const onSubmit = (data) => {
+  //   if (uploadResponse.fileUrl !== "") {
+  //     data.image = uploadResponse.fileUrl;
+  //   } else {
+  //     data.image = "";
+  //   }
+  //   if (data.password !== data.con_password) {
+  //     toast.push(<Message type="error">Password is not matched !</Message>);
+  //   }
+  //   data.firstName = data.name;
+  //   data.phoneNumber = data.contact;
+
+  //   const f_data = {
+  //     ...signup_data,
+  //     ...data,
+  //   };
+
+  //   mutation.mutate(
+  //     { data: f_data, token: user.jwt },
+  //     {
+  //       onSuccess: (data) => {
+  //         toaster.push(
+  //           <Message type="success">Admin added successfully</Message>
+  //         );
+  //         navigate(-1);
+  //         axios.post(config.endpoints.host + "/notify/new/admin", {
+  //           email: data.email,
+  //           password: data.password,
+  //         });
+  //       },
+  //       onError: (error) => {
+  //         console.log(error);
+  //         toaster.push(
+  //           <Message type="error">
+  //             {error.response.data.message || error.message}
+  //           </Message>
+  //         );
+  //       },
+  //     }
+  //   );
+  //   reset();
+  // };
   const onSubmit = (data) => {
-    if (uploadResponse.fileUrl !== "") {
-      data.image = uploadResponse.fileUrl;
-    } else {
-      data.image = "";
-    }
+    data.profilePicture = uploadResponse.fileUrl || "";
+
     if (data.password !== data.con_password) {
-      toast.push(<Message type="error">Password is not matched !</Message>);
+      toast.push(<Message type="error">Password is not matched!</Message>);
+      return;
     }
+
     data.firstName = data.name;
     data.phoneNumber = data.contact;
 
-    const f_data = {
-      ...signup_data,
-      ...data,
-    };
+    const f_data = { ...signup_data, ...data };
 
     mutation.mutate(
       { data: f_data, token: user.jwt },
       {
-        onSuccess: (data) => {
-          toaster.push(
-            <Message type="success">Admin added successfully</Message>
-          );
-          navigate(-1);
+        onSuccess: (response) => {
+          axios
+            .post(config.endpoints.host + "/notify/new/admin", {
+              email: data.email,
+              password: data.password,
+            })
+            .then((res) => {
+              toaster.push(
+                <Message type="success">
+                  Email notification sent successfully
+                </Message>
+              );
+              navigate(-1);
+            })
+            .catch((error) => {
+              console.log(error);
+              toaster.push(
+                <Message type="error">Error sending email notification</Message>
+              );
+            });
         },
         onError: (error) => {
           console.log(error);
-          toaster.push(
-            <Message type="error">
-              {error.response.data.message || error.message}
-            </Message>
-          );
+          const errorMessage = error.response?.data.message || error.message;
+          toaster.push(<Message type="error">{errorMessage}</Message>);
         },
       }
     );
+
     reset();
   };
 

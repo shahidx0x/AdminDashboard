@@ -79,11 +79,7 @@ export default function EditAdmin() {
     role: "admin",
   };
   const onSubmit = (data) => {
-    if (uploadResponse.fileUrl !== "") {
-      data.image = uploadResponse.fileUrl;
-    } else {
-      data.image = "";
-    }
+    data.profilePicture = uploadResponse.fileUrl || myData.profilePicture;
     if (data.password !== data.con_password) {
       toast.push(<Message type="error">Password is not matched !</Message>);
     }
@@ -184,7 +180,7 @@ export default function EditAdmin() {
                     {fileInfo ? (
                       <img src={fileInfo} width="100%" height="150%" />
                     ) : (
-                      <img src={fileInfo} alt="Category Profile" />
+                      <img src={myData.profilePicture} alt="Category Profile" />
                     )}
                   </button>
                 </Uploader>
@@ -203,6 +199,7 @@ export default function EditAdmin() {
                   <div>
                     <p className="font-bold">Email</p>
                     <Input
+                      disabled
                       defaultValue={myData?.email}
                       {...register("email")}
                       className="w-96"

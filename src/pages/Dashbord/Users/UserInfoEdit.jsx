@@ -22,6 +22,7 @@ import {
 import { getBrandsIdAndName } from "../../../api/BrandServices";
 import { updateUser } from "../../../api/UserServices";
 import { config } from "../../../configs/api.config";
+import axios from "axios";
 
 function previewFile(file, callback) {
   const reader = new FileReader();
@@ -68,31 +69,116 @@ export default function UserInfoEdit() {
 
   const mutation = useMutation(updateUser);
 
+  // const onSubmit = (data) => {
+  //   if (uploadResponse.fileUrl !== "") {
+  //     data.profilePicture = uploadResponse.fileUrl;
+  //   } else {
+  //     data.profilePicture = "";
+  //   }
+  //   data.company = brandName;
+  //   const initialAcStatus = myData.ac_status;
+  //   console.log("initial :", initialAcStatus);
+  //   const newAcStatus = data.ac_status;
+  //   console.log("new :", newAcStatus);
+  //   const statusChanged = initialAcStatus !== newAcStatus;
+  //   console.log(statusChanged);
+  //   if (data.ac_status === undefined) data.ac_status = 0;
+  //   if (brandSlug) {
+  //     data.company_slug = brandSlug.split(",")[1];
+  //     data.companyAssignedBy = "Admin";
+  //   }
+  //   if (data.company === undefined) data.company = myData.company;
+  //   if (newAcStatus === 1) data.isAccountActive = true;
+
+  //   // mutation.mutate(
+  //   //   { data: data, token: user.jwt },
+  //   //   {
+  //   //     onSuccess: (responseData) => {
+  //   //       toaster.push(<Message type="success">Updated successfully</Message>);
+  //   //       if (statusChanged) {
+  //   //         const status =
+  //   //           newAcStatus === 1
+  //   //             ? "accept"
+  //   //             : newAcStatus === -1
+  //   //             ? "reject"
+  //   //             : null;
+  //   //         if (status) {
+  //   //           axios
+  //   //             .post(
+  //   //               `${config.endpoints.host}/notify/user/${
+  //   //                 data.email || myData.email
+  //   //               }/${status}`
+  //   //             )
+  //   //             .then((response) => {
+  //   //               toaster.push(
+  //   //                 <Message type="success">User Notified!</Message>
+  //   //               );
+  //   //             })
+  //   //             .catch((error) => {
+  //   //               toaster.push(
+  //   //                 <Message type="error">Notification failed!</Message>
+  //   //               );
+  //   //             });
+  //   //         }
+  //   //       }
+  //   //       navigate(-1);
+  //   //     },
+  //   //     onError: (error) => {
+  //   //       toaster.push(<Message type="error">Update failed!</Message>);
+  //   //     },
+  //   //   }
+  //   // );
+  // };
   const onSubmit = (data) => {
+    // Set profile picture URL
     if (uploadResponse.fileUrl !== "") {
       data.profilePicture = uploadResponse.fileUrl;
     } else {
       data.profilePicture = "";
     }
-    data.company = brandName;
 
-    if (data.ac_status === undefined) data.ac_status = 0;
+    data.company = brandName;
+    // if (data.ac_status === undefined) data.ac_status = 0;
+
     if (brandSlug) {
       data.company_slug = brandSlug.split(",")[1];
       data.companyAssignedBy = "Admin";
     }
     if (data.company === undefined) data.company = myData.company;
-    if (data.ac_status === 1) data.isAccountActive = true;
 
+    const initialAcStatus = myData.ac_status;
+    const newAcStatus = data.ac_status;
+
+    const statusChanged = initialAcStatus !== newAcStatus;
+    const explicitStatusChange =
+      statusChanged && (newAcStatus === 1 || newAcStatus === -1);
+    if (newAcStatus === 1) data.isAccountActive = true;
+    console.log(explicitStatusChange);
     mutation.mutate(
       { data: data, token: user.jwt },
       {
-        onSuccess: (data) => {
+        onSuccess: (responseData) => {
           toaster.push(<Message type="success">Updated successfully</Message>);
+          if (explicitStatusChange) {
+            const status = newAcStatus === 1 ? "accept" : "reject";
+            axios
+              .post(
+                `${config.endpoints.host}/notify/user/${
+                  data.email || myData.email
+                }/${status}`
+              )
+              .then((response) => {})
+              .catch((error) => {
+                toaster.push(
+                  <Message type="error">Notification failed!</Message>
+                );
+              });
+          }
+
           navigate(-1);
         },
         onError: (error) => {
-          toaster.push(<Message type="error">Update failed !</Message>);
+          toaster.push(<Message type="error">Update failed!</Message>);
         },
       }
     );
