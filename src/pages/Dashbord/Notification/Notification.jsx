@@ -50,7 +50,7 @@ export default function Notification() {
             </p>
           </div>
         </div>
-        <p className="font-bold font-mono">{rowData[dataKey]}</p>
+        <p className=" font-mono">{rowData[dataKey]}</p>
       </Cell>
     );
   };

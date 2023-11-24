@@ -10,7 +10,6 @@ import { AiOutlineFileAdd } from "react-icons/ai";
 import { BsListUl } from "react-icons/bs";
 import { FaRegMoneyBillAlt } from "react-icons/fa";
 import { HiOutlineUsers } from "react-icons/hi";
-import { IoNotificationsOutline } from "react-icons/io5";
 import {
   MdOutlineAdminPanelSettings,
   MdOutlineInventory,
@@ -83,7 +82,7 @@ const CustomSidenav = ({
                   <p className="font-bold">Orders</p>
                 </div>
               </Nav.Item>
-              <Nav.Item
+              {/* <Nav.Item
                 as={Link}
                 to="/dashbord/notification-list"
                 eventKey="3-5"
@@ -92,7 +91,7 @@ const CustomSidenav = ({
                   <IoNotificationsOutline className="text-xl" />
                   <p className="font-bold">Notifications</p>
                 </div>
-              </Nav.Item>
+              </Nav.Item> */}
               <Nav.Item
                 as={Link}
                 to="/dashbord/manage/transaction"
