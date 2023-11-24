@@ -1,7 +1,9 @@
-let host = "https://rest.app.gobd.xyz";
+let host = import.meta.env.VITE_HOST;
+let fcmKey = import.meta.env.VITE_FIREBASE_FCM_KEY;
 export const config = {
   endpoints: {
     host: host,
+    fcmKey: fcmKey,
     login: host + "/signin",
     session_check: host + "/check/session",
     users: host + "/get/users", // has query params -> see api doc
