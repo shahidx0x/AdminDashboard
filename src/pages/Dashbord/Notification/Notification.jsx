@@ -56,7 +56,7 @@ export default function Notification() {
           className={
             rowData.isRecent && !rowData.read
               ? "bg-indigo-500 text-white font-mono font-bold rounded-lg "
-              : "bg-gray-100 border-b-indigo-200 text-gray-500 font-mono rounded-lg border-1 font-bold"
+              : " border-b-indigo-100 text-gray-500 font-mono rounded-lg border-1 font-bold"
           }
           {...props}
         >
