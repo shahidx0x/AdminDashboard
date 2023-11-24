@@ -73,101 +73,13 @@ export default function Notification() {
   const CustomHeaderCell = compact ? CompactHeaderCell : HeaderCell;
 
   const displayedData = [...(data?.data || [])];
-
-  //   const handleLoadMore = () => {
-  //     setPage((prevPage) => {
-  //       if (prevPage < data?.meta?.total_pages) {
-  //         return prevPage + 1;
-  //       }
-  //       return prevPage;
-  //     });
-  //     data_refetch();
-  //   };
-
-  //   const handleLoadPrevious = () => {
-  //     setPage((prevPage) => Math.max(prevPage - 1, 1));
-  //     data_refetch();
-  //   };
-
+  data_refetch();
   return (
     <div>
       <Toaster />
 
       <div className="p-5">
         <div className="flex flex-wrap gap-2 "></div>
-
-        {/* <div className="flex gap-3 flex-col 2xl:flex-row 2xl:justify-between">
-            <div className="">
-                <TagPicker
-                className="h-12"
-                data={defaultColumns}
-                labelKey="label"
-                valueKey="key"
-                value={columnKeys}
-                onChange={setColumnKeys}
-                cleanable={false}
-                />
-                <Dropdown className="" icon={<Settings />}>
-                <Dropdown.Item>
-                    <span className="flex justify-between">
-                    <p>Compact：</p>
-                    <Toggle
-                        checkedChildren="On"
-                        unCheckedChildren="Off"
-                        checked={compact}
-                        onChange={setCompact}
-                    />
-                    </span>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                    <span className="flex justify-between">
-                    <p>Bordered：</p>
-                    <Toggle
-                        checkedChildren="On"
-                        unCheckedChildren="Off"
-                        checked={bordered}
-                        onChange={setBordered}
-                    />
-                    </span>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                    <span className="flex justify-between">
-                    Show Header：
-                    <Toggle
-                        checkedChildren="On"
-                        unCheckedChildren="Off"
-                        checked={showHeader}
-                        onChange={setShowHeader}
-                    />
-                    </span>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                    <span className="flex justify-between">
-                    Hover：
-                    <Toggle
-                        checkedChildren="On"
-                        unCheckedChildren="Off"
-                        checked={hover}
-                        onChange={setHover}
-                    />
-                    </span>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                    <span className="flex justify-between">
-                    Auto Height：
-                    <Toggle
-                        checkedChildren="On"
-                        unCheckedChildren="Off"
-                        checked={autoHeight}
-                        onChange={setAutoHeight}
-                    />
-                    </span>
-                </Dropdown.Item>
-                </Dropdown>
-            </div>
-
-            <div></div>
-            </div> */}
       </div>
 
       <div
