@@ -1,21 +1,12 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { SearchIcon, Settings } from "lucide-react";
+import { Settings } from "lucide-react";
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import {
-  Avatar,
-  Button,
-  Dropdown,
-  Input,
-  InputGroup,
-  Table,
-  TagPicker,
-  Toggle,
-} from "rsuite";
+import { Avatar, Button, Dropdown, Table, TagPicker, Toggle } from "rsuite";
 import { getAdmins } from "../../../api/AdminSignUp";
 import { getUsersByEmail, removeUser } from "../../../api/UserServices";
 
@@ -107,12 +98,12 @@ export default function AdminTable() {
     return (
       <Cell {...props}>
         <div className="flex justify-center gap-2">
-          <button
+          {/* <button
             className="text-blue-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-500 rounded-lg"
             onClick={handleEdit}
           >
             Edit
-          </button>
+          </button> */}
           <button
             className="text-red-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-500 rounded-lg"
             onClick={() => handleRemoveAdmin(rowData._id)}
@@ -328,30 +319,6 @@ export default function AdminTable() {
 
             <div>
               <div className=" flex flex-col gap-2">
-                {/* <div className="flex space-x-4  rounded-md">
-                  <div className="flex rounded-md overflow-hidden h-12 w-full">
-                    <input
-                      onChange={(event) => handleInputChange(event)}
-                      type="text"
-                      className="w-[20rem] border-2 text-md p-2 text-xl  rounded-md rounded-r-none"
-                    />
-                    <button
-                      onClick={handleButtonClick}
-                      className="bg-indigo-600 text-white px-6 text-lg font-semibold py-2 rounded-r-md"
-                    >
-                      Search
-                    </button>
-                  </div>
-                </div> */}
-                <InputGroup>
-                  <Input
-                    placeholder="Search by User Email"
-                    onChange={(value) => handleInputChange(value)}
-                  />
-                  <InputGroup.Button onClick={handleButtonClick} tabIndex={-1}>
-                    <SearchIcon className="text-indigo-500 font-bold" />
-                  </InputGroup.Button>
-                </InputGroup>
                 <Button
                   onClick={() => {
                     navigate(`/dashbord/add-new-admin`);

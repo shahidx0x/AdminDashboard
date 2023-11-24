@@ -215,30 +215,6 @@ export default function EditAdmin() {
                       required
                     />
                   </div>
-                  {/* <div>
-                    <p className="font-bold">Password</p>
-                    <InputGroup inside required>
-                      <Input
-                        {...register("password")}
-                        type={visiblePass ? "text" : "password"}
-                      />
-                      <InputGroup.Button onClick={handleChangePass}>
-                        {visiblePass ? <EyeIcon /> : <EyeSlashIcon />}
-                      </InputGroup.Button>
-                    </InputGroup>
-                  </div>
-                  <div>
-                    <p className="font-bold">Confirm Password</p>
-                    <InputGroup inside required>
-                      <Input
-                        {...register("con_password")}
-                        type={visible ? "text" : "password"}
-                      />
-                      <InputGroup.Button onClick={handleChangeCon}>
-                        {visible ? <EyeIcon /> : <EyeSlashIcon />}
-                      </InputGroup.Button>
-                    </InputGroup>
-                  </div> */}
 
                   <div className="2xl:mb-4 flex gap-2">
                     <Button appearance="ghost" onClick={() => Return()}>

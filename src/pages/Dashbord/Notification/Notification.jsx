@@ -90,7 +90,7 @@ export default function Notification() {
   const defaultColumns = [
     {
       key: "notification",
-      label: "Notification",
+      label: "",
       cellRenderer: (props) => <TextCell {...props} dataKey="message" />,
       width: 775,
     },
