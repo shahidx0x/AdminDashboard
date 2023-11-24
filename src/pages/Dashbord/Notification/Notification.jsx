@@ -1,10 +1,12 @@
 /* eslint-disable react/prop-types */
 
+import moment from "moment-timezone";
 import React, { useState } from "react";
 import { Toaster, useToaster } from "react-hot-toast";
 import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
-import { Table } from "rsuite";
+import { Link } from "react-router-dom";
+import { Badge, Table } from "rsuite";
 import { getNotification } from "../../../api/Notification";
 const { Column, HeaderCell, Cell } = Table;
 const rowKey = "_id";
@@ -14,7 +16,6 @@ export default function Notification() {
   const [compact, setCompact] = useState(true);
   const [bordered, setBordered] = useState(true);
   const [page, setPage] = useState(1);
-  const [showHeader, setShowHeader] = useState(true);
   const [autoHeight, setAutoHeight] = useState(true);
   const [hover, setHover] = useState(true);
   const user = useSelector((state) => state.user.user);
@@ -35,17 +36,40 @@ export default function Notification() {
   );
 
   const TextCell = ({ rowData, dataKey, ...props }) => {
+    const originalDate = rowData.date;
+    const serverMoment = moment(originalDate);
+    const localTime = serverMoment.tz("America/New_York");
+
     return (
-      <Cell {...props}>
-        <div>
-          <div className="flex flex-col">
-            <p>
-              Date : <span>{rowData.date}</span>
-            </p>
+      <Link to={rowData.link ? rowData.link : "/dashbord/user-table"}>
+        <Cell
+          className={
+            rowData.isRecent
+              ? "bg-indigo-500 text-white font-mono font-bold rounded-lg"
+              : "bg-gray-100 text-gray-500 font-mono rounded-lg border-1 font-bold"
+          }
+          {...props}
+        >
+          <div>
+            <div className="flex flex-col">
+              <span className={rowData.isRecent && "hidden"}>
+                {localTime.format("YYYY-MM-DD hh:mm:ss A")}
+              </span>
+              <Badge
+                className={rowData.isRecent ? "flex mr-10 mt-2" : "hidden"}
+                color="green"
+                content="Recent"
+              >
+                <span className="">
+                  {localTime.format("YYYY-MM-DD hh:mm:ss A")}
+                </span>
+              </Badge>
+            </div>
           </div>
-        </div>
-        <p className=" font-mono">{rowData[dataKey]}</p>
-      </Cell>
+
+          <p className=" font-sans">{rowData[dataKey]}</p>
+        </Cell>
+      </Link>
     );
   };
 
@@ -86,7 +110,7 @@ export default function Notification() {
             rowKey={rowKey}
             loading={status === "loading" ? true : false}
             height={600}
-            hover={hover}
+            hover={false}
             showHeader={true}
             autoHeight={false}
             data={displayedData}
