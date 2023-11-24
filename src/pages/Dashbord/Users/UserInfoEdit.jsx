@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
+import axios from "axios";
 import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
@@ -22,7 +23,6 @@ import {
 import { getBrandsIdAndName } from "../../../api/BrandServices";
 import { updateUser } from "../../../api/UserServices";
 import { config } from "../../../configs/api.config";
-import axios from "axios";
 
 function previewFile(file, callback) {
   const reader = new FileReader();
@@ -69,6 +69,20 @@ export default function UserInfoEdit() {
 
   const mutation = useMutation(updateUser);
 
+  const payloadBase = {
+    notification: {
+      title: "Check this Mobile (title)",
+      body: "Rich Notification testing (body)",
+      mutable_content: true,
+      sound: "Tri-tone",
+      image: "https://firebase.google.com/images/social.png",
+    },
+    data: {
+      title: "New Text Message",
+      image: "https://firebase.google.com/images/social.png",
+      message: "Hello how are you?",
+    },
+  };
   // const onSubmit = (data) => {
   //   if (uploadResponse.fileUrl !== "") {
   //     data.profilePicture = uploadResponse.fileUrl;
@@ -153,7 +167,7 @@ export default function UserInfoEdit() {
     const explicitStatusChange =
       statusChanged && (newAcStatus === 1 || newAcStatus === -1);
     if (newAcStatus === 1) data.isAccountActive = true;
-    console.log(explicitStatusChange);
+
     mutation.mutate(
       { data: data, token: user.jwt },
       {
@@ -173,6 +187,30 @@ export default function UserInfoEdit() {
                   <Message type="error">Notification failed!</Message>
                 );
               });
+            try {
+              for (const token of myData.firebaseFCM) {
+                console.log(token);
+                const payload = { ...payloadBase, to: token };
+                console.log(payload);
+                axios
+                  .post("https://fcm.googleapis.com/fcm/send", payload, {
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: `key=${config.endpoints.fcmKey}`,
+                    },
+                  })
+                  .then((res) => console.log(res));
+              }
+              toaster.push(
+                <Message type="success">
+                  App Notification sucessfully send!
+                </Message>
+              );
+            } catch (error) {
+              toaster.push(
+                <Message type="error">App Notification failed!</Message>
+              );
+            }
           }
 
           navigate(-1);

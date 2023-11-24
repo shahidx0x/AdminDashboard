@@ -43,7 +43,6 @@ const ExpandCell = ({ rowData, expandedRowKeys, onChange, ...props }) => (
   </Cell>
 );
 const ItemRow = ({ props }) => {
-  console.table(props);
   return (
     <>
       <li className="flex flex-col sm:flex-row sm:justify-between border-b pb-3">
@@ -167,7 +166,18 @@ export default function Order() {
   const TextCell = ({ rowData, dataKey, ...props }) => {
     return (
       <Cell {...props}>
-        <p className="flex justify-center font-medium">{rowData[dataKey]}</p>
+        <p className="flex justify-center font-medium break-words whitespace-normal">
+          {rowData[dataKey]}
+        </p>
+      </Cell>
+    );
+  };
+  const CompanyCell = ({ rowData, dataKey, ...props }) => {
+    return (
+      <Cell {...props}>
+        <p className="flex justify-center font-medium break-words whitespace-normal">
+          {rowData.user_id.company}
+        </p>
       </Cell>
     );
   };
@@ -185,6 +195,20 @@ export default function Order() {
 
   const ActionsCell = ({ rowData, ...props }) => {
     const mutation = useMutation(updateOrder);
+    const payloadBase = {
+      notification: {
+        title: "Check this Mobile (title)",
+        body: "Rich Notification testing (body)",
+        mutable_content: true,
+        sound: "Tri-tone",
+        image: "https://firebase.google.com/images/social.png",
+      },
+      data: {
+        title: "New Text Message",
+        image: "https://firebase.google.com/images/social.png",
+        message: "Hello how are you?",
+      },
+    };
     const handleUpdate = (data) => {
       mutation.mutate(
         { data: data, token: user.jwt, id: rowData._id },
@@ -212,7 +236,26 @@ export default function Order() {
           ),
           {
             loading: "loading...",
-            success: <b>Order approved and user notified !</b>,
+            success: () => {
+              try {
+                for (const token of rowData.user_id.firebaseFCM) {
+                  console.log(token);
+                  const payload = { ...payloadBase, to: token };
+                  axios
+                    .post("https://fcm.googleapis.com/fcm/send", payload, {
+                      headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `key=${config.endpoints.fcmKey}`,
+                      },
+                    })
+                    .then((res) => console.log(res));
+                }
+              } catch (error) {
+                toaster.push(
+                  <Message type="error">App Notification failed!</Message>
+                );
+              }
+            },
             error: <b>Something went wrong !</b>,
           }
         );
@@ -232,9 +275,7 @@ export default function Order() {
         );
       } else if (data.order_status === 3) {
         handleUpdate(data);
-        // axios.delete(
-        //   config.endpoints.host + `/orders/${rowData._id}`
-        // );
+
         toast.promise(
           axios
             .post(config.endpoints.host + `/create/transaction`, {
@@ -260,7 +301,7 @@ export default function Order() {
             }),
           {
             loading: "Processing...",
-            success: <b>Transaction successful and order deleted!</b>,
+            success: <b>Transaction successful</b>,
             error: <b>Something went wrong!</b>,
           }
         );
@@ -340,18 +381,17 @@ export default function Order() {
     );
   };
   const defaultColumns = [
-    // {
-    //   key: "_id",
-    //   label: "Order Id",
-    //   cellRenderer: (props) => <TextCell {...props} dataKey="_id" />,
-    //   width: 220,
-    // },
-
     {
       key: "user_name",
       label: "Name",
       cellRenderer: (props) => <TextCell {...props} dataKey="user_name" />,
       width: 190,
+    },
+    {
+      key: "company",
+      label: "Company",
+      cellRenderer: (props) => <CompanyCell {...props} dataKey="company" />,
+      width: 200,
     },
     {
       key: "user_email",
@@ -365,7 +405,7 @@ export default function Order() {
       cellRenderer: (props) => (
         <AddressCell {...props} dataKey="user_address" />
       ),
-      width: 450,
+      width: 250,
     },
     {
       key: "order_status",
@@ -596,7 +636,7 @@ export default function Order() {
           })}
         </Table>
       </div>
-      <div className="border-b">
+      {/* <div className="border-b">
         <div className="flex items-center justify-center py-10 lg:px-0 sm:px-6 px-4">
           <div className="lg:w-3/5 w-full  flex items-center justify-between border-t border-gray-200">
             <div className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
@@ -680,7 +720,7 @@ export default function Order() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
