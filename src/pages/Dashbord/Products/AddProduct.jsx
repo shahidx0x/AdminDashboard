@@ -386,7 +386,7 @@ export default function AddProduct() {
                 </label>
                 <input
                   className="w-[12rem] 2xl:w-[14.5rem] h-[2.24rem] rounded-md border border-gray-200 p-3"
-                  required
+          
                   type="number"
                   {...register("max_purchease")}
                   onChange={handleNumberChange}
@@ -396,7 +396,7 @@ export default function AddProduct() {
                 <label className="text-sm font-bold">Discount</label>
                 <input
                   className="w-[12rem] 2xl:w-[14.5rem] h-[2.24rem] rounded-md border border-gray-200 p-3"
-                  required
+        
                   type="number"
                   {...register("discount")}
                   onChange={handleNumberChange}

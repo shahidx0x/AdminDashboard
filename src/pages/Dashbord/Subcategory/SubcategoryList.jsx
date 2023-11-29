@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { Settings } from "lucide-react";
+import { SearchIcon, Settings } from "lucide-react";
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
@@ -10,6 +10,8 @@ import {
   Avatar,
   Button,
   Dropdown,
+  Input,
+  InputGroup,
   Message,
   Modal,
   Table,
@@ -186,8 +188,9 @@ export default function SubcategoryList() {
 
   const mutation_search = useMutation(getAllSubCategory);
 
-  const handleInputChange = (event) => {
-    const value = event.target.value;
+  const handleInputChange = (value) => {
+    console.log(value);
+  
     setInputValue(value);
 
     if (value === "") {
@@ -341,7 +344,29 @@ export default function SubcategoryList() {
 
               <div>
                 <div className=" ">
-                  <div className="flex space-x-4  rounded-md">
+                  <InputGroup>
+                    <Input
+                      placeholder="Search by Subcategory"
+                      onChange={(value) => handleInputChange(value)}
+                    />
+                    <InputGroup.Button
+                      onClick={() => handleButtonClick()}
+                      tabIndex={-1}
+                    >
+                      <SearchIcon className="text-indigo-500 font-bold" />
+                    </InputGroup.Button>
+                  </InputGroup>
+                  <Button
+                    onClick={() => {
+                      navigate(
+                        `/dashbord/subcategory/${location.state.rowData.brand_id}/${location.state.rowData._id}/add`
+                      );
+                    }}
+                    className="bg-indigo-600 w-60 text-white font-bold mt-3"
+                  >
+                    ADD SUB CATEGORY
+                  </Button>
+                  {/* <div className="flex space-x-4  rounded-md">
                     <div className="flex rounded-md overflow-hidden h-12 w-full">
                       <input
                         onChange={(event) => handleInputChange(event)}
@@ -355,19 +380,9 @@ export default function SubcategoryList() {
                         Search
                       </button>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
-              <Button
-                onClick={() => {
-                  navigate(
-                    `/dashbord/subcategory/${location.state.rowData.brand_id}/${location.state.rowData._id}/add`
-                  );
-                }}
-                className="bg-indigo-600 w-60 text-white font-bold"
-              >
-                ADD SUB CATEGORY
-              </Button>
             </div>
           </div>
 
