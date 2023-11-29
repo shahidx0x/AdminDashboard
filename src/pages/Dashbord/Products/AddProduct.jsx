@@ -11,6 +11,7 @@ import {
   Breadcrumb,
   Button,
   Input,
+  InputNumber,
   Loader,
   Message,
   SelectPicker,
@@ -363,19 +364,19 @@ export default function AddProduct() {
               </div>
               <div className="flex flex-col col-span-full sm:col-span-2 gap-1">
                 <label className="text-sm font-bold">Price</label>
-                <input
-                  className="w-[12rem] 2xl:w-[14.5rem] h-[2.24rem] rounded-md border border-gray-200 p-3"
+                <InputNumber
+                  className="w-[12rem] 2xl:w-[14.5rem] h-[2.24rem] rounded-md border border-gray-200 "
                   required
-                  type="number"
+                 
                   {...register("price")}
                   onChange={handleNumberChange}
                 />
               </div>
               <div className="col-span-full sm:col-span-2 flex flex-col gap-1">
                 <label className="text-sm font-bold">Minimum Purchase</label>
-                <input
-                  className="w-[12rem] 2xl:w-[14.5rem] h-[2.24rem] rounded-md border border-gray-200 p-3"
-                  type="number"
+                <InputNumber
+                  className="w-[12rem] 2xl:w-[14.5rem] h-[2.24rem] rounded-md border border-gray-200 "
+                  defaultValue={0}
                   {...register("min_purchease")}
                   onChange={handleNumberChange}
                 />
@@ -384,20 +385,21 @@ export default function AddProduct() {
                 <label htmlFor="zip" className="text-sm font-bold">
                   Maximum Purchase
                 </label>
-                <input
-                  className="w-[12rem] 2xl:w-[14.5rem] h-[2.24rem] rounded-md border border-gray-200 p-3"
-          
-                  type="number"
+                <InputNumber
+                  className="w-[12rem] 2xl:w-[14.5rem] h-[2.24rem] rounded-md border border-gray-200 "
+                  defaultValue={0}
+              
                   {...register("max_purchease")}
                   onChange={handleNumberChange}
                 />
               </div>
-              <div className="flex flex-col">
+              <div className="flex flex-col mt-1">
                 <label className="text-sm font-bold">Discount</label>
-                <input
-                  className="w-[12rem] 2xl:w-[14.5rem] h-[2.24rem] rounded-md border border-gray-200 p-3"
+                <InputNumber
+                defaultValue={0}
+                  className="w-[12rem] 2xl:w-[14.5rem] h-[2.24rem] rounded-md border border-gray-200"
         
-                  type="number"
+              
                   {...register("discount")}
                   onChange={handleNumberChange}
                 />

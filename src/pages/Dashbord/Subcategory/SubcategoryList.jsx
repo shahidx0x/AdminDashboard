@@ -154,14 +154,7 @@ export default function SubcategoryList() {
       cellRenderer: ImageCell,
       width: 150,
     },
-    {
-      key: "brand_id",
-      label: "Subcategory Id",
-      cellRenderer: (props) => (
-        <GenericCell {...props} content={props.rowData?._id} />
-      ),
-      width: 200,
-    },
+ 
     {
       key: "subcategory_name",
       label: "Sub Category Name",
