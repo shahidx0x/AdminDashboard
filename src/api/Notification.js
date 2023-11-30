@@ -9,7 +9,7 @@ export async function getNotification(data) {
 
   try {
     const response = await axios.get(
-      config.endpoints.host + `/notifications?limit=-1`,
+      config.endpoints.host + `/notifications?limit=-1&notification=general`,
       {
         headers,
       }

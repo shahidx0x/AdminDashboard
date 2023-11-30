@@ -39,7 +39,6 @@ export default function AllCategory() {
   const toaster = useToaster();
 
   const navigate = useNavigate();
-
   const { Column, HeaderCell, Cell } = Table;
 
   const CompactCell = (props) => <Cell {...props} style={{ padding: 4 }} />;
@@ -271,7 +270,7 @@ export default function AllCategory() {
 
   const handleLoadMore = () => {
     setPage((prevPage) => {
-      if (prevPage < data?.meta?.total_page) {
+      if (prevPage < data?.meta?.total_pages) {
         return prevPage + 1;
       }
       return prevPage;
@@ -494,7 +493,7 @@ export default function AllCategory() {
                 </div>
                 <div className="sm:flex hidden">
                   <p className="text-sm font-bold leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2">
-                    pages : {page}/{data?.meta?.total_page}
+                    pages : {page}/{data?.meta?.total_pages}
                   </p>
                 </div>
                 <div className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
