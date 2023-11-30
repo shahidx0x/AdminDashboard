@@ -181,15 +181,20 @@ export default function UserInfoEdit() {
                   data.email || myData.email
                 }/${status}`
               )
-              .then((response) => {})
+              .then((response) => { })
+              
               .catch((error) => {
                 toaster.push(
                   <Message type="error">Notification failed!</Message>
                 );
               });
+              axios.post(config.endpoints.host + `/notifications`, {
+                message: `Account is active  `,
+                 user_email: data.email,
+                 category:'notification'
+              });
             try {
               for (const token of myData.firebaseFCM) {
-                console.log(token);
                 const payload = { ...payloadBase, to: token };
                 console.log(payload);
                 axios

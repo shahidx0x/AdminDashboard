@@ -176,7 +176,7 @@ export default function Order() {
     return (
       <Cell {...props}>
         <p className="flex justify-center font-medium break-words whitespace-normal">
-          {rowData.user_id.company}
+          {rowData?.user_id?.company}
         </p>
       </Cell>
     );
@@ -226,6 +226,7 @@ export default function Order() {
         }
       );
     };
+
     const handleUpandInv = (data) => {
       if (data.order_status === 1) {
         handleUpdate(data);
@@ -250,6 +251,11 @@ export default function Order() {
                     })
                     .then((res) => console.log(res));
                 }
+                 axios.post(config.endpoints.host + `/notifications`, {
+                  message: `Order Approved`,
+                   user_email: rowData.user_email,
+                   category:'notification'
+                });
               } catch (error) {
                 toaster.push(
                   <Message type="error">App Notification failed!</Message>
@@ -269,7 +275,13 @@ export default function Order() {
           ),
           {
             loading: "loading...",
-            success: <b>Order cancled and user notified !</b>,
+            success: () => {
+              axios.post(config.endpoints.host + `/notifications`, {
+                message: `Order Cancled`,
+                 user_email: rowData.user_email,
+                 category:'notification'
+              });
+            },
             error: <b>Something went wrong !</b>,
           }
         );
@@ -301,7 +313,13 @@ export default function Order() {
             }),
           {
             loading: "Processing...",
-            success: <b>Transaction successful</b>,
+            success: () => {
+              axios.post(config.endpoints.host + `/notifications`, {
+                message: `Transaction Successdull`,
+                 user_email: rowData.user_email,
+                 category:'notification'
+              });
+            },
             error: <b>Something went wrong!</b>,
           }
         );
@@ -366,7 +384,7 @@ export default function Order() {
               </span>
             ) : rowData[dataKey] === 1 ? (
               <span className="px-5 py-1 font-bold text-xs rounded-full border-1 bg-green-400 text-white">
-                Approved
+                Shipping
               </span>
             ) : (
               rowData[dataKey] === 2 && (
