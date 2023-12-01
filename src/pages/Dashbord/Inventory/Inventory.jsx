@@ -185,8 +185,7 @@ export default function Inventory() {
       data = { isDisable: false };
       mutation_data = { data: data, token: user.jwt, id };
     }
-    console.log(status, id);
-    console.log(mutation_data);
+ 
     ed_mutation.mutate(mutation_data, {
       onSuccess: () => {
         toaster.push(<Message type="success">Product Status Updated</Message>);

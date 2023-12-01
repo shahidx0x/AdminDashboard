@@ -488,7 +488,7 @@ export default function Order() {
     (item) => ({ label: item, value: item })
   );
   const handleChnage = (value, event) => {
-    console.log(value);
+   
     handleFilterChange(value);
   };
 

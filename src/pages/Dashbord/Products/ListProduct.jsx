@@ -25,6 +25,7 @@ import { getBrandsIdAndName } from "../../../api/BrandServices";
 import { getCategoryByBrandId } from "../../../api/CategoryService";
 import {
   deleteProduct,
+  filterProduct,
   getProducts,
   searchProduct,
 } from "../../../api/ProductService";
@@ -67,27 +68,28 @@ export default function ProductList() {
   );
 
   const { data: category_data } = useQuery(
-    ["categoryIdName", "", user.jwt, selectedBrandId, -1],
+    ["categoryIdName", "", user.jwt, selectedBrandId?.split(",")[0], -1],
     getCategoryByBrandId
   );
-  console.log(category_data);
+
   const { data: sub_category_data } = useQuery(
-    ["subCategoryIdName", "", user.jwt, selectedCatId, -1],
+    ["subCategoryIdName", "", user.jwt, selectedCatId?.split(",")[0], -1],
     getSubCategoryByCategoryId
   );
-
+  
   const cate_data = category_data?.data?.map((each) => {
-    return { label: each?.category_label, value: each._id };
+    return { label: each?.category_label, value: each._id+","+each.category_slug  };
   });
 
   const sub_cat_data = sub_category_data?.data?.map((each) => {
-    return { label: each?.subcategory_name, value: each._id };
+    return { label: each?.subcategory_name, value: each._id};
+  });
+  
+  const brand_data = brand?.data?.map((each) => {
+    return { label: each?.name, value: each.id +","+each.slug };
   });
 
-  const brand_data = brand?.data?.map((each) => {
-    return { label: each?.name, value: each.id };
-  });
-  const brand_f_data = [...(brand_data || ["loading"])].map((item) => ({
+  const brand_f_data = [...(brand_data || [])].map((item) => ({
     label: item?.label,
     value: item?.value,
   }));
@@ -98,6 +100,9 @@ export default function ProductList() {
     label: item?.label,
     value: item?.value,
   }));
+
+  
+
 
   const { Column, HeaderCell, Cell } = Table;
   const CompactCell = (props) => <Cell {...props} style={{ padding: 4 }} />;
@@ -134,31 +139,7 @@ export default function ProductList() {
       </Cell>
     );
   };
-  // const DesCell = ({ rowData, icon, dataKey, ...props }) => {
-  //   let PriceIcon = "";
-  //   if (icon) PriceIcon = icon;
 
-  //   const serverHtmlContent = rowData[dataKey];
-  //   const decodedHtml = serverHtmlContent
-  //     .replace(/&lt;/g, "<")
-  //     .replace(/&gt;/g, ">");
-
-  //   return (
-  //     <>
-  //       <Cell {...props}>
-  //         <p
-  //           className={
-  //             PriceIcon
-  //               ? `flex justify-center items-center font-bold`
-  //               : `flex justify-center items-center`
-  //           }
-  //         >
-  //           <HtmlContentRenderer htmlContent={decodedHtml} />
-  //         </p>
-  //       </Cell>
-  //     </>
-  //   );
-  // };
   const NameCell = ({ rowData, ...props }) => {
     return (
       <Cell {...props}>
@@ -341,9 +322,9 @@ export default function ProductList() {
   };
 
   const mutation_search = useMutation(searchProduct);
+  
   const handleInputChange = (value) => {
     setInputValue(value);
-
     if (value === "") {
       refetch();
       setIsSearching(false);
@@ -364,8 +345,58 @@ export default function ProductList() {
     );
   };
 
+  const filter_mutation = useMutation(filterProduct);
+
+  const handleFilterChange = (brand = "", category = "", subcategory = "") => {
+
+    if (brand === "" && category === "" && subcategory === "") {
+      refetch();
+      return;
+    }
+
+    toast.promise(
+      filter_mutation.mutateAsync({
+        queryKey: ['filter', user.jwt,brand,category,subcategory],
+      }),
+      {
+        loading: "loading...",
+        error: <b>Something went wrong !</b>,
+      }
+    );
+  };
+
+  const handleCompanyChange = (value) => {
+    if (value === "" || value === null) {
+      filter_mutation.reset();
+      refetch();
+      return;
+    }
+  
+    const brand = value === "" || value === null ? "" : value.split(",")[1];
+    handleFilterChange(brand);
+  }
+  const handleCategoryChange = (value) => {
+    if (value === "" || value === null) {
+      filter_mutation.reset();
+      refetch();
+      return;
+    }
+  
+    const category = value === "" || value === null ? "" : value.split(",")[1];
+    handleFilterChange(selectedBrandId?.split(",")[1],category);
+  }
+  const handleSubCategoryChange = (value) => {
+    if (value === "" || value === null) {
+      filter_mutation.reset();
+      refetch();
+      return;
+    }
+  
+    const subcategory = value === "" || value === null ? "" : value.split(",")[1];
+    handleFilterChange(null,null,subcategory);
+  }
   const displayedData =
-    isSearching && mutation_search?.data
+    filter_mutation.data ? [...filter_mutation.data.data ] : isSearching && mutation_search?.data
       ? [...(mutation_search?.data?.data || [])]
       : data?.data || [];
 
@@ -384,7 +415,7 @@ export default function ProductList() {
     refetch();
   };
   const handleClose = () => setOpen(false);
-
+  refetch();
   return (
     <div>
       <Toaster />
@@ -502,6 +533,8 @@ export default function ProductList() {
                   className="w-[12rem] 2xl:w-[14.5rem]"
                   onChange={(value, data) => {
                     SetSelectedBrandId(value);
+                    handleCompanyChange(value);
+                    
                   }}
                 />
                 <SelectPicker
@@ -512,6 +545,7 @@ export default function ProductList() {
                   className="w-[12rem] 2xl:w-[14.5rem]"
                   onChange={(value, data) => {
                     SetSelectedCatId(value);
+                    handleCategoryChange(value)
                   }}
                 />
                 <SelectPicker
@@ -522,6 +556,7 @@ export default function ProductList() {
                   className="w-[12rem] 2xl:w-[14.5rem]"
                   onChange={(value, data) => {
                     SetSelectedSubCatId(value);
+                    handleSubCategoryChange(value);
                   }}
                 />
               </div>

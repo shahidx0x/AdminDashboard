@@ -46,7 +46,28 @@ export async function searchProduct(data) {
     throw error;
   }
 }
+// 
+export async function filterProduct(data) {
 
+  const headers = {
+    "Cache-Control": "no-cache",
+    Authorization: `Bearer ${data.queryKey[1]}`,
+  };
+
+  try {
+    const response = await axios.get(
+      config.endpoints.host + `/get/all/products?limit=-1&page=1&brand_slug=${data.queryKey[2]}&cat_slug=${data.queryKey[3]}`,
+      { headers }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching search data:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+}
 export async function createProduct({ data, token }) {
   try {
     const headers = {
