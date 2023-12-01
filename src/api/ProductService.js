@@ -56,7 +56,7 @@ export async function filterProduct(data) {
 
   try {
     const response = await axios.get(
-      config.endpoints.host + `/get/all/products?limit=-1&page=1&brand_slug=${data.queryKey[2]}&cat_slug=${data.queryKey[3]}`,
+      config.endpoints.host + `/get/all/products?limit=-1&page=1&brand_slug=${data.queryKey[2]}&cat_slug=${data.queryKey[3]}&sub_category_name=${data.queryKey[4]}`,
       { headers }
     );
     return response.data;

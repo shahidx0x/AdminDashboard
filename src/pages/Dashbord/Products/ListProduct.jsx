@@ -386,14 +386,16 @@ export default function ProductList() {
     handleFilterChange(selectedBrandId?.split(",")[1],category);
   }
   const handleSubCategoryChange = (value) => {
+  
     if (value === "" || value === null) {
       filter_mutation.reset();
       refetch();
       return;
     }
   
-    const subcategory = value === "" || value === null ? "" : value.split(",")[1];
-    handleFilterChange(null,null,subcategory);
+    const subcategory = value;
+    console.log(subcategory);
+    handleFilterChange(selectedBrandId?.split(",")[1],selectedCatId?.split(",")[1],subcategory);
   }
   const displayedData =
     filter_mutation.data ? [...filter_mutation.data.data ] : isSearching && mutation_search?.data
@@ -556,7 +558,7 @@ export default function ProductList() {
                   className="w-[12rem] 2xl:w-[14.5rem]"
                   onChange={(value, data) => {
                     SetSelectedSubCatId(value);
-                    handleSubCategoryChange(value);
+                    handleSubCategoryChange(data.target.innerHTML);
                   }}
                 />
               </div>
