@@ -186,7 +186,7 @@ export default function AddAdmin() {
         <Panel
           bordered
           className="shadow-sm w-[70rem] border-gray-300"
-          style={{ background: "#fff" }}
+          // style={{ background: "#fff" }}
           header={
             <>
               <Breadcrumb className="text-xs font-mono ">

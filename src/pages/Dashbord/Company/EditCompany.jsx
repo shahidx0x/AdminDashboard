@@ -103,7 +103,7 @@ export default function EditCompany() {
         <Panel
           bordered
           className="shadow-md -mt-10 w-[50rem] border-gray-300"
-          style={{ background: "#fff" }}
+          // style={{ background: "#fff" }}
           header={
             <h3 className="font-bold text-2xl rounded-lg p-8 bg-indigo-500 text-white">
               Update Company Information
