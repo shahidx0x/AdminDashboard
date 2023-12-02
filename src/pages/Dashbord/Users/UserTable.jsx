@@ -26,18 +26,18 @@ function previewFile(file, callback) {
 }
 
 export default function UserTable() {
-  const [compact, setCompact] = useState(true);
-  const [bordered, setBordered] = useState(true);
+  const settings = useSelector(state => state.settings);
+
+
   const [noData, setNoData] = useState(false);
   const [page, setPage] = useState(1);
-  const [showHeader, setShowHeader] = useState(true);
-  const [autoHeight, setAutoHeight] = useState(true);
+
+
   const [fillHeight, setFillHeight] = useState(false);
-  const [hover, setHover] = useState(true);
+
   const user = useSelector((state) => state.user.user);
   const [inputValue, setInputValue] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-
   const { Column, HeaderCell, Cell } = Table;
   const navigate = useNavigate();
 
@@ -225,7 +225,7 @@ export default function UserTable() {
     ["users", page, user.jwt],
     getUsers,
     {
-      cacheTime: 0, // Data is not cached
+      cacheTime: 0,
     }
   );
 
@@ -264,8 +264,8 @@ export default function UserTable() {
   const columns = defaultColumns.filter((column) =>
     columnKeys.some((key) => key === column.key)
   );
-  const CustomCell = compact ? CompactCell : Cell;
-  const CustomHeaderCell = compact ? CompactHeaderCell : HeaderCell;
+  const CustomCell = settings.compact ? CompactCell : Cell;
+  const CustomHeaderCell = settings.compact ? CompactHeaderCell : HeaderCell;
 
   const handleLoadMore = () => {
     setPage((prevPage) => {
@@ -281,7 +281,7 @@ export default function UserTable() {
     setPage((prevPage) => Math.max(prevPage - 1, 1));
     refetch();
   };
-  const settings = useSelector(state => state.settings);
+
 
   return (
     <div className="">
@@ -300,82 +300,12 @@ export default function UserTable() {
                 onChange={setColumnKeys}
                 cleanable={false}
               />
-              <Dropdown className="" icon={<Settings />}>
-                <Dropdown.Item>
-                  <span className="flex justify-between">
-                    <p>Compact：</p>
-                    <Toggle
-                      checkedChildren="On"
-                      unCheckedChildren="Off"
-                      checked={compact}
-                      onChange={setCompact}
-                    />
-                  </span>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <span className="flex justify-between">
-                    <p>Bordered：</p>
-                    <Toggle
-                      checkedChildren="On"
-                      unCheckedChildren="Off"
-                      checked={bordered}
-                      onChange={setBordered}
-                    />
-                  </span>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <span className="flex justify-between">
-                    Show Header：
-                    <Toggle
-                      checkedChildren="On"
-                      unCheckedChildren="Off"
-                      checked={showHeader}
-                      onChange={setShowHeader}
-                    />
-                  </span>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <span className="flex justify-between">
-                    Hover：
-                    <Toggle
-                      checkedChildren="On"
-                      unCheckedChildren="Off"
-                      checked={hover}
-                      onChange={setHover}
-                    />
-                  </span>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <span className="flex justify-between">
-                    Auto Height：
-                    <Toggle
-                      checkedChildren="On"
-                      unCheckedChildren="Off"
-                      checked={autoHeight}
-                      onChange={setAutoHeight}
-                    />
-                  </span>
-                </Dropdown.Item>
-              </Dropdown>
+           
             </div>
 
             <div>
               <div className=" ">
-                {/* <div className="flex space-x-4  rounded-md">
-                  <div className="flex rounded-md overflow-hidden h-12 w-full">
-                    <input
-                      onChange={(event) => handleInputChange(event)}
-                      type="text"
-                      className="w-[20rem] border-2 text-md p-2 text-xl  rounded-md rounded-r-none"
-                    />
-                    <button
-                      onClick={handleButtonClick}
-                      className="bg-indigo-600 text-white px-6 text-lg font-semibold py-2 rounded-r-md"
-                    >
-                      Search
-                    </button>
-                  </div>
-                </div> */}
+            
                 <InputGroup>
                   <Input
                     placeholder="Search by User Email"
@@ -391,20 +321,20 @@ export default function UserTable() {
         </div>
 
         <hr />
-        <div className="mt-5" style={{ height: autoHeight ? "auto" : 400 }}>
+        <div className="mt-5" style={{ height: settings.autoHeight ? "auto" : 400 }}>
           <Table
             className=""
             loading={status === "loading" ? true : false}
             height={300}
-            hover={hover}
+            hover={settings.hover}
             fillHeight={fillHeight}
-            showHeader={showHeader}
-            autoHeight={autoHeight}
+            showHeader={settings.header}
+            autoHeight={settings.autoHeight}
             data={noData ? [] : displayedData}
-            bordered={bordered}
-            cellBordered={bordered}
-            headerHeight={compact ? 40 : 30}
-            rowHeight={compact ? 70 : 30}
+            bordered={settings.bordered}
+            cellBordered={settings.bordered}
+            headerHeight={settings.compact ? 40 : 30}
+            rowHeight={settings.compact ? 70 : 30}
           >
             {columns.map((column) => {
               const { key, label, cellRenderer, ...rest } = column;

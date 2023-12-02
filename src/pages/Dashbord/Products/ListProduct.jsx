@@ -394,7 +394,7 @@ export default function ProductList() {
     }
   
     const subcategory = value;
-    console.log(subcategory);
+  
     handleFilterChange(selectedBrandId?.split(",")[1],selectedCatId?.split(",")[1],subcategory);
   }
   const displayedData =
@@ -453,63 +453,7 @@ export default function ProductList() {
                 onChange={setColumnKeys}
                 cleanable={false}
               />
-              <Dropdown className="" icon={<Settings />}>
-                <Dropdown.Item>
-                  <span className="flex justify-between">
-                    <p>Compact：</p>
-                    <Toggle
-                      checkedChildren="On"
-                      unCheckedChildren="Off"
-                      checked={compact}
-                      onChange={setCompact}
-                    />
-                  </span>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <span className="flex justify-between">
-                    <p>Bordered：</p>
-                    <Toggle
-                      checkedChildren="On"
-                      unCheckedChildren="Off"
-                      checked={bordered}
-                      onChange={setBordered}
-                    />
-                  </span>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <span className="flex justify-between">
-                    Show Header：
-                    <Toggle
-                      checkedChildren="On"
-                      unCheckedChildren="Off"
-                      checked={showHeader}
-                      onChange={setShowHeader}
-                    />
-                  </span>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <span className="flex justify-between">
-                    Hover：
-                    <Toggle
-                      checkedChildren="On"
-                      unCheckedChildren="Off"
-                      checked={hover}
-                      onChange={setHover}
-                    />
-                  </span>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <span className="flex justify-between">
-                    Auto Height：
-                    <Toggle
-                      checkedChildren="On"
-                      unCheckedChildren="Off"
-                      checked={autoHeight}
-                      onChange={setAutoHeight}
-                    />
-                  </span>
-                </Dropdown.Item>
-              </Dropdown>
+          
             </div>
 
             <div className="flex flex-col gap-2">
@@ -569,20 +513,20 @@ export default function ProductList() {
 
         <div
           className="mt-5 ml-5"
-          style={{ height: autoHeight ? "auto" : 400 }}
+          style={{ height: settings.autoHeight ? "auto" : 400 }}
         >
           <Table
             loading={status === "loading" ? true : false}
             height={300}
-            hover={hover}
+            hover={settings.hover}
             fillHeight={fillHeight}
-            showHeader={showHeader}
-            autoHeight={autoHeight}
+            showHeader={settings.header}
+            autoHeight={settings.autoHeight}
             data={noData ? [] : displayedData}
-            bordered={bordered}
-            cellBordered={bordered}
-            headerHeight={compact ? 40 : 30}
-            rowHeight={compact ? 56 : 30}
+            bordered={settings.bordered}
+            cellBordered={settings.bordered}
+            headerHeight={settings.compact ? 40 : 30}
+            rowHeight={settings.compact ? 56 : 30}
           >
             {columns.map((column) => {
               const { key, label, cellRenderer, ...rest } = column;

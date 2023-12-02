@@ -13,7 +13,7 @@ import Transaction from "./pages/Dashbord/Transaction/Transaction";
 import Login from "./pages/Login";
 import { CustomProvider } from "rsuite";
 
-import { useSearch } from "rsuite/esm/Picker";
+
 import { useSelector } from "react-redux";
 
 // Lazy load the components

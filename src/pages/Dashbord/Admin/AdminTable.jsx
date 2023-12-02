@@ -19,14 +19,10 @@ function previewFile(file, callback) {
 }
 
 export default function AdminTable() {
-  const [compact, setCompact] = useState(true);
-  const [bordered, setBordered] = useState(true);
+  const settings = useSelector(state => state.settings);
   const [noData, setNoData] = useState(false);
   const [page, setPage] = useState(1);
-  const [showHeader, setShowHeader] = useState(true);
-  const [autoHeight, setAutoHeight] = useState(true);
   const [fillHeight, setFillHeight] = useState(false);
-  const [hover, setHover] = useState(true);
   const user = useSelector((state) => state.user.user);
   const [inputValue, setInputValue] = useState("");
   const [isSearching, setIsSearching] = useState(false);
@@ -98,12 +94,7 @@ export default function AdminTable() {
     return (
       <Cell {...props}>
         <div className="flex justify-center gap-2">
-          {/* <button
-            className="text-blue-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-500 rounded-lg"
-            onClick={handleEdit}
-          >
-            Edit
-          </button> */}
+       
           <button
             className="text-red-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-500 rounded-lg"
             onClick={() => handleRemoveAdmin(rowData._id)}
@@ -223,8 +214,8 @@ export default function AdminTable() {
   const columns = defaultColumns.filter((column) =>
     columnKeys.some((key) => key === column.key)
   );
-  const CustomCell = compact ? CompactCell : Cell;
-  const CustomHeaderCell = compact ? CompactHeaderCell : HeaderCell;
+  const CustomCell = settings.compact ? CompactCell : Cell;
+  const CustomHeaderCell = settings.compact ? CompactHeaderCell : HeaderCell;
 
   const handleLoadMore = () => {
     setPage((prevPage) => {
@@ -241,7 +232,7 @@ export default function AdminTable() {
     refetch();
   };
   refetch();
-  const settings = useSelector(state => state.settings);
+
   return (
     <div>
       <Toaster />
@@ -259,63 +250,7 @@ export default function AdminTable() {
                 onChange={setColumnKeys}
                 cleanable={false}
               />
-              <Dropdown className="" icon={<Settings />}>
-                <Dropdown.Item>
-                  <span className="flex justify-between">
-                    <p>Compact：</p>
-                    <Toggle
-                      checkedChildren="On"
-                      unCheckedChildren="Off"
-                      checked={compact}
-                      onChange={setCompact}
-                    />
-                  </span>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <span className="flex justify-between">
-                    <p>Bordered：</p>
-                    <Toggle
-                      checkedChildren="On"
-                      unCheckedChildren="Off"
-                      checked={bordered}
-                      onChange={setBordered}
-                    />
-                  </span>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <span className="flex justify-between">
-                    Show Header：
-                    <Toggle
-                      checkedChildren="On"
-                      unCheckedChildren="Off"
-                      checked={showHeader}
-                      onChange={setShowHeader}
-                    />
-                  </span>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <span className="flex justify-between">
-                    Hover：
-                    <Toggle
-                      checkedChildren="On"
-                      unCheckedChildren="Off"
-                      checked={hover}
-                      onChange={setHover}
-                    />
-                  </span>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <span className="flex justify-between">
-                    Auto Height：
-                    <Toggle
-                      checkedChildren="On"
-                      unCheckedChildren="Off"
-                      checked={autoHeight}
-                      onChange={setAutoHeight}
-                    />
-                  </span>
-                </Dropdown.Item>
-              </Dropdown>
+         
             </div>
 
             <div>
@@ -334,19 +269,19 @@ export default function AdminTable() {
         </div>
 
         <hr />
-        <div className="mt-5" style={{ height: autoHeight ? "auto" : 400 }}>
+        <div className="mt-5" style={{ height: settings.autoHeight ? "auto" : 400 }}>
           <Table
             loading={status === "loading" ? true : false}
             height={300}
-            hover={hover}
+            hover={settings.hover}
             fillHeight={fillHeight}
-            showHeader={showHeader}
-            autoHeight={autoHeight}
+            showHeader={settings.header}
+            autoHeight={settings.autoHeight}
             data={noData ? [] : displayedData}
-            bordered={bordered}
-            cellBordered={bordered}
-            headerHeight={compact ? 40 : 30}
-            rowHeight={compact ? 56 : 30}
+            bordered={settings.bordered}
+            cellBordered={settings.bordered}
+            headerHeight={settings.compact ? 40 : 30}
+            rowHeight={settings.compact ? 56 : 30}
           >
             {columns.map((column) => {
               const { key, label, cellRenderer, ...rest } = column;

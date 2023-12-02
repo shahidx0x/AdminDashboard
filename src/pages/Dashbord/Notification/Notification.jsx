@@ -3,7 +3,7 @@
 import axios from "axios";
 import moment from "moment-timezone";
 import React, { useState } from "react";
-import { Toaster, useToaster } from "react-hot-toast";
+import { Toaster} from "react-hot-toast";
 import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -14,12 +14,12 @@ const { Column, HeaderCell, Cell } = Table;
 const rowKey = "_id";
 
 export default function Notification() {
-  const toaster = useToaster();
-  const [compact, setCompact] = useState(true);
-  const [bordered, setBordered] = useState(true);
-  const [page, setPage] = useState(1);
-  const [autoHeight, setAutoHeight] = useState(true);
-  const [hover, setHover] = useState(true);
+
+  const [compact] = useState(true);
+  const [bordered] = useState(true);
+  const [page] = useState(1);
+  const [autoHeight] = useState(true);
+
   const user = useSelector((state) => state.user.user);
   const settings = useSelector(state => state.settings);
 

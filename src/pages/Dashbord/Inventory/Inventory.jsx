@@ -1,20 +1,18 @@
 /* eslint-disable react/prop-types */
 import CollaspedOutlineIcon from "@rsuite/icons/CollaspedOutline";
 import ExpandOutlineIcon from "@rsuite/icons/ExpandOutline";
-import { SearchIcon, Settings } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import {
-  Dropdown,
   IconButton,
   Input,
   InputGroup,
   Message,
   Table,
   TagPicker,
-  Toggle,
   useToaster,
 } from "rsuite";
 import {
@@ -44,15 +42,10 @@ const ExpandCell = ({ rowData, expandedRowKeys, onChange, ...props }) => (
 );
 
 export default function Inventory() {
+  const settings = useSelector(state => state.settings)
   const toaster = useToaster();
-  const [compact, setCompact] = useState(true);
-  const [bordered, setBordered] = useState(true);
   const [page, setPage] = useState(1);
-  const [showHeader, setShowHeader] = useState(true);
-  const [autoHeight, setAutoHeight] = useState(true);
-  const [hover, setHover] = useState(true);
   const user = useSelector((state) => state.user.user);
-
   const [inputValue, setInputValue] = useState();
   const [isSearching, setIsSearching] = useState(false);
   const [stockValue, setStockValue] = useState(null);
@@ -282,8 +275,8 @@ export default function Inventory() {
   const columns = defaultColumns.filter((column) =>
     columnKeys.some((key) => key === column.key)
   );
-  const CustomCell = compact ? CompactCell : Cell;
-  const CustomHeaderCell = compact ? CompactHeaderCell : HeaderCell;
+  const CustomCell = settings.compact ? CompactCell : Cell;
+  const CustomHeaderCell = settings.compact ? CompactHeaderCell : HeaderCell;
 
   const { data: search, refetch: search_refetch } = useQuery(
     ["search", inputValue],
@@ -335,7 +328,7 @@ export default function Inventory() {
     data_refetch();
   };
   data_refetch();
-  const settings = useSelector(state => state.settings)
+ 
   return (
     <div>
       <Toaster />
@@ -352,63 +345,7 @@ export default function Inventory() {
               onChange={setColumnKeys}
               cleanable={false}
             />
-            <Dropdown className="" icon={<Settings />}>
-              <Dropdown.Item>
-                <span className="flex justify-between">
-                  <p>Compact：</p>
-                  <Toggle
-                    checkedChildren="On"
-                    unCheckedChildren="Off"
-                    checked={compact}
-                    onChange={setCompact}
-                  />
-                </span>
-              </Dropdown.Item>
-              <Dropdown.Item>
-                <span className="flex justify-between">
-                  <p>Bordered：</p>
-                  <Toggle
-                    checkedChildren="On"
-                    unCheckedChildren="Off"
-                    checked={bordered}
-                    onChange={setBordered}
-                  />
-                </span>
-              </Dropdown.Item>
-              <Dropdown.Item>
-                <span className="flex justify-between">
-                  Show Header：
-                  <Toggle
-                    checkedChildren="On"
-                    unCheckedChildren="Off"
-                    checked={showHeader}
-                    onChange={setShowHeader}
-                  />
-                </span>
-              </Dropdown.Item>
-              <Dropdown.Item>
-                <span className="flex justify-between">
-                  Hover：
-                  <Toggle
-                    checkedChildren="On"
-                    unCheckedChildren="Off"
-                    checked={hover}
-                    onChange={setHover}
-                  />
-                </span>
-              </Dropdown.Item>
-              <Dropdown.Item>
-                <span className="flex justify-between">
-                  Auto Height：
-                  <Toggle
-                    checkedChildren="On"
-                    unCheckedChildren="Off"
-                    checked={autoHeight}
-                    onChange={setAutoHeight}
-                  />
-                </span>
-              </Dropdown.Item>
-            </Dropdown>
+       
           </div>
 
           <div>
@@ -430,20 +367,20 @@ export default function Inventory() {
         </div>
       </div>
 
-      <div className="mt-5 ml-5" style={{ height: autoHeight ? "auto" : 700 }}>
+      <div className="mt-5 ml-5" style={{ height: settings.autoHeight ? "auto" : 700 }}>
         <Table
           shouldUpdateScroll={true}
           rowKey={rowKey}
           loading={status === "loading" ? true : false}
           height={800}
-          hover={hover}
-          showHeader={showHeader}
+          hover={settings.hover}
+          showHeader={settings.header}
           autoHeight={true}
           data={displayedData}
-          bordered={bordered}
-          cellBordered={bordered}
-          headerHeight={compact ? 40 : 30}
-          rowHeight={compact ? 56 : 30}
+          bordered={settings.bordered}
+          cellBordered={settings.bordered}
+          headerHeight={settings.compact ? 40 : 30}
+          rowHeight={settings.compact ? 56 : 30}
           rowExpandedHeight={100}
           expandedRowKeys={expandedRowKeys}
           renderRowExpanded={renderRowExpanded}

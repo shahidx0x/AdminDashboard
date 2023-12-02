@@ -94,7 +94,7 @@ export default function AddProduct() {
   const [editorValue, setEditorValue] = useState(
     RichTextEditor.createEmptyValue()
   );
-  console.log(editorValue);
+
 
   const handleChange = (value) => {
     if (value) {

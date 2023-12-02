@@ -10,30 +10,26 @@ import {
   Divider,
   Drawer,
   IconButton,
-  Input,
-  InputGroup,
   Loader,
   Modal,
   Nav,
   Navbar,
   Popover,
-  Stack,
   Toggle,
   Whisper,
 } from "rsuite";
 import { logOut } from "../redux/slices/user.slices";
 
-import { useRef } from "react";
+
 import { Icon } from "@rsuite/icons";
-import NoticeIcon from "@rsuite/icons/Notice";
-import HelpOutlineIcon from "@rsuite/icons/HelpOutline";
+
 
 import { MdOutlineNightlight, MdOutlineLightMode } from "react-icons/md";
-import { setThemeDark, setThemeLight } from "../redux/slices/settings.slice";
+import { setTableAutoHeight, setTableBordered, setTableCompact, setTableHeader, setTableHover, setThemeDark, setThemeLight } from "../redux/slices/settings.slice";
 
 export default function NavbarHeader() {
   const settings = useSelector((state) => state.settings);
-  const [theme, setTheme] = useState(settings.theme);
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -47,6 +43,8 @@ export default function NavbarHeader() {
     navigate("/");
     setOpen(false);
   };
+
+  console.log(settings);
 
   return (
     <>
@@ -111,7 +109,6 @@ export default function NavbarHeader() {
           }}
             />
           </Nav>
-     
       </Navbar>
 
       <Drawer
@@ -138,8 +135,8 @@ export default function NavbarHeader() {
                   <Toggle
                     checkedChildren="On"
                     unCheckedChildren="Off"
-                    // checked={compact}
-                    // onChange={setCompact}
+                    checked={settings.compact}
+                    onChange={() => dispatch(setTableCompact())}
                   />
                 </span>
               </div>
@@ -149,8 +146,8 @@ export default function NavbarHeader() {
                   <Toggle
                     checkedChildren="On"
                     unCheckedChildren="Off"
-                    // checked={bordered}
-                    // onChange={setBordered}
+                    checked={settings.bordered}
+                    onChange={() => dispatch(setTableBordered())}
                   />
                 </span>
               </div>
@@ -160,8 +157,8 @@ export default function NavbarHeader() {
                   <Toggle
                     checkedChildren="On"
                     unCheckedChildren="Off"
-                    // checked={showHeader}
-                    // onChange={setShowHeader}
+                    checked={settings.header}
+                    onChange={() => dispatch(setTableHeader())}
                   />
                 </span>
               </div>
@@ -171,8 +168,8 @@ export default function NavbarHeader() {
                   <Toggle
                     checkedChildren="On"
                     unCheckedChildren="Off"
-                    // checked={hover}
-                    // onChange={setHover}
+                    checked={settings.hover}
+                    onChange={() => dispatch(setTableHover())}
                   />
                 </span>
               </div>
@@ -182,8 +179,8 @@ export default function NavbarHeader() {
                   <Toggle
                     checkedChildren="On"
                     unCheckedChildren="Off"
-                    // checked={autoHeight}
-                    // onChange={setAutoHeight}
+                    checked={settings.autoHeight}
+                    onChange={() => dispatch(setTableAutoHeight())}
                   />
                 </span>
               </div>
