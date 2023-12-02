@@ -11,6 +11,11 @@ import Notification from "./pages/Dashbord/Notification/Notification";
 import Order from "./pages/Dashbord/Orders/Order";
 import Transaction from "./pages/Dashbord/Transaction/Transaction";
 import Login from "./pages/Login";
+import { CustomProvider } from "rsuite";
+
+import { useSearch } from "rsuite/esm/Picker";
+import { useSelector } from "react-redux";
+
 
 // Lazy load the components
 const AddCategory = lazy(() => import("./pages/Dashbord/Category/AddCategory"));
@@ -249,6 +254,9 @@ function Root() {
 }
 
 function Dashbord() {
+  
+  const settings = useSelector(state => state.settings);
+
   const containerStyle = {
     display: "flex",
     height: "100vh",
@@ -262,7 +270,7 @@ function Dashbord() {
   };
 
   return (
-    <>
+    <CustomProvider theme={settings.theme || 'light'}>
       <NavbarHeader />
       <div style={containerStyle}>
         <div
@@ -284,7 +292,7 @@ function Dashbord() {
           <Outlet />
         </div>
       </div>
-    </>
+    </CustomProvider>
   );
 }
 

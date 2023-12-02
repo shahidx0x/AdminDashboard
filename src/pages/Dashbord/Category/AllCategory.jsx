@@ -290,6 +290,7 @@ export default function AllCategory() {
       setConfirm(false);
     }
   };
+  const settings = useSelector(state => state.settings);
   return (
     <div>
       <Toaster />
@@ -486,20 +487,20 @@ export default function AllCategory() {
                   </svg>
                   <p
                     onClick={handleLoadPrevious}
-                    className="text-sm ml-3 font-medium leading-none "
+                    className={`text-sm ml-3 font-medium leading-none ${settings.theme === 'dark' && 'text-white'} `}
                   >
                     Previous
                   </p>
                 </div>
                 <div className="sm:flex hidden">
-                  <p className="text-sm font-bold leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2">
+                  <p className={`text-sm font-bold leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2 ${settings.theme === 'dark' && 'text-white'}`}>
                     pages : {page}/{data?.meta?.total_pages}
                   </p>
                 </div>
                 <div className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
                   <p
                     onClick={handleLoadMore}
-                    className="text-sm font-medium leading-none mr-3"
+                    className={`text-sm font-medium leading-none mr-3 ${settings.theme === 'dark' && 'text-white'}`}
                   >
                     Next
                   </p>

@@ -11,7 +11,7 @@ const dashbordSlice = createSlice({
   initialState,
   reducers: {
     setUserCount: (state, action) => {
-      console.log(action.payload);
+  
       state.user_count = action.payload;
     },
     setCompanyCount: (state, action) => {

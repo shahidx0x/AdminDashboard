@@ -273,7 +273,7 @@ export default function Transaction() {
     setPage((prevPage) => Math.max(prevPage - 1, 1));
     data_refetch();
   };
-
+const settings = useSelector(state => state.settings)
   return (
     <div>
       <Toaster />
@@ -284,10 +284,10 @@ export default function Transaction() {
             <div>
               <Panel className="border w-[20rem]   hover:bg-gradient-to-l ">
                 <div className="flex flex-col gap-8 justify-between items-center">
-                  <div className="text-2xl font-bold  text-black underline">
+                  <div className={`text-2xl font-bold  text-black underline ${settings.theme === 'dark' && 'text-white'}`}>
                     Total Sell
                   </div>
-                  <div className="text-black text-5xl font-bold font-mono">
+                  <div className={`text-black text-5xl font-bold font-mono  ${settings.theme === 'dark' && 'text-white'}`}>
                     ${data?.meta.totals.totalSell}
                   </div>
                 </div>
@@ -296,12 +296,12 @@ export default function Transaction() {
           </div>
           <div className=" w-80 flex justify-center items-center">
             <div>
-              <Panel className="border w-[20rem]   hover:bg-gradient-to-l ">
+            <Panel className="border w-[20rem]   hover:bg-gradient-to-l ">
                 <div className="flex flex-col gap-8 justify-between items-center">
-                  <div className="text-2xl font-bold  text-black underline">
-                    Today Sell
+                  <div className={`text-2xl font-bold  text-black underline ${settings.theme === 'dark' && 'text-white'}`}>
+                    Total Sell
                   </div>
-                  <div className="text-black text-5xl font-bold font-mono">
+                  <div className={`text-black text-5xl font-bold font-mono  ${settings.theme === 'dark' && 'text-white'}`}>
                     ${data?.meta.totals.totalSell}
                   </div>
                 </div>
@@ -310,12 +310,12 @@ export default function Transaction() {
           </div>
           <div className=" w-80 flex justify-center items-center">
             <div>
-              <Panel className="border w-[20rem]   hover:bg-gradient-to-l ">
+            <Panel className="border w-[20rem]   hover:bg-gradient-to-l ">
                 <div className="flex flex-col gap-8 justify-between items-center">
-                  <div className="text-2xl font-bold  text-black underline">
-                    Weekly Sell
+                  <div className={`text-2xl font-bold  text-black underline ${settings.theme === 'dark' && 'text-white'}`}>
+                    Total Sell
                   </div>
-                  <div className="text-black text-5xl font-bold font-mono">
+                  <div className={`text-black text-5xl font-bold font-mono  ${settings.theme === 'dark' && 'text-white'}`}>
                     ${data?.meta.totals.totalSell}
                   </div>
                 </div>
@@ -324,12 +324,12 @@ export default function Transaction() {
           </div>
           <div className=" w-80 flex justify-center items-center">
             <div>
-              <Panel className="border w-[20rem]   hover:bg-gradient-to-l ">
+            <Panel className="border w-[20rem]   hover:bg-gradient-to-l ">
                 <div className="flex flex-col gap-8 justify-between items-center">
-                  <div className="text-2xl font-bold  text-black underline">
-                    Monthly Sell
+                  <div className={`text-2xl font-bold  text-black underline ${settings.theme === 'dark' && 'text-white'}`}>
+                    Total Sell
                   </div>
-                  <div className="text-black text-5xl font-bold font-mono">
+                  <div className={`text-black text-5xl font-bold font-mono  ${settings.theme === 'dark' && 'text-white'}`}>
                     ${data?.meta.totals.totalSell}
                   </div>
                 </div>
@@ -476,90 +476,90 @@ export default function Transaction() {
         </div>
       </div>
       <div className="border-b">
-        <div className="flex items-center justify-center py-10 lg:px-0 sm:px-6 px-4">
-          <div className="lg:w-3/5 w-full  flex items-center justify-between border-t border-gray-200">
-            <div className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
-              <svg
-                width={14}
-                height={8}
-                viewBox="0 0 14 8"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M1.1665 4H12.8332"
-                  stroke="currentColor"
-                  strokeWidth="1.25"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M1.1665 4L4.49984 7.33333"
-                  stroke="currentColor"
-                  strokeWidth="1.25"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M1.1665 4.00002L4.49984 0.666687"
-                  stroke="currentColor"
-                  strokeWidth="1.25"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <p
-                onClick={handleLoadPrevious}
-                className="text-sm ml-3 font-medium leading-none "
-              >
-                Previous
-              </p>
-            </div>
-            <div className="sm:flex hidden">
-              <p className="text-sm font-bold leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2">
-                pages : {page}/{data?.meta?.total_page}
-              </p>
-            </div>
-            <div className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
-              <p
-                onClick={handleLoadMore}
-                className="text-sm font-medium leading-none mr-3"
-              >
-                Next
-              </p>
-              <svg
-                width={14}
-                height={8}
-                viewBox="0 0 14 8"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M1.1665 4H12.8332"
-                  stroke="currentColor"
-                  strokeWidth="1.25"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M9.5 7.33333L12.8333 4"
-                  stroke="currentColor"
-                  strokeWidth="1.25"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M9.5 0.666687L12.8333 4.00002"
-                  stroke="currentColor"
-                  strokeWidth="1.25"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+            <div className="flex items-center justify-center py-10 lg:px-0 sm:px-6 px-4">
+              <div className="lg:w-3/5 w-full  flex items-center justify-between border-t border-gray-200">
+                <div className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
+                  <svg
+                    width={14}
+                    height={8}
+                    viewBox="0 0 14 8"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M1.1665 4H12.8332"
+                      stroke="currentColor"
+                      strokeWidth="1.25"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M1.1665 4L4.49984 7.33333"
+                      stroke="currentColor"
+                      strokeWidth="1.25"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M1.1665 4.00002L4.49984 0.666687"
+                      stroke="currentColor"
+                      strokeWidth="1.25"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <p
+                    onClick={handleLoadPrevious}
+                    className={`text-sm ml-3 font-medium leading-none ${settings.theme === 'dark' && 'text-white'} `}
+                  >
+                    Previous
+                  </p>
+                </div>
+                <div className="sm:flex hidden">
+                  <p className={`text-sm font-bold leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2 ${settings.theme === 'dark' && 'text-white'}`}>
+                    pages : {page}/{data?.meta?.total_page}
+                  </p>
+                </div>
+                <div className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
+                  <p
+                    onClick={handleLoadMore}
+                    className={`text-sm font-medium leading-none mr-3 ${settings.theme === 'dark' && 'text-white'}`}
+                  >
+                    Next
+                  </p>
+                  <svg
+                    width={14}
+                    height={8}
+                    viewBox="0 0 14 8"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M1.1665 4H12.8332"
+                      stroke="currentColor"
+                      strokeWidth="1.25"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M9.5 7.33333L12.8333 4"
+                      stroke="currentColor"
+                      strokeWidth="1.25"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M9.5 0.666687L12.8333 4.00002"
+                      stroke="currentColor"
+                      strokeWidth="1.25"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
     </div>
   );
 }

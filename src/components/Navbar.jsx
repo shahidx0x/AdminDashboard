@@ -1,37 +1,44 @@
 /* eslint-disable react/display-name */
 /* eslint-disable react/prop-types */
-import React, { useContext, useRef, useState } from "react";
-import { useQuery } from "react-query";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import SettingIcon from "@rsuite/icons/Setting";
 import { useNavigate } from "react-router";
 import {
   Avatar,
   Button,
   Divider,
+  Drawer,
+  IconButton,
+  Input,
+  InputGroup,
   Loader,
   Modal,
   Nav,
   Navbar,
   Popover,
+  Stack,
+  Toggle,
   Whisper,
 } from "rsuite";
-import { getNotification } from "../api/Notification";
 import { logOut } from "../redux/slices/user.slices";
-const NotificationContext = React.createContext();
+
+import { useRef } from "react";
+import { Icon } from "@rsuite/icons";
+import NoticeIcon from "@rsuite/icons/Notice";
+import HelpOutlineIcon from "@rsuite/icons/HelpOutline";
+
+import { MdOutlineNightlight, MdOutlineLightMode } from "react-icons/md";
+import { setThemeDark, setThemeLight } from "../redux/slices/settings.slice";
+
 export default function NavbarHeader() {
-  const user = useSelector((state) => state.user.user);
-  const {
-    data,
-    status,
-    refetch: data_refetch,
-  } = useQuery(["notification", user.jwt], getNotification, {
-    cacheTime: 0,
-  });
-  const trigger = useRef(null);
+  const settings = useSelector((state) => state.settings);
+  const [theme, setTheme] = useState(settings.theme);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
+  const [openSettings, setOpenSettings] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -67,23 +74,124 @@ export default function NavbarHeader() {
           </Button>
         </Modal.Footer>
       </Modal>
-      <NotificationContext.Provider value={data}>
-        <Navbar className="h-20">
-          <Navbar.Brand className="text-4xl font-bold" href="#">
-            FGY-Y2J
-          </Navbar.Brand>
 
-          <Nav pullRight className="mt-3 mr-3">
-            <MenuComponent placement="bottomEnd" handleOpen={handleOpen}>
-              <Avatar
-                circle
-                src="https://avatars.githubusercontent.com/u/12592949"
-                alt="@superman66"
-              />
-            </MenuComponent>
+      <Navbar className="h-20">
+        <Navbar.Brand className="text-4xl font-bold" href="#">
+          FGY-Y2J
+        </Navbar.Brand>
+
+        <Nav pullRight className="mt-3 mr-3">
+          <MenuComponent placement="bottomEnd" handleOpen={handleOpen}>
+            <Avatar
+              circle
+              src="https://avatars.githubusercontent.com/u/12592949"
+              alt="@superman66"
+            />
+          </MenuComponent>
+        
+        </Nav>
+        <Nav pullRight className="mt-6 px-2">
+            <SettingIcon
+              onClick={() => setOpenSettings(true)}
+              className="text-3xl"
+            />
           </Nav>
-        </Navbar>
-      </NotificationContext.Provider>
+        <Nav pullRight className="mt-4 ">
+            <IconButton
+              icon={
+                <Icon
+                  as={
+                    settings.theme === 'light' ? MdOutlineNightlight : MdOutlineLightMode
+                  }
+                  style={{ fontSize: 25 ,fontWeight:'bolder'}}
+                />
+              }
+            onClick={() => {
+            settings.theme === 'light' ? dispatch(setThemeDark()) : dispatch(setThemeLight())
+          }}
+            />
+          </Nav>
+     
+      </Navbar>
+
+      <Drawer
+        size="xs"
+        placement={"right"}
+        backdrop={false}
+        open={openSettings}
+        onClose={() => setOpenSettings(false)}
+      >
+        <Drawer.Header>
+          <Drawer.Title className="font-bold">Settings</Drawer.Title>
+          <Drawer.Actions></Drawer.Actions>
+        </Drawer.Header>
+        <Drawer.Body>
+          <div className=" -ml-12">
+            <div>
+              <p className="font-bold text-lg">Table Settings</p>
+              <Divider />
+            </div>
+            <div className="flex flex-col gap-3 font-bold">
+              <div>
+                <span className="flex justify-between">
+                  <p>Compact：</p>
+                  <Toggle
+                    checkedChildren="On"
+                    unCheckedChildren="Off"
+                    // checked={compact}
+                    // onChange={setCompact}
+                  />
+                </span>
+              </div>
+              <div>
+                <span className="flex justify-between">
+                  <p>Bordered：</p>
+                  <Toggle
+                    checkedChildren="On"
+                    unCheckedChildren="Off"
+                    // checked={bordered}
+                    // onChange={setBordered}
+                  />
+                </span>
+              </div>
+              <div>
+                <span className="flex justify-between">
+                  Show Header：
+                  <Toggle
+                    checkedChildren="On"
+                    unCheckedChildren="Off"
+                    // checked={showHeader}
+                    // onChange={setShowHeader}
+                  />
+                </span>
+              </div>
+              <div>
+                <span className="flex justify-between">
+                  Hover：
+                  <Toggle
+                    checkedChildren="On"
+                    unCheckedChildren="Off"
+                    // checked={hover}
+                    // onChange={setHover}
+                  />
+                </span>
+              </div>
+              <div>
+                <span className="flex justify-between">
+                  Auto Height：
+                  <Toggle
+                    checkedChildren="On"
+                    unCheckedChildren="Off"
+                    // checked={autoHeight}
+                    // onChange={setAutoHeight}
+                  />
+                </span>
+              </div>
+            </div>
+            <Divider />
+          </div>
+        </Drawer.Body>
+      </Drawer>
     </>
   );
 }
@@ -166,27 +274,3 @@ const MenuComponent = ({ placement, loading, children, handleOpen }) => (
     </Button>
   </Whisper>
 );
-
-const RenderNoticeSpeaker = React.forwardRef(({ onClose }, ref) => {
-  const notifications = useContext(NotificationContext);
-
-  if (!notifications) {
-    return null;
-  }
-
-  return (
-    <Popover
-      ref={ref}
-      className="your-custom-class-name"
-      style={{ width: 300 }}
-      title="Last updates"
-    >
-      {/* Your notification list rendering logic */}
-      <div style={{ textAlign: "center", marginTop: 20 }}>
-        <Button className="bg-gray-300" onClick={onClose}>
-          More notifications
-        </Button>
-      </div>
-    </Popover>
-  );
-});

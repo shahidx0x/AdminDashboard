@@ -43,6 +43,7 @@ const ExpandCell = ({ rowData, expandedRowKeys, onChange, ...props }) => (
   </Cell>
 );
 const ItemRow = ({ props }) => {
+  const settings = useSelector(state => state.settings)
   return (
     <>
       <li className="flex flex-col sm:flex-row sm:justify-between border-b pb-3">
@@ -55,19 +56,19 @@ const ItemRow = ({ props }) => {
           <div className="flex flex-col justify-between w-full pb-4">
             <div className="flex justify-between w-full  ">
               <div className="space-y-1">
-                <h3 className="text-lg font-semibold leadi sm:pr-8">
+                <h3 className={`text-lg font-semibold  sm:pr-8 ${settings.theme === 'dark' && 'text-white'}`}>
                   {props.product_name}
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className={`text-sm text-gray-600 ${settings.theme === 'dark' && 'text-white'}`}>
                   Product Id :{props.product_id}
                 </p>
-                <p className="text-sm text-gray-600">Order Time :</p>
+                {/* <p className="text-sm text-gray-600">Order Time :</p> */}
               </div>
               <div className="text-right mr-[8rem]">
-                <p className="text-lg font-semibold">
+                <p className={`text-lg font-semibold ${settings.theme === 'dark' && 'text-white'}`}>
                   {props.product_price} x {props.product_quantity} pcs
                 </p>
-                <p className="text-sm  text-gray-400">
+                <p className={`text-sm  text-gray-400 ${settings.theme === 'dark' && 'text-white'}`}>
                   {props.product_price * props.product_quantity} USD
                 </p>
               </div>
@@ -78,39 +79,7 @@ const ItemRow = ({ props }) => {
     </>
   );
 };
-const renderRowExpanded = (rowData) => {
-  return (
-    <div className="w-full rounded-md p-2">
-      <div>
-        <div className="rounded-md">
-          <div className="flex flex-col   p-6 space-y-4 sm:p-10 border rounded-md  w-full text-gray-800 ">
-            <ul className="flex flex-col gap-2 w-full  overflow-auto max-h-[20rem]">
-              {rowData.items.map((item, index) => (
-                <ItemRow key={index} props={item} />
-              ))}
-            </ul>
-            <div className="flex justify-between">
-              <div>
-                <p className="font-bold underline">Additional Instruction</p>
-                <p className="text-sm text-gray-600">
-                  {rowData.additional_information || "No instruction provided"}
-                </p>
-              </div>
-              <div className=" mr-[8rem]">
-                <p>
-                  Total amount:{" "}
-                  <span className="font-semibold">
-                    {rowData.totalCost || "Not Calculated"} USD
-                  </span>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+
 export default function Order() {
   const toaster = useToaster();
   const [compact, setCompact] = useState(true);
@@ -129,6 +98,42 @@ export default function Order() {
   const [deleteId, setDeleteId] = useState(null);
   const navigate = useNavigate();
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
+  const settings = useSelector(state => state.settings)
+  const renderRowExpanded = (rowData) => {
+
+
+    return (
+      <div className="w-full rounded-md p-2">
+        <div>
+          <div className="rounded-md">
+            <div className="flex flex-col   p-6 space-y-4 sm:p-10 border rounded-md  w-full text-gray-800 ">
+              <ul className="flex flex-col gap-2 w-full  overflow-auto max-h-[20rem]">
+                {rowData.items.map((item, index) => (
+                  <ItemRow key={index} props={item} />
+                ))}
+              </ul>
+              <div className="flex justify-between">
+                <div>
+                  <p className={`font-bold underline ${settings.theme === 'dark' && 'text-white'} `}>Additional Instruction</p>
+                  <p className={`text-sm text-gray-600 ${settings.theme === 'dark' && 'text-white'}`}>
+                    {rowData.additional_information || "No instruction provided"}
+                  </p>
+                </div>
+                <div className=" mr-[8rem]">
+                  <p className={`${settings.theme === 'dark' && 'text-white'}`}>
+                    Total amount:{" "}
+                    <span className="font-semibold">
+                      {rowData.totalCost || "Not Calculated"} USD
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const {
     data,
@@ -516,6 +521,7 @@ export default function Order() {
     data_refetch();
   };
   data_refetch();
+
   return (
     <div>
       <Toaster />

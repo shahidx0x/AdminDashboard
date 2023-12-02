@@ -21,6 +21,7 @@ export default function Notification() {
   const [autoHeight, setAutoHeight] = useState(true);
   const [hover, setHover] = useState(true);
   const user = useSelector((state) => state.user.user);
+  const settings = useSelector(state => state.settings);
 
   const {
     data,
@@ -55,8 +56,8 @@ export default function Notification() {
           }}
           className={
             rowData.isRecent && !rowData.read
-              ? "bg-indigo-500 text-white font-mono font-bold rounded-lg "
-              : " border-b-indigo-100 text-gray-500 font-mono rounded-lg border-1 font-bold"
+              ? `bg-indigo-500 text-white font-mono font-bold rounded-lg ${settings.theme === 'dark' && 'text-white'}`
+              : ` border-b-indigo-100 text-gray-500 font-mono rounded-lg border-1 font-bold ${settings.theme === 'dark' && 'text-gray-300'}`
           }
           {...props}
         >

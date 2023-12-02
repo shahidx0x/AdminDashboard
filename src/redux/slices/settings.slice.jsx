@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   isSidebarOpen: true,
+  theme:'light'
 };
 
 const settingsSlice = createSlice({
@@ -14,9 +15,15 @@ const settingsSlice = createSlice({
     setSideBarClose: (state) => {
       state.isSidebarOpen = false;
     },
+    setThemeLight: (state) => {
+      state.theme = 'light';
+    },
+    setThemeDark: (state) => {
+      state.theme = 'dark';
+    },
   },
 });
 
-export const { setSideBarOpen, setSideBarClose } = settingsSlice.actions;
+export const { setSideBarOpen, setSideBarClose,setThemeLight,setThemeDark } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

@@ -29,23 +29,24 @@ const CustomSidenav = ({
   return (
     <div className="">
       <Sidenav
-        className="h-[100vh] 2xl:h-screen "
+        className="h-[100vh] 2xl:h-screen  "
         appearance={appearance}
         expanded={expanded}
         openKeys={openKeys}
         onOpenChange={onOpenChange}
       >
-        <Sidenav.Body>
+        <Sidenav.Body className="">
           <Sidenav.Toggle onToggle={onExpand} />
           <Nav {...navProps}>
             <Nav.Item
+           
               as={Link}
               to="/dashbord/status"
-              className="font-bold "
+              className="font-bold  "
               eventKey="1"
               icon={<DashboardIcon />}
             >
-              <p className="w-[13rem]"> Dashboard</p>
+              <p className="w-[13rem]  "> Dashboard</p>
             </Nav.Item>
 
             <Nav.Menu
