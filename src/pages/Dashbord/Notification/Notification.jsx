@@ -96,7 +96,7 @@ export default function Notification() {
       width: 775,
     },
   ];
-  const [columnKeys, setColumnKeys] = useState(
+  const [columnKeys] = useState(
     defaultColumns.map((column) => column.key)
   );
   const columns = defaultColumns.filter((column) =>

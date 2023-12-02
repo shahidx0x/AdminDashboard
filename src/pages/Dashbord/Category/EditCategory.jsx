@@ -127,7 +127,7 @@ export default function EditCategory() {
         <Panel
           bordered
           className="shadow-md w-[40rem] border-gray-400"
-          style={{ background: "#fff" }}
+          // style={{ background: "#fff" }}
           header={
             <h3 className="font-bold bg-indigo-500 text-white p-3 rounded-md text-2xl ">
               Edit Category Information

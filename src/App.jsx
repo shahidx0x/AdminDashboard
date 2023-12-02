@@ -16,7 +16,6 @@ import { CustomProvider } from "rsuite";
 import { useSearch } from "rsuite/esm/Picker";
 import { useSelector } from "react-redux";
 
-
 // Lazy load the components
 const AddCategory = lazy(() => import("./pages/Dashbord/Category/AddCategory"));
 const AllCategory = lazy(() => import("./pages/Dashbord/Category/AllCategory"));
@@ -254,8 +253,7 @@ function Root() {
 }
 
 function Dashbord() {
-  
-  const settings = useSelector(state => state.settings);
+  const settings = useSelector((state) => state.settings);
 
   const containerStyle = {
     display: "flex",
@@ -270,7 +268,21 @@ function Dashbord() {
   };
 
   return (
-    <CustomProvider theme={settings.theme || 'light'}>
+    <CustomProvider theme={settings.theme || "light"}>
+      {settings.theme === "dark" && (
+        <style>
+          {`
+          .RichTextEditor__root___2QXK- {
+            background: black;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-family: Georgia, serif;
+            font-size: 14px;
+            color: white;
+          }
+        `}
+        </style>
+      )}
       <NavbarHeader />
       <div style={containerStyle}>
         <div

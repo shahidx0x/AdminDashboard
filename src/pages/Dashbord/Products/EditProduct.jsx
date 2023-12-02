@@ -23,6 +23,8 @@ import { getCategoryByBrandId } from "../../../api/CategoryService";
 import { updateProduct } from "../../../api/ProductService";
 import { getSubCategoryByCategoryId } from "../../../api/SubCategoryServices";
 import { config } from "../../../configs/api.config";
+import RichTextEditor from "react-rte";
+import { toolbarConfig } from "../../../configs/toolbar.config";
 
 function previewFile(file, callback) {
   const reader = new FileReader();
@@ -135,13 +137,23 @@ export default function EditProduct() {
   const [subCategoryName, SetSubCategoryName] = useState(
     editData.subcategory_name
   );
-
+  console.log(editData.product_information);
+  const [editorValue, setEditorValue] = useState(
+    RichTextEditor.createValueFromString(editData.product_information,"html")
+  );
+  const handleChange = (value) => {
+    if (value) {
+      setEditorValue(value);
+    }
+  };
   const onSubmit = (data) => {
+    const htmlContent = editorValue.toString('html');
     data.fet_image = [...uploadResponse];
     data.product_image = coverUploadResponse || fileInfo.product_image;
     data.brand_name = brandName;
     data.category_name = categoryName;
     data.subcategory_name = subCategoryName;
+    data.product_information = htmlContent;
     let id = editData._id;
 
     mutation.mutate(
@@ -200,7 +212,7 @@ export default function EditProduct() {
         <Panel
           bordered
           className="shadow-sm w-[48.5rem]"
-          style={{ background: "#fff" }}
+          // style={{ background: "#fff" }}
           header={
             <h3 className="font-bold bg-indigo-700 p-8 text-2xl text-white rounded-lg">
               Upadte Product Information
@@ -407,12 +419,12 @@ export default function EditProduct() {
               <div>
                 <p className="font-bold mt-3">Description</p>
 
-                <Input
-                  as="textarea"
-                  {...register("des")}
-                  rows={3}
-                  placeholder=""
-                />
+                <RichTextEditor
+                      className="mt-2"
+                      toolbarConfig={toolbarConfig}
+                      value={editorValue}
+                      onChange={handleChange}
+                    />
               </div>
 
               <div className="mt-10 flex gap-2">

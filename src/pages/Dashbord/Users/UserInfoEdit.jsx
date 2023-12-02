@@ -249,8 +249,8 @@ export default function UserInfoEdit() {
       >
         <Panel
           bordered
-          className="shadow-sm -mt-10 border-l-8 border-l-indigo-400"
-          style={{ background: "#fff" }}
+          className="shadow-sm -mt-10 border-l-8 border-l-indigo-400 "
+          // style={{ background: "#fff" }}
           header={
             <>
               <Breadcrumb className="text-sm font-mono">

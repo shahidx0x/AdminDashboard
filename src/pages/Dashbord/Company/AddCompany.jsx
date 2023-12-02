@@ -11,13 +11,14 @@ import {
   Button,
   Input,
   Loader,
-  Message,
+  Message,  
   Uploader,
   useToaster,
 } from "rsuite";
 import { createBrand } from "../../../api/BrandServices";
 import { config } from "../../../configs/api.config";
 import { toolbarConfig } from "../../../configs/toolbar.config";
+
 
 function previewFile(file, callback) {
   const reader = new FileReader();
@@ -29,6 +30,7 @@ function previewFile(file, callback) {
 
 export default function AddCompany() {
   const user = useSelector((state) => state.user.user);
+  const settings = useSelector((state) => state.settings);
   const toaster = useToaster();
   const [uploading, setUploading] = useState(false);
   const [fileInfo, setFileInfo] = useState(null);
@@ -91,99 +93,8 @@ export default function AddCompany() {
   };
   return (
     <>
-      {/* <Stack
-        justifyContent="center"
-        alignItems="center"
-        direction="column"
-        className="mt-20 2xl:-mt-16 "
-        style={{
-          height: "100vh",
-        }}
-      >
-        <Panel
-          bordered
-          className="shadow-md -mt-10 w-[40rem]"
-          style={{ background: "#fff" }}
-          header={
-            <h3 className="font-bold p-8 bg-indigo-700 text-2xl text-white rounded-lg ">
-              Add Company Information
-            </h3>
-          }
-        >
-          <form >
-            <div className="flex justify-center items-center mb-10">
-              <Uploader
-                fileListVisible={false}
-                listType="picture"
-                action={`${config.endpoints.host}/upload`}
-                onUpload={(file) => {
-                  setUploading(true);
-                  previewFile(file.blobFile, (value) => {
-                    setFileInfo(value);
-                  });
-                }}
-                onSuccess={(response, file) => {
-                  setUploading(false);
-                  toaster.push(<Message type="success"></Message>);
-                  setUploadResponse(response);
-                }}
-                onError={() => {
-                  setFileInfo(null);
-                  setUploading(false);
-                  toaster.push(<Message type="error"></Message>);
-                }}
-              >
-                <button type="button" style={{ width: 150, height: 150 }}>
-                  {uploading && <Loader backdrop center />}
-                  {fileInfo ? (
-                    <img src={fileInfo} width="100%" height="150%" />
-                  ) : (
-                    <img src={myData?.profilePicture} alt="Company Profile" />
-                  )}
-                </button>
-              </Uploader>
-            </div>
-            <div className="flex gap-5 justify-center">
-              <div className="flex flex-col gap-5">
-                <div>
-                  <p className="font-bold">Company Name</p>
-                  <Input
-                    {...register("brand_label")}
-                    defaultValue={myData?.firstName}
-                    className="w-96"
-                  />
-                </div>
-                <div>
-                  <p className="font-bold">Company Information</p>
-                  <Input
-                    defaultValue={myData?.description}
-                    {...register("brand_description")}
-                    as="textarea"
-                    rows={3}
-                  />
-                </div>
-                <div className="mb-20 flex gap-2">
-                  <Button
-                    appearance="ghost"
-                    className="font-bold"
-                    onClick={() => UserTable()}
-                  >
-                    Cancel
-                  </Button>
-
-                  <Button
-                    type="submit"
-                    appearance="primary"
-                    className="bg-blue-600 font-bold"
-                  >
-                    Add Company
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </form>
-        </Panel>
-      </Stack> */}
+  
+    
       <section className="p-6 bg-base-100 text-gray-900 h-screen">
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -202,12 +113,12 @@ export default function AddCompany() {
                   company-creation
                 </Breadcrumb.Item>
               </Breadcrumb>
-              <p className="font-thin text-3xl">Add Company</p>
+              <p className={`font-thin text-3xl ${settings.theme === 'dark' && 'text-white'}`}>Add Company</p>
             </div>
             <div className="flex  flex-col flex-wrap gap-4 col-span-full lg:col-span-3">
               <div className="flex gap-10">
                 <div className="col-span-full sm:col-span-3">
-                  <p className="font-bold font-mono text-sm underline">
+                  <p className={`font-bold text-sm underline ${settings.theme === 'dark' && 'text-white'}`}>
                     Upload Company Logo
                   </p>
                   <div className="flex flex-col 2xl:flex-row gap-10">
@@ -247,30 +158,30 @@ export default function AddCompany() {
                     </Uploader>
                     <div className="flex flex-col gap-5">
                       <div>
-                        <p className="font-bold"> Name</p>
+                        <p className={`font-bold ${settings.theme === 'dark' && 'text-white'}`}> Name</p>
                         <Input
                           {...register("brand_label")}
                           className="2xl:w-96"
                         />
                       </div>
                       <div>
-                        <p className="font-bold"> Email</p>
+                        <p className={`font-bold ${settings.theme === 'dark' && 'text-white'}`}> Email</p>
                         <Input
                           {...register("brand_email")}
                           className="2xl:w-96"
                         />
                       </div>
                       <div>
-                        <p className="font-bold">Address</p>
+                        <p className={`font-bold ${settings.theme === 'dark' && 'text-white'}`}>Address</p>
                         <Input
                           {...register("brand_address")}
                           className="2xl:w-96"
                         />
                       </div>
                       <div>
-                        <p className="font-bold">Information</p>
+                        <p className={`font-bold ${settings.theme === 'dark' && 'text-white'}`}>Information</p>
                         <RichTextEditor
-                          className="mt-2"
+                          className={`mt-2  `}
                           toolbarConfig={toolbarConfig}
                           value={editorValue}
                           onChange={handleChange}
@@ -302,6 +213,7 @@ export default function AddCompany() {
           </fieldset>
         </form>
       </section>
+     
     </>
   );
 }

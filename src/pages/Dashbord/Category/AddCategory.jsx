@@ -126,7 +126,7 @@ export default function AddCategory() {
         <Panel
           bordered
           className="shadow-sm w-[45rem]"
-          style={{ background: "#fff" }}
+          // style={{ background: "#fff" }}
           header={
             <h3 className="font-bold bg-indigo-700 p-8 text-2xl text-white rounded-lg">
               Add Category Information

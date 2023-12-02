@@ -94,6 +94,7 @@ export default function AddProduct() {
   const [editorValue, setEditorValue] = useState(
     RichTextEditor.createEmptyValue()
   );
+  console.log(editorValue);
 
   const handleChange = (value) => {
     if (value) {
@@ -173,7 +174,7 @@ export default function AddProduct() {
       setErrorMessage("Only numeric values are allowed");
     }
   };
-
+const settings = useSelector(state => state.settings) 
   return (
     <>
       <section className="p-6 bg-base-100 text-gray-900 h-screen ">
@@ -194,12 +195,12 @@ export default function AddProduct() {
                   product-creation
                 </Breadcrumb.Item>
               </Breadcrumb>
-              <p className="font-thin text-3xl">Product & Feature Images</p>
+              <p className={`font-thin text-3xl ${settings.theme === "dark" && 'text-white'} `}>Product & Feature Images</p>
             </div>
             <div className="flex  flex-col flex-wrap gap-4 col-span-full lg:col-span-3">
               <div className="flex flex-col 2xl:flex-row gap-10">
                 <div className="col-span-full sm:col-span-3">
-                  <p className="font-bold font-mono text-sm underline">
+                  <p className={`font-thin text-sm underline ${settings.theme === "dark" && 'text-white'} `}>
                     Upload Product Image
                   </p>
                   <Uploader
@@ -247,7 +248,7 @@ export default function AddProduct() {
                 </div>
 
                 <div className="col-span-full">
-                  <p className="font-bold font-mono text-sm underline">
+                  <p className={`font-thin text-sm underline ${settings.theme === "dark" && 'text-white'} `}>
                     Upload Product Feature Image
                   </p>
                   <Uploader
@@ -279,11 +280,11 @@ export default function AddProduct() {
                   product-creation
                 </Breadcrumb.Item>
               </Breadcrumb>
-              <p className="font-thin  text-3xl">Product Inormation</p>
+              <p className={`font-thin text-3xl  ${settings.theme === "dark" && 'text-white'} `}>Product Inormation</p>
             </div>
             <div className="flex flex-wrap gap-4 col-span-full lg:col-span-3">
               <div className="col-span-full sm:col-span-3 flex flex-col gap-1">
-                <label className="text-sm font-bold">Product Name</label>
+                <label className={`font-bold text-sm  ${settings.theme === "dark" && 'text-white'} `}>Product Name</label>
 
                 <Input
                   required
@@ -293,7 +294,7 @@ export default function AddProduct() {
                 <div data-lastpass-icon-root="true"></div>
               </div>
               <div className="flex flex-col col-span-full sm:col-span-3 gap-1">
-                <label className="text-sm font-bold">Select Company</label>
+                <label className={`font-bold text-sm  ${settings.theme === "dark" && 'text-white'} `}>Select Company</label>
 
                 <Controller
                   name="brand_id"
@@ -317,7 +318,7 @@ export default function AddProduct() {
                 />
               </div>
               <div className="flex flex-col col-span-full sm:col-span-3 gap-1">
-                <label className="text-sm font-bold">Category</label>
+                <label className={`font-bold text-sm  ${settings.theme === "dark" && 'text-white'} `}>Category</label>
                 <Controller
                   name="category_id"
                   {...register("category_id")}
@@ -340,7 +341,7 @@ export default function AddProduct() {
                 />
               </div>
               <div className="col-span-full flex flex-col gap-1">
-                <label className="text-sm font-bold">Subcategory</label>
+                <label className={`font-bold text-sm  ${settings.theme === "dark" && 'text-white'} `}>Subcategory</label>
                 <Controller
                   name="sub_category_id"
                   {...register("subcategory_id")}
@@ -363,7 +364,7 @@ export default function AddProduct() {
                 />
               </div>
               <div className="flex flex-col col-span-full sm:col-span-2 gap-1">
-                <label className="text-sm font-bold">Price</label>
+                <label className={`font-bold text-sm  ${settings.theme === "dark" && 'text-white'} `}>Price</label>
                 <InputNumber
                   className="w-[12rem] 2xl:w-[14.5rem] h-[2.24rem] rounded-md border border-gray-200 "
                   required
@@ -373,7 +374,7 @@ export default function AddProduct() {
                 />
               </div>
               <div className="col-span-full sm:col-span-2 flex flex-col gap-1">
-                <label className="text-sm font-bold">Minimum Purchase</label>
+                <label className={`font-bold text-sm  ${settings.theme === "dark" && 'text-white'} `}>Minimum Purchase</label>
                 <InputNumber
                   className="w-[12rem] 2xl:w-[14.5rem] h-[2.24rem] rounded-md border border-gray-200 "
                   defaultValue={0}
@@ -382,7 +383,7 @@ export default function AddProduct() {
                 />
               </div>
               <div className="col-span-full sm:col-span-2 flex flex-col gap-1">
-                <label htmlFor="zip" className="text-sm font-bold">
+                <label htmlFor="zip" className={`font-bold text-sm  ${settings.theme === "dark" && 'text-white'} `}>
                   Maximum Purchase
                 </label>
                 <InputNumber
@@ -394,7 +395,7 @@ export default function AddProduct() {
                 />
               </div>
               <div className="flex flex-col mt-1">
-                <label className="text-sm font-bold">Discount</label>
+                <label className={`font-bold text-sm  ${settings.theme === "dark" && 'text-white'} `}>Discount</label>
                 <InputNumber
                 defaultValue={0}
                   className="w-[12rem] 2xl:w-[14.5rem] h-[2.24rem] rounded-md border border-gray-200"
@@ -407,7 +408,7 @@ export default function AddProduct() {
               <div className="col-span-full sm:col-span-2 flex flex-col gap-1">
                 <div className="flex flex-col gap-5">
                   <div className="2xl:w-[100vh]">
-                    <label className="text-sm font-bold">
+                    <label className={`font-bold text-sm  ${settings.theme === "dark" && 'text-white'} `}>
                       Product Information
                     </label>
                     <RichTextEditor
