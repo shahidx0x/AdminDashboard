@@ -10,26 +10,46 @@ import {
   Divider,
   Drawer,
   IconButton,
+  Input,
   Loader,
+  Message,
   Modal,
   Nav,
   Navbar,
   Popover,
   Toggle,
+  Uploader,
   Whisper,
+  toaster,
 } from "rsuite";
 import { logOut } from "../redux/slices/user.slices";
 
-
 import { Icon } from "@rsuite/icons";
 
-
 import { MdOutlineNightlight, MdOutlineLightMode } from "react-icons/md";
-import { setTableAutoHeight, setTableBordered, setTableCompact, setTableHeader, setTableHover, setThemeDark, setThemeLight } from "../redux/slices/settings.slice";
-
+import {
+  setTableAutoHeight,
+  setTableBordered,
+  setTableCompact,
+  setTableHeader,
+  setTableHover,
+  setThemeDark,
+  setThemeLight,
+} from "../redux/slices/settings.slice";
+import { config } from "../configs/api.config";
+function previewFile(file, callback) {
+  const reader = new FileReader();
+  reader.onloadend = () => {
+    callback(reader.result);
+  };
+  reader.readAsDataURL(file);
+}
 export default function NavbarHeader() {
   const settings = useSelector((state) => state.settings);
-  
+
+  const [uploading, setUploading] = useState(false);
+  const [fileInfo, setFileInfo] = useState(null);
+  const [uploadResponse, setUploadResponse] = useState({ fileUrl: "" });
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -43,8 +63,6 @@ export default function NavbarHeader() {
     navigate("/");
     setOpen(false);
   };
-
-  console.log(settings);
 
   return (
     <>
@@ -86,33 +104,36 @@ export default function NavbarHeader() {
               alt="@superman66"
             />
           </MenuComponent>
-        
         </Nav>
         <Nav pullRight className="mt-6 px-2">
-            <SettingIcon
-              onClick={() => setOpenSettings(true)}
-              className="text-3xl"
-            />
-          </Nav>
+          <SettingIcon
+            onClick={() => setOpenSettings(true)}
+            className="text-3xl"
+          />
+        </Nav>
         <Nav pullRight className="mt-4 ">
-            <IconButton
-              icon={
-                <Icon
-                  as={
-                    settings.theme === 'light' ? MdOutlineNightlight : MdOutlineLightMode
-                  }
-                  style={{ fontSize: 25 ,fontWeight:'bolder'}}
-                />
-              }
+          <IconButton
+            icon={
+              <Icon
+                as={
+                  settings.theme === "light"
+                    ? MdOutlineNightlight
+                    : MdOutlineLightMode
+                }
+                style={{ fontSize: 25, fontWeight: "bolder" }}
+              />
+            }
             onClick={() => {
-            settings.theme === 'light' ? dispatch(setThemeDark()) : dispatch(setThemeLight())
-          }}
-            />
-          </Nav>
+              settings.theme === "light"
+                ? dispatch(setThemeDark())
+                : dispatch(setThemeLight());
+            }}
+          />
+        </Nav>
       </Navbar>
 
       <Drawer
-        size="xs"
+        size="md"
         placement={"right"}
         backdrop={false}
         open={openSettings}
@@ -183,6 +204,118 @@ export default function NavbarHeader() {
                     onChange={() => dispatch(setTableAutoHeight())}
                   />
                 </span>
+              </div>
+            </div>
+            <Divider />
+          </div>
+          <div className=" -ml-12">
+            <div>
+              <p className="font-bold text-lg">App Settings</p>
+              <Divider />
+            </div>
+            <div className="flex flex-col gap-3 font-bold">
+              <div>
+                <div className="flex justify-between">
+                  <p>
+                    App Version：
+                    <span className="text-xs font-medium font-mono">
+                      1.0.0-Beta{" "}
+                    </span>{" "}
+                  </p>
+                </div>
+              </div>
+              <div>
+                <span className="flex justify-between">
+                  <p>Maintainance Mode ：</p>
+                  <Toggle
+                    checkedChildren="On"
+                    unCheckedChildren="Off"
+                    checked={settings.bordered}
+                    onChange={() => dispatch(setTableBordered())}
+                  />
+                </span>
+              </div>
+              <Divider/>
+              <div className="flex gap-2">
+                <div className="flex flex-col">
+                  <p>Popup Image :</p>
+                  <Uploader
+                    className="mt-3"
+                    fileListVisible={false}
+                    listType="picture"
+                    action={`${config.endpoints.host}/upload`}
+                    onUpload={(file) => {
+                      setUploading(true);
+                      previewFile(file.blobFile, (value) => {
+                        setFileInfo(value);
+                      });
+                    }}
+                    onSuccess={(response, file) => {
+                      setUploading(false);
+                      toaster.push(<Message type="success"></Message>);
+                      setUploadResponse(response);
+                    }}
+                    onError={() => {
+                      setFileInfo(null);
+                      setUploading(false);
+                      toaster.push(<Message type="error"></Message>);
+                    }}
+                  >
+                    <button type="button" style={{ width: 350, height: 150 }}>
+                      {uploading && <Loader backdrop center />}
+                      {fileInfo ? (
+                        <img src={fileInfo} width="100%" height="150%" />
+                      ) : (
+                        <img
+                          src={uploadResponse?.profilePicture}
+                          alt="popup image"
+                        />
+                      )}
+                    </button>
+                  </Uploader>
+                </div>
+                <div className="flex flex-col">
+                  <p>Offer Banner :</p>
+                  <Uploader
+                    className="mt-3"
+                    fileListVisible={false}
+                    listType="picture"
+                    action={`${config.endpoints.host}/upload`}
+                    onUpload={(file) => {
+                      setUploading(true);
+                      previewFile(file.blobFile, (value) => {
+                        setFileInfo(value);
+                      });
+                    }}
+                    onSuccess={(response, file) => {
+                      setUploading(false);
+                      toaster.push(<Message type="success"></Message>);
+                      setUploadResponse(response);
+                    }}
+                    onError={() => {
+                      setFileInfo(null);
+                      setUploading(false);
+                      toaster.push(<Message type="error"></Message>);
+                    }}
+                  >
+                    <button type="button" style={{ width: 350, height: 150 }}>
+                      {uploading && <Loader backdrop center />}
+                      {fileInfo ? (
+                        <img src={fileInfo} width="100%" height="150%" />
+                      ) : (
+                        <img
+                          src={uploadResponse?.profilePicture}
+                          alt="popup image"
+                        />
+                      )}
+                    </button>
+                  </Uploader>
+                </div>
+              </div>
+
+              <div className="flex flex-col">
+                <p>Offer Text :</p>
+                <Input as="textarea" rows={3} placeholder="" />
               </div>
             </div>
             <Divider />
