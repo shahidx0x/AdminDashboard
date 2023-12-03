@@ -95,7 +95,9 @@ export default function AddProduct() {
     RichTextEditor.createEmptyValue()
   );
 
-
+  const product_unit_type = ['Box','Pices'].map(
+    item => ({ label: item, value: item })
+  );
   const handleChange = (value) => {
     if (value) {
       setEditorValue(value);
@@ -123,6 +125,7 @@ export default function AddProduct() {
       Error : Product Added Failed !.
     </Message>
   );
+  const [productUnit ,setProductUnit] = useState('Pices')
   const onSubmit = (data) => {
     const htmlContent = editorValue.toString("html");
     (data.brand_id = selectedBrandId.split(",")[0]),
@@ -130,6 +133,7 @@ export default function AddProduct() {
       (data.category_id = selectedCatId.split(",")[0]),
       (data.fet_image = [...uploadResponse]);
     data.product_image = coverUploadResponse;
+    data.product_unit_type = productUnit;
     data.brand_name = brandName;
     data.category_name = categoryName;
     data.subcategory_name = subCategoryName;
@@ -137,7 +141,7 @@ export default function AddProduct() {
     data.brand_slug = selectedBrandId.split(",")[1];
     data.category_slug = selectedCatId.split(",")[1];
     data.subcategory_slug = selectedSubCatId.split(",")[1];
-    console.log(data);
+  
     mutation.mutate(
       { data: data, token: user.jwt },
       {
@@ -291,6 +295,16 @@ const settings = useSelector(state => state.settings)
                   className="w-[12rem] 2xl:w-[14.5rem]"
                   {...register("name")}
                 />
+                <div data-lastpass-icon-root="true"></div>
+              </div>
+              <div className="col-span-full sm:col-span-3 flex flex-col gap-1">
+                <label className={`font-bold text-sm  ${settings.theme === "dark" && 'text-white'} `}>Product Unit Type</label>
+                <SelectPicker   className="w-[12rem] 2xl:w-[14.5rem]" onChange={(value,data) => setProductUnit(value)} searchable={false} data={product_unit_type} />
+                {/* <Input
+                  required
+                  className="w-[12rem] 2xl:w-[14.5rem]"
+                  {...register("name")}
+                /> */}
                 <div data-lastpass-icon-root="true"></div>
               </div>
               <div className="flex flex-col col-span-full sm:col-span-3 gap-1">

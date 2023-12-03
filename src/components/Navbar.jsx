@@ -250,7 +250,7 @@ export default function NavbarHeader() {
                         setFileInfo(value);
                       });
                     }}
-                    onSuccess={(response, file) => {
+                    onSuccess={(response) => {
                       setUploading(false);
                       toaster.push(<Message type="success"></Message>);
                       setUploadResponse(response);
@@ -287,7 +287,7 @@ export default function NavbarHeader() {
                         setFileInfo(value);
                       });
                     }}
-                    onSuccess={(response, file) => {
+                    onSuccess={(response) => {
                       setUploading(false);
                       toaster.push(<Message type="success"></Message>);
                       setUploadResponse(response);
