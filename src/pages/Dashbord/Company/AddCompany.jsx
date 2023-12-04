@@ -55,7 +55,7 @@ export default function AddCompany() {
     } else {
       data.brand_image = "";
     }
-    console.table(data);
+  
     mutation.mutate(
       { data: data, token: user.jwt },
       {

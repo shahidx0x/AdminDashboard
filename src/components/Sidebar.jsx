@@ -10,6 +10,7 @@ import { AiOutlineFileAdd } from "react-icons/ai";
 import { BsListUl } from "react-icons/bs";
 import { FaRegMoneyBillAlt } from "react-icons/fa";
 import { HiOutlineUsers } from "react-icons/hi";
+import { PiUniteLight } from "react-icons/pi";
 import {
   MdOutlineAdminPanelSettings,
   MdOutlineInventory,
@@ -83,17 +84,27 @@ const CustomSidenav = ({
                   <p className="font-bold">Orders</p>
                 </div>
               </Nav.Item>
-            
+              <Nav.Item
+                as={Link}
+                to="/dashbord/manage/unit-type"
+                eventKey="3-6"
+              >
+                <div className="flex gap-2">
+                  <PiUniteLight className="text-xl" />
+                  <p className="font-bold">Unit Types</p>
+                </div>
+              </Nav.Item>
               <Nav.Item
                 as={Link}
                 to="/dashbord/manage/transaction"
-                eventKey="3-6"
+                eventKey="3-7"
               >
                 <div className="flex gap-2">
                   <FaRegMoneyBillAlt className="text-xl" />
                   <p className="font-bold">Transactions</p>
                 </div>
               </Nav.Item>
+             
             </Nav.Menu>
             {/* */}
             <Nav.Menu

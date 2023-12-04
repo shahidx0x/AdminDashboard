@@ -24,6 +24,7 @@ import { createProduct } from "../../../api/ProductService";
 import { getSubCategoryByCategoryId } from "../../../api/SubCategoryServices";
 import { config } from "../../../configs/api.config";
 import { toolbarConfig } from "../../../configs/toolbar.config";
+import { getUnit } from "../../../api/UnitType";
 
 function previewFile(file, callback) {
   const reader = new FileReader();
@@ -61,7 +62,14 @@ export default function AddProduct() {
     ["subCategoryIdName", "", user.jwt, selectedCatId.split(",")[0], -1],
     getSubCategoryByCategoryId
   );
-
+  const {
+    data:data_unit,
+    status,
+    refetch: data_unit_refetch,
+  } = useQuery(["units", user.jwt], getUnit, {
+    cacheTime: 0,
+  });
+  
   const cate_data = category_data?.data?.map((each) => {
     return {
       label: each?.category_label,
@@ -95,9 +103,10 @@ export default function AddProduct() {
     RichTextEditor.createEmptyValue()
   );
 
-  const product_unit_type = ['Box','Pices'].map(
-    item => ({ label: item, value: item })
+  const product_unit_type = data_unit?.data.map(
+    item => ({ label: item.label, value: item.value })
   );
+  console.log(data_unit?.data);
   const handleChange = (value) => {
     if (value) {
       setEditorValue(value);
@@ -141,6 +150,9 @@ export default function AddProduct() {
     data.brand_slug = selectedBrandId.split(",")[1];
     data.category_slug = selectedCatId.split(",")[1];
     data.subcategory_slug = selectedSubCatId.split(",")[1];
+    if (productUnit === 'Pices') data.unit_flag = 1;
+    else data.unit_flag = 0;
+  
   
     mutation.mutate(
       { data: data, token: user.jwt },
@@ -332,7 +344,7 @@ const settings = useSelector(state => state.settings)
                 />
               </div>
               <div className="flex flex-col col-span-full sm:col-span-3 gap-1">
-                <label className={`font-bold text-sm  ${settings.theme === "dark" && 'text-white'} `}>Category</label>
+                <label className={`font-bold text-sm  ${settings.theme === "dark" && 'text-white'} `}>Select Brand</label>
                 <Controller
                   name="category_id"
                   {...register("category_id")}
@@ -355,7 +367,7 @@ const settings = useSelector(state => state.settings)
                 />
               </div>
               <div className="col-span-full flex flex-col gap-1">
-                <label className={`font-bold text-sm  ${settings.theme === "dark" && 'text-white'} `}>Subcategory</label>
+                <label className={`font-bold text-sm  ${settings.theme === "dark" && 'text-white'} `}>Select Category</label>
                 <Controller
                   name="sub_category_id"
                   {...register("subcategory_id")}
