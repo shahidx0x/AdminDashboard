@@ -118,10 +118,10 @@ export default function EditCategory() {
             Home
           </Breadcrumb.Item>
           <Breadcrumb.Item as={Link} to="/dashbord/category/all">
-            category-list
+            brand-list
           </Breadcrumb.Item>
           <Breadcrumb.Item active className="text-blue-400">
-            category-update
+            brand-update
           </Breadcrumb.Item>
         </Breadcrumb>
         <Panel
@@ -130,7 +130,7 @@ export default function EditCategory() {
           // style={{ background: "#fff" }}
           header={
             <h3 className="font-bold bg-indigo-500 text-white p-3 rounded-md text-2xl ">
-              Edit Category Information
+              Edit Brand Information
             </h3>
           }
         >
@@ -162,7 +162,7 @@ export default function EditCategory() {
                   {fileInfo ? (
                     <img src={fileInfo} width="100%" height="150%" />
                   ) : (
-                    <img src={myData?.image} alt="Category Profile" />
+                    <img src={myData?.image} alt="Brand Logo" />
                   )}
                 </button>
               </Uploader>
@@ -197,7 +197,7 @@ export default function EditCategory() {
                   </div>
                 </div>
                 <div>
-                  <p className="font-bold">Category Name</p>
+                  <p className="font-bold">Brand Name</p>
                   <Input
                     {...register("category_label")}
                     defaultValue={myData?.category_label}
@@ -205,7 +205,7 @@ export default function EditCategory() {
                   />
                 </div>
                 <div>
-                  <p className="font-bold">Category Type</p>
+                  <p className="font-bold">Brand Type</p>
                   <Input
                     {...register("category_type")}
                     defaultValue={myData?.category_type}
@@ -213,7 +213,7 @@ export default function EditCategory() {
                   />
                 </div>
                 <div>
-                  <p className="font-bold">Category Information</p>
+                  <p className="font-bold">Brand Information</p>
                   <Input
                     defaultValue={myData?.category_description}
                     {...register("category_description")}
@@ -232,7 +232,7 @@ export default function EditCategory() {
                     appearance="primary"
                     className="bg-blue-600"
                   >
-                    Update Category
+                    Update Brand
                   </Button>
                 </div>
               </div>

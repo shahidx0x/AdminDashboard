@@ -50,6 +50,7 @@ export default function NavbarHeader() {
   const [uploading, setUploading] = useState(false);
   const [fileInfo, setFileInfo] = useState(null);
   const [uploadResponse, setUploadResponse] = useState({ fileUrl: "" });
+  const [uploadResponseTwo, setUploadResponseTwo] = useState({ fileUrl: "" });
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -235,89 +236,94 @@ export default function NavbarHeader() {
                   />
                 </span>
               </div>
-              <Divider/>
-              <div className="flex gap-2">
-                <div className="flex flex-col">
-                  <p>Popup Image :</p>
-                  <Uploader
-                    className="mt-3"
-                    fileListVisible={false}
-                    listType="picture"
-                    action={`${config.endpoints.host}/upload`}
-                    onUpload={(file) => {
-                      setUploading(true);
-                      previewFile(file.blobFile, (value) => {
-                        setFileInfo(value);
-                      });
-                    }}
-                    onSuccess={(response) => {
-                      setUploading(false);
-                      toaster.push(<Message type="success"></Message>);
-                      setUploadResponse(response);
-                    }}
-                    onError={() => {
-                      setFileInfo(null);
-                      setUploading(false);
-                      toaster.push(<Message type="error"></Message>);
-                    }}
-                  >
-                    <button type="button" style={{ width: 350, height: 150 }}>
-                      {uploading && <Loader backdrop center />}
-                      {fileInfo ? (
-                        <img src={fileInfo} width="100%" height="150%" />
-                      ) : (
-                        <img
-                          src={uploadResponse?.profilePicture}
-                          alt="popup image"
-                        />
-                      )}
-                    </button>
-                  </Uploader>
+              <Divider />
+              <form action="">
+                <div className="flex gap-2">
+                  <div className="flex flex-col">
+                    <p>Popup Image :</p>
+                    <Uploader
+                      className="mt-3"
+                      fileListVisible={false}
+                      listType="picture"
+                      action={`${config.endpoints.host}/upload`}
+                      onUpload={(file) => {
+                        setUploading(true);
+                        previewFile(file.blobFile, (value) => {
+                          setFileInfo(value);
+                        });
+                      }}
+                      onSuccess={(response) => {
+                        setUploading(false);
+                        toaster.push(<Message type="success"></Message>);
+                        setUploadResponse(response);
+                      }}
+                      onError={() => {
+                        setFileInfo(null);
+                        setUploading(false);
+                        toaster.push(<Message type="error"></Message>);
+                      }}
+                    >
+                      <button type="button" style={{ width: 350, height: 150 }}>
+                        {uploading && <Loader backdrop center />}
+                        {fileInfo ? (
+                          <img src={fileInfo} width="100%" height="150%" />
+                        ) : (
+                          <img
+                            src={uploadResponse?.profilePicture}
+                            alt="popup image"
+                          />
+                        )}
+                      </button>
+                    </Uploader>
+                  </div>
+                  <div className="flex flex-col">
+                    <p>Offer Banner :</p>
+                    <Uploader
+                      className="mt-3"
+                      fileListVisible={false}
+                      listType="picture"
+                      action={`${config.endpoints.host}/upload`}
+                      onUpload={(file) => {
+                        setUploading(true);
+                        previewFile(file.blobFile, (value) => {
+                          setFileInfo(value);
+                        });
+                      }}
+                      onSuccess={(response) => {
+                        setUploading(false);
+                        toaster.push(<Message type="success"></Message>);
+                        setUploadResponseTwo(response);
+                      }}
+                      onError={() => {
+                        setFileInfo(null);
+                        setUploading(false);
+                        toaster.push(<Message type="error"></Message>);
+                      }}
+                    >
+                      <button type="button" style={{ width: 350, height: 150 }}>
+                        {uploading && <Loader backdrop center />}
+                        {fileInfo ? (
+                          <img src={fileInfo} width="100%" height="150%" />
+                        ) : (
+                          <img
+                            src={uploadResponseTwo?.profilePicture}
+                            alt="popup image"
+                          />
+                        )}
+                      </button>
+                    </Uploader>
+                  </div>
                 </div>
                 <div className="flex flex-col">
-                  <p>Offer Banner :</p>
-                  <Uploader
-                    className="mt-3"
-                    fileListVisible={false}
-                    listType="picture"
-                    action={`${config.endpoints.host}/upload`}
-                    onUpload={(file) => {
-                      setUploading(true);
-                      previewFile(file.blobFile, (value) => {
-                        setFileInfo(value);
-                      });
-                    }}
-                    onSuccess={(response) => {
-                      setUploading(false);
-                      toaster.push(<Message type="success"></Message>);
-                      setUploadResponse(response);
-                    }}
-                    onError={() => {
-                      setFileInfo(null);
-                      setUploading(false);
-                      toaster.push(<Message type="error"></Message>);
-                    }}
-                  >
-                    <button type="button" style={{ width: 350, height: 150 }}>
-                      {uploading && <Loader backdrop center />}
-                      {fileInfo ? (
-                        <img src={fileInfo} width="100%" height="150%" />
-                      ) : (
-                        <img
-                          src={uploadResponse?.profilePicture}
-                          alt="popup image"
-                        />
-                      )}
-                    </button>
-                  </Uploader>
+                  <p>Offer Text :</p>
+                  <Input as="textarea" rows={3} placeholder="" />
                 </div>
-              </div>
-
-              <div className="flex flex-col">
-                <p>Offer Text :</p>
-                <Input as="textarea" rows={3} placeholder="" />
-              </div>
+                <Button type="submit" className="bg-blue-700 font-bold text-white mt-2">
+                  Update
+                </Button>
+              </form>
             </div>
+
             <Divider />
           </div>
         </Drawer.Body>

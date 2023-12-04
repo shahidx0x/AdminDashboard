@@ -197,16 +197,16 @@ export default function Order() {
     const mutation = useMutation(updateOrder);
     const payloadBase = {
       notification: {
-        title: "Check this Mobile (title)",
-        body: "Rich Notification testing (body)",
+        title: "Your Order is Approved",
+        body: "Your order is aproved and ready for shipping",
         mutable_content: true,
         sound: "Tri-tone",
         image: "https://firebase.google.com/images/social.png",
       },
       data: {
-        title: "New Text Message",
+        title: "Your Order is Approved",
         image: "https://firebase.google.com/images/social.png",
-        message: "Hello how are you?",
+        message: "Your Order is approved and ready for shipping",
       },
     };
     const handleUpdate = (data) => {
@@ -226,7 +226,6 @@ export default function Order() {
         }
       );
     };
-
     const handleUpandInv = (data) => {
       if (data.order_status === 1) {
         handleUpdate(data);

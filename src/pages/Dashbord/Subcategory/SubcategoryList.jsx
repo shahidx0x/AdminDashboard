@@ -150,14 +150,14 @@ export default function SubcategoryList() {
   const defaultColumns = [
     {
       key: "image",
-      label: "Sub Category Image",
+      label: "Category Image",
       cellRenderer: ImageCell,
       width: 150,
     },
  
     {
       key: "subcategory_name",
-      label: "Sub Category Name",
+      label: "Category Name",
       cellRenderer: (props) => (
         <GenericCell {...props} content={props.rowData.subcategory_name} />
       ),
@@ -201,8 +201,8 @@ export default function SubcategoryList() {
       }),
       {
         loading: "Searching...",
-        success: <b>sub category found!</b>,
-        error: <b>sub not found in the database!</b>,
+        success: <b>category found!</b>,
+        error: <b>category  not found in the database!</b>,
       }
     );
   };
@@ -339,7 +339,7 @@ export default function SubcategoryList() {
                 <div className=" ">
                   <InputGroup>
                     <Input
-                      placeholder="Search by Subcategory"
+                      placeholder="Search by Category"
                       onChange={(value) => handleInputChange(value)}
                     />
                     <InputGroup.Button
@@ -357,7 +357,7 @@ export default function SubcategoryList() {
                     }}
                     className="bg-indigo-600 w-60 text-white font-bold mt-3"
                   >
-                    ADD SUB CATEGORY
+                    ADD CATEGORY
                   </Button>
                   {/* <div className="flex space-x-4  rounded-md">
                     <div className="flex rounded-md overflow-hidden h-12 w-full">

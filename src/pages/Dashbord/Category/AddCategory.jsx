@@ -117,10 +117,10 @@ export default function AddCategory() {
             Home
           </Breadcrumb.Item>
           <Breadcrumb.Item as={Link} to="/dashbord/category/all">
-            category-list
+            brand-list
           </Breadcrumb.Item>
           <Breadcrumb.Item active className="text-blue-400">
-            category-creation
+            brand-creation
           </Breadcrumb.Item>
         </Breadcrumb>
         <Panel
@@ -129,7 +129,7 @@ export default function AddCategory() {
           // style={{ background: "#fff" }}
           header={
             <h3 className="font-bold bg-indigo-700 p-8 text-2xl text-white rounded-lg">
-              Add Category Information
+              Add Brand Information
             </h3>
           }
         >
@@ -161,7 +161,7 @@ export default function AddCategory() {
                   {fileInfo ? (
                     <img src={fileInfo} width="100%" height="150%" />
                   ) : (
-                    <img src={myData?.profilePicture} alt="Category Profile" />
+                    <img src={myData?.profilePicture} alt="Brand Logo" />
                   )}
                 </button>
               </Uploader>
@@ -194,7 +194,7 @@ export default function AddCategory() {
                   </div>
                 </div>
                 <div>
-                  <p className="font-bold">Category Name</p>
+                  <p className="font-bold">Brand Name</p>
                   <Input
                     {...register("category_label")}
                     defaultValue={myData?.firstName}
@@ -202,7 +202,7 @@ export default function AddCategory() {
                   />
                 </div>
                 <div>
-                  <p className="font-bold">Category Type</p>
+                  <p className="font-bold">Brand Type</p>
                   <Input
                     {...register("category_type")}
                     defaultValue={myData?.firstName}
@@ -210,7 +210,7 @@ export default function AddCategory() {
                   />
                 </div>
                 <div>
-                  <p className="font-bold">Category Information</p>
+                  <p className="font-bold">Brand Information</p>
                   <Input
                     defaultValue={myData?.description}
                     {...register("category_description")}
@@ -233,7 +233,7 @@ export default function AddCategory() {
                     appearance="primary"
                     className="bg-blue-600 font-bold"
                   >
-                    Add Category
+                    Add Brand
                   </Button>
                 </div>
               </div>

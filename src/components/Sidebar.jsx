@@ -83,16 +83,7 @@ const CustomSidenav = ({
                   <p className="font-bold">Orders</p>
                 </div>
               </Nav.Item>
-              {/* <Nav.Item
-                as={Link}
-                to="/dashbord/notification-list"
-                eventKey="3-5"
-              >
-                <div className="flex gap-2">
-                  <IoNotificationsOutline className="text-xl" />
-                  <p className="font-bold">Notifications</p>
-                </div>
-              </Nav.Item> */}
+            
               <Nav.Item
                 as={Link}
                 to="/dashbord/manage/transaction"
@@ -127,19 +118,19 @@ const CustomSidenav = ({
             <Nav.Menu
               eventKey="5"
               className="font-bold"
-              title="Category"
+              title="Brand & Category"
               icon={<SiteIcon />}
             >
               <Nav.Item as={Link} to="/dashbord/category/all" eventKey="5-1">
                 <div className="flex gap-2">
                   <BsListUl className="text-xl font-bold" />
-                  <p className="font-bold ">All category</p>
+                  <p className="font-bold ">Brands</p>
                 </div>
               </Nav.Item>
               <Nav.Item as={Link} to="/dashbord/category/add" eventKey="5-2">
                 <div className="flex gap-2">
                   <AiOutlineFileAdd className="text-xl  font-bold" />
-                  <p className="font-bold">Add category</p>
+                  <p className="font-bold">Add Brand</p>
                 </div>
               </Nav.Item>
             </Nav.Menu>

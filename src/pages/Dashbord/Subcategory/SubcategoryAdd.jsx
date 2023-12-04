@@ -62,13 +62,13 @@ export default function AddSubCategory() {
       {
         onSuccess: (data) => {
           toaster.push(
-            <Message type="success">Sub Category added successfully</Message>
+            <Message type="success">Category added successfully</Message>
           );
         },
         onError: (error) => {
           console.log(error);
           toaster.push(
-            <Message type="error">Sub Category Add failed ! Try Again.</Message>
+            <Message type="error">Category add failed ! Try Again.</Message>
           );
         },
       }
@@ -95,7 +95,7 @@ export default function AddSubCategory() {
             Home
           </Breadcrumb.Item>
           <Breadcrumb.Item as={Link} to="/dashbord/all-company">
-            category-list
+            brand-list
           </Breadcrumb.Item>
           <Breadcrumb.Item
             className="cursor-pointer hover:text-blue-500"
@@ -103,10 +103,10 @@ export default function AddSubCategory() {
               navigate(-1);
             }}
           >
-            sub-category-list
+            category-list
           </Breadcrumb.Item>
           <Breadcrumb.Item active className="text-blue-400">
-            sub-category-creation
+            category-creation
           </Breadcrumb.Item>
         </Breadcrumb>
         <Panel
@@ -115,7 +115,7 @@ export default function AddSubCategory() {
           style={{ background: "#fff" }}
           header={
             <h3 className="font-bold bg-indigo-500 p-8 text-2xl text-white rounded-lg">
-              Add Sub Category Information
+              Add Category Information
             </h3>
           }
         >
@@ -155,12 +155,12 @@ export default function AddSubCategory() {
             <div className="flex  gap-5 justify-center">
               <div className="flex flex-col gap-5">
                 <div>
-                  <p className="font-bold">Sub Category Name</p>
+                  <p className="font-bold">Category Name</p>
                   <Input {...register("subcategory_name")} className="w-96" />
                 </div>
 
                 <div>
-                  <p className="font-bold">Sub Category Information</p>
+                  <p className="font-bold">Category Information</p>
                   <Input {...register("description")} as="textarea" rows={3} />
                 </div>
 
@@ -174,7 +174,7 @@ export default function AddSubCategory() {
                     appearance="primary"
                     className="bg-blue-600"
                   >
-                    Add Sub Category
+                    Add Category
                   </Button>
                 </div>
               </div>

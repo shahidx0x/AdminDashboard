@@ -63,7 +63,7 @@ export default function EditSubCategory() {
       {
         onSuccess: (data) => {
           toaster.push(
-            <Message type="success">Sub Category updated successfully</Message>
+            <Message type="success"> Category updated successfully</Message>
           );
           navigate(-1);
         },
@@ -71,7 +71,7 @@ export default function EditSubCategory() {
           console.log(error);
           toaster.push(
             <Message type="error">
-              Sub Category update failed ! Try Again.
+               Category update failed ! Try Again.
             </Message>
           );
         },
@@ -100,7 +100,7 @@ export default function EditSubCategory() {
             Home
           </Breadcrumb.Item>
           <Breadcrumb.Item as={Link} to="/dashbord/all-company">
-            category-list
+            brand-list
           </Breadcrumb.Item>
           <Breadcrumb.Item
             className="cursor-pointer hover:text-blue-500"
@@ -108,10 +108,10 @@ export default function EditSubCategory() {
               navigate(-1);
             }}
           >
-            sub-category-list
+            category-list
           </Breadcrumb.Item>
           <Breadcrumb.Item active className="text-blue-400">
-            sub-category-update
+            category-update
           </Breadcrumb.Item>
         </Breadcrumb>
         <Panel
@@ -120,7 +120,7 @@ export default function EditSubCategory() {
           style={{ background: "#fff" }}
           header={
             <h3 className="font-bold bg-indigo-500 p-8 text-2xl text-white rounded-lg">
-              Edit Sub Category Information
+              Edit Category Information
             </h3>
           }
         >
@@ -163,7 +163,7 @@ export default function EditSubCategory() {
             <div className="flex  gap-5 justify-center">
               <div className="flex flex-col gap-5">
                 <div>
-                  <p className="font-bold">Sub Category Name</p>
+                  <p className="font-bold">Category Name</p>
                   <Input
                     defaultValue={location.state.myData.subcategory_name}
                     {...register("subcategory_name")}
@@ -172,7 +172,7 @@ export default function EditSubCategory() {
                 </div>
 
                 <div>
-                  <p className="font-bold">Sub Category Information</p>
+                  <p className="font-bold">Category Information</p>
                   <Input
                     defaultValue={location.state.myData.description}
                     {...register("description")}
@@ -191,7 +191,7 @@ export default function EditSubCategory() {
                     appearance="primary"
                     className="bg-blue-600"
                   >
-                    Update Sub Category
+                    Update  Category
                   </Button>
                 </div>
               </div>

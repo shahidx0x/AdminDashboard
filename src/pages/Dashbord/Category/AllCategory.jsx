@@ -165,7 +165,7 @@ export default function AllCategory() {
   const defaultColumns = [
     {
       key: "image",
-      label: "Category Image",
+      label: "Brand Image",
       cellRenderer: ImageCell,
       width: 100,
     },
@@ -188,7 +188,7 @@ export default function AllCategory() {
     // },
     {
       key: "category_label",
-      label: "Category Name",
+      label: "Brand Name",
       cellRenderer: CategoryNameCell,
       width: 200,
     },
@@ -201,7 +201,7 @@ export default function AllCategory() {
 
     {
       key: "category_label",
-      label: "Sub Category Count",
+      label: "Category Count",
       cellRenderer: (props) => (
         <GenericCell
           {...props}
@@ -213,7 +213,7 @@ export default function AllCategory() {
     },
     {
       key: "brand_name",
-      label: "Brand Name",
+      label: "Company Name",
       cellRenderer: (props) => (
         <GenericCell {...props} content={props.rowData?.brand_name} />
       ),
