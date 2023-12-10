@@ -194,6 +194,7 @@ export default function Order() {
   };
 
   const ActionsCell = ({ rowData, ...props }) => {
+   
     const mutation = useMutation(updateOrder);
     const payloadBase = {
       notification: {
@@ -201,12 +202,26 @@ export default function Order() {
         body: "Your order is aproved and ready for shipping",
         mutable_content: true,
         sound: "Tri-tone",
-        image: "https://firebase.google.com/images/social.png",
+        image: rowData.items[0]?.product_image || "https://www.everestkitchenpa.com/assets/images/menuShortCuts/momoShortCut.jpg",
       },
       data: {
         title: "Your Order is Approved",
-        image: "https://firebase.google.com/images/social.png",
+        image: rowData.items[0]?.product_image || "https://www.everestkitchenpa.com/assets/images/menuShortCuts/momoShortCut.jpg",
         message: "Your Order is approved and ready for shipping",
+      },
+    };
+    const payloadBaseCancle = {
+      notification: {
+        title: "Your Order is Cancled",
+        body: "Unfortunatly Your Order is Cancled",
+        mutable_content: true,
+        sound: "Tri-tone",
+        image: rowData.items[0]?.product_image || "https://cdn-icons-png.flaticon.com/512/391/391045.png",
+      },
+      data: {
+        title: "Your Order is Cancled",
+        image: rowData.items[0]?.product_image || "https://www.everestkitchenpa.com/assets/images/menuShortCuts/momoShortCut.jpg",
+        message: "Unfortunatly Your Order is Cancled",
       },
     };
     const handleUpdate = (data) => {
@@ -253,7 +268,16 @@ export default function Order() {
                  axios.post(config.endpoints.host + `/notifications`, {
                   message: `Order Approved`,
                    user_email: rowData.user_email,
-                   category:'notification'
+                   category: 'notification',
+                   data: {
+                    imageUrl: rowData.items[0]?.product_image,
+                    appUrl:`order/${rowData._id}`,
+                  },
+                  color: "#32CD32",
+                  bgColor: "#FFBF00",
+                  priority: 3,
+                  isRecent: true,
+                  read: false, 
                 });
               } catch (error) {
                 toaster.push(
@@ -278,8 +302,41 @@ export default function Order() {
               axios.post(config.endpoints.host + `/notifications`, {
                 message: `Order Cancled`,
                  user_email: rowData.user_email,
-                 category:'notification'
+                category: 'notification',
+                title: 'Order Cancled',
+                data: {
+                  imageUrl: rowData.items[0]?.product_image,
+                  appUrl:`order/${rowData._id}`,
+                },
+                color: "#fd0e35",
+                bgColor: "#FFBF00",
+                priority: 3,
+                isRecent: true,
+                read: false, 
               });
+              try {
+                for (const token of rowData.user_id.firebaseFCM) {
+              
+                  const payload = { ...payloadBaseCancle, to: token };
+                  axios
+                    .post("https://fcm.googleapis.com/fcm/send", payload, {
+                      headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `key=${config.endpoints.fcmKey}`,
+                      },
+                    })
+                    .then((res) => console.log(res));
+                }
+                 axios.post(config.endpoints.host + `/notifications`, {
+                  message: `Order Cancled`,
+                   user_email: rowData.user_email,
+                   category:'notification'
+                });
+              } catch (error) {
+                toaster.push(
+                  <Message type="error">App Notification failed!</Message>
+                );
+              }
             },
             error: <b>Something went wrong !</b>,
           }
