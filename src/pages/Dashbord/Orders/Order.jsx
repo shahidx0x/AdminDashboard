@@ -231,7 +231,7 @@ export default function Order() {
                   const payloadBase = {
                     notification: {
                       title: "Your Order is Approved",
-                      body: "Your Order ID#${rowData._id} is approved and ready for shipping 😊",
+                      body: `Your Order ID#${rowData._id} is approved and ready for shipping 😊`,
                       mutable_content: true,
                       sound: "Tri-tone",
                       image: rowData.items[0]?.product_image || "https://www.everestkitchenpa.com/assets/images/menuShortCuts/momoShortCut.jpg",
@@ -239,7 +239,7 @@ export default function Order() {
                     data: {
                       title: "Your Order is Approved",
                       image: rowData.items[0]?.product_image || "https://www.everestkitchenpa.com/assets/images/menuShortCuts/momoShortCut.jpg",
-                      message: "Your Order is approved and ready for shipping",
+                      message: `Your Order ID#${rowData._id} is approved and ready for shipping 😊`,
                     },
                   };
               
@@ -316,7 +316,7 @@ export default function Order() {
                     data: {
                       title: "Your Order is Cancled",
                       image: rowData.items[0]?.product_image || "https://www.everestkitchenpa.com/assets/images/menuShortCuts/momoShortCut.jpg",
-                      message: "Unfortunatly Your Order is Cancled",
+                      message: `Your Order ID#${rowData._id} is Cancled ! 😓`,
                     },
                   };
                   const payload = { ...payloadBaseCancle, to: token };
