@@ -196,34 +196,8 @@ export default function Order() {
   const ActionsCell = ({ rowData, ...props }) => {
    
     const mutation = useMutation(updateOrder);
-    const payloadBase = {
-      notification: {
-        title: "Your Order is Approved",
-        body: "Your order is aproved and ready for shipping",
-        mutable_content: true,
-        sound: "Tri-tone",
-        image: rowData.items[0]?.product_image || "https://www.everestkitchenpa.com/assets/images/menuShortCuts/momoShortCut.jpg",
-      },
-      data: {
-        title: "Your Order is Approved",
-        image: rowData.items[0]?.product_image || "https://www.everestkitchenpa.com/assets/images/menuShortCuts/momoShortCut.jpg",
-        message: "Your Order is approved and ready for shipping",
-      },
-    };
-    const payloadBaseCancle = {
-      notification: {
-        title: "Your Order is Cancled",
-        body: "Unfortunatly Your Order is Cancled",
-        mutable_content: true,
-        sound: "Tri-tone",
-        image: rowData.items[0]?.product_image || "https://cdn-icons-png.flaticon.com/512/391/391045.png",
-      },
-      data: {
-        title: "Your Order is Cancled",
-        image: rowData.items[0]?.product_image || "https://www.everestkitchenpa.com/assets/images/menuShortCuts/momoShortCut.jpg",
-        message: "Unfortunatly Your Order is Cancled",
-      },
-    };
+   
+    
     const handleUpdate = (data) => {
       mutation.mutate(
         { data: data, token: user.jwt, id: rowData._id },
@@ -254,6 +228,20 @@ export default function Order() {
             success: () => {
               try {
                 for (const token of rowData.user_id.firebaseFCM) {
+                  const payloadBase = {
+                    notification: {
+                      title: "Your Order is Approved",
+                      body: "Your Order ID#${rowData._id} is approved and ready for shipping 😊",
+                      mutable_content: true,
+                      sound: "Tri-tone",
+                      image: rowData.items[0]?.product_image || "https://www.everestkitchenpa.com/assets/images/menuShortCuts/momoShortCut.jpg",
+                    },
+                    data: {
+                      title: "Your Order is Approved",
+                      image: rowData.items[0]?.product_image || "https://www.everestkitchenpa.com/assets/images/menuShortCuts/momoShortCut.jpg",
+                      message: "Your Order is approved and ready for shipping",
+                    },
+                  };
               
                   const payload = { ...payloadBase, to: token };
                   axios
@@ -266,9 +254,10 @@ export default function Order() {
                     .then((res) => console.log(res));
                 }
                  axios.post(config.endpoints.host + `/notifications`, {
-                  message: `Order Approved`,
+                   message: `Your Order ID#${rowData._id} is Approved ! 😊. Click Here.`,
                    user_email: rowData.user_email,
                    category: 'notification',
+                   title: `Order Approved`,
                    data: {
                     imageUrl: rowData.items[0]?.product_image,
                     appUrl:`order/${rowData._id}`,
@@ -300,7 +289,7 @@ export default function Order() {
             loading: "loading...",
             success: () => {
               axios.post(config.endpoints.host + `/notifications`, {
-                message: `Order Cancled`,
+                message: `Your Order ID#${rowData._id} is Cancled ! 😓 . Click Here.`,
                  user_email: rowData.user_email,
                 category: 'notification',
                 title: 'Order Cancled',
@@ -316,7 +305,20 @@ export default function Order() {
               });
               try {
                 for (const token of rowData.user_id.firebaseFCM) {
-              
+                  const payloadBaseCancle = {
+                    notification: {
+                      title: "Your Order is Cancled",
+                      body: `Your Order ID#${rowData._id} is Cancled ! 😓`,
+                      mutable_content: true,
+                      sound: "Tri-tone",
+                      image: rowData.items[0]?.product_image || "https://cdn-icons-png.flaticon.com/512/391/391045.png",
+                    },
+                    data: {
+                      title: "Your Order is Cancled",
+                      image: rowData.items[0]?.product_image || "https://www.everestkitchenpa.com/assets/images/menuShortCuts/momoShortCut.jpg",
+                      message: "Unfortunatly Your Order is Cancled",
+                    },
+                  };
                   const payload = { ...payloadBaseCancle, to: token };
                   axios
                     .post("https://fcm.googleapis.com/fcm/send", payload, {
