@@ -257,6 +257,7 @@ export default function Order() {
                    message: `Your Order ID#${rowData._id} is Approved ! 😊. Click Here.`,
                    user_email: rowData.user_email,
                    category: 'notification',
+                   notify_category:"OrderInformation",
                    title: `Order Approved`,
                    data: {
                     imageUrl: rowData.items[0]?.product_image,
@@ -292,11 +293,12 @@ export default function Order() {
                 message: `Your Order ID#${rowData._id} is Cancled ! 😓 . Click Here.`,
                  user_email: rowData.user_email,
                 category: 'notification',
+                notify_category:"OrderInformation",
                 title: 'Order Cancled',
                 data: {
                   imageUrl: rowData.items[0]?.product_image,
                   appUrl:`order/${rowData._id}`,
-                },
+                }, 
                 color: "#fd0e35",
                 bgColor: "#FFBF00",
                 priority: 3,
@@ -329,11 +331,7 @@ export default function Order() {
                     })
                     .then((res) => console.log(res));
                 }
-                 axios.post(config.endpoints.host + `/notifications`, {
-                  message: `Order Cancled`,
-                   user_email: rowData.user_email,
-                   category:'notification'
-                });
+              
               } catch (error) {
                 toaster.push(
                   <Message type="error">App Notification failed!</Message>
