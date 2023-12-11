@@ -74,7 +74,7 @@ export default function AllCompany() {
             className=""
             src={
               rowData?.brand_image ||
-              "https://avatars.githubusercontent.com/u/12592949"
+              "https://universalele.websites.co.in/obaju-turquoise/img/product-placeholder.png"
             }
             alt="P"
           />

@@ -62,7 +62,7 @@ export default function SubcategoryList() {
             className=""
             src={
               rowData?.image ||
-              "https://avatars.githubusercontent.com/u/12592949"
+              "https://universalele.websites.co.in/obaju-turquoise/img/product-placeholder.png"
             }
             alt="P"
           />

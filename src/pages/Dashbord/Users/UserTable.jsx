@@ -122,7 +122,7 @@ export default function UserTable() {
             className=""
             src={
               rowData?.profilePicture ||
-              "https://avatars.githubusercontent.com/u/12592949"
+              "https://st3.depositphotos.com/6672868/13701/v/450/depositphotos_137014128-stock-illustration-user-profile-icon.jpg"
             }
             alt="P"
           />

@@ -103,7 +103,7 @@ export default function AllCategory() {
       <div className="flex justify-center -mt-2">
         <Avatar
           src={
-            rowData?.image || "https://avatars.githubusercontent.com/u/12592949"
+            rowData?.image || "https://universalele.websites.co.in/obaju-turquoise/img/product-placeholder.png"
           }
           alt="P"
         />
