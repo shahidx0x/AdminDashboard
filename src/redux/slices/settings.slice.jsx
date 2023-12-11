@@ -1,13 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  isSidebarOpen: true,
+  isSidebarOpen: false,
   theme: "light",
-  header: true,
-  hover: true,
-  compact: true,
-  autoHeight: true,
-  bordered: true,
+  header: false,
+  hover: false,
+  compact: false,
+  autoHeight: false,
+  bordered: false,
 };
 
 const settingsSlice = createSlice({
