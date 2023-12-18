@@ -137,7 +137,7 @@ export default function AddProduct() {
     </Message>
   );
   const [productUnit, setProductUnit] = useState('Pices')
-  console.log(productUnit);
+ 
   const onSubmit = (data) => {
     const htmlContent = editorValue.toString("html");
     (data.brand_id = selectedBrandId.split(",")[0]),
@@ -146,7 +146,7 @@ export default function AddProduct() {
       (data.fet_image = [...uploadResponse]);
     data.product_image = coverUploadResponse;
     data.product_unit_type = productUnit.split("/")[0];
-    data.product_unit_quantity = productUnit.split("/")[1];
+    data.product_unit_quantity = Number(productUnit.split("/")[1]) || 1;
     data.brand_name = brandName;
     data.category_name = categoryName;
     data.subcategory_name = subCategoryName;
@@ -156,7 +156,7 @@ export default function AddProduct() {
     data.subcategory_slug = selectedSubCatId.split(",")[1];
     if (productUnit === 'Pices') data.unit_flag = 1;
     else data.unit_flag = 0;
-  
+
   
     mutation.mutate(
       { data: data, token: user.jwt },

@@ -76,17 +76,20 @@ export default function ProductList() {
     ["subCategoryIdName", "", user.jwt, selectedCatId?.split(",")[0], -1],
     getSubCategoryByCategoryId
   );
-  
+
   const cate_data = category_data?.data?.map((each) => {
-    return { label: each?.category_label, value: each._id+","+each.category_slug  };
+    return {
+      label: each?.category_label,
+      value: each._id + "," + each.category_slug,
+    };
   });
 
   const sub_cat_data = sub_category_data?.data?.map((each) => {
-    return { label: each?.subcategory_name, value: each._id};
+    return { label: each?.subcategory_name, value: each._id };
   });
-  
+
   const brand_data = brand?.data?.map((each) => {
-    return { label: each?.name, value: each.id +","+each.slug };
+    return { label: each?.name, value: each.id + "," + each.slug };
   });
 
   const brand_f_data = [...(brand_data || [])].map((item) => ({
@@ -100,9 +103,6 @@ export default function ProductList() {
     label: item?.label,
     value: item?.value,
   }));
-
-  
-
 
   const { Column, HeaderCell, Cell } = Table;
   const CompactCell = (props) => <Cell {...props} style={{ padding: 4 }} />;
@@ -128,6 +128,26 @@ export default function ProductList() {
           {dataKey === "discount"
             ? rowData[dataKey] + " " + PriceIcon
             : PriceIcon + " " + rowData[dataKey]}
+        </p>
+      </Cell>
+    );
+  };
+  const TextCellPerPrice = ({ rowData, icon, dataKey, ...props }) => {
+    const perPrice  = rowData.price / rowData.product_unit_quantity
+    return (
+      <Cell {...props}>
+     
+        <p
+          className={`flex flex-col justify-center items-center  font-mono font-bold`}
+        >
+          <p className="font-bold flex justify-center">
+           ( {rowData?.product_unit_type} )
+          </p>
+          <p className="font-bold">
+            $ {rowData?.product_unit_type === "Pices"
+              ? rowData.price
+              : perPrice.toFixed(2)}
+          </p>
         </p>
       </Cell>
     );
@@ -236,6 +256,14 @@ export default function ProductList() {
       width: 100,
     },
     {
+      key: "product_unit_quantity",
+      label: "Per Pices",
+      cellRenderer: (props) => (
+        <TextCellPerPrice {...props} dataKey="product_unit_quantity" icon="" />
+      ),
+      width: 140,
+    },
+    {
       key: "discount",
       label: "Discount",
       cellRenderer: (props) => (
@@ -322,7 +350,7 @@ export default function ProductList() {
   };
 
   const mutation_search = useMutation(searchProduct);
-  
+
   const handleInputChange = (value) => {
     setInputValue(value);
     if (value === "") {
@@ -348,7 +376,6 @@ export default function ProductList() {
   const filter_mutation = useMutation(filterProduct);
 
   const handleFilterChange = (brand = "", category = "", subcategory = "") => {
-
     if (brand === "" && category === "" && subcategory === "") {
       refetch();
       return;
@@ -356,7 +383,7 @@ export default function ProductList() {
 
     toast.promise(
       filter_mutation.mutateAsync({
-        queryKey: ['filter', user.jwt,brand,category,subcategory],
+        queryKey: ["filter", user.jwt, brand, category, subcategory],
       }),
       {
         loading: "loading...",
@@ -371,36 +398,40 @@ export default function ProductList() {
       refetch();
       return;
     }
-  
+
     const brand = value === "" || value === null ? "" : value.split(",")[1];
     handleFilterChange(brand);
-  }
+  };
   const handleCategoryChange = (value) => {
     if (value === "" || value === null) {
       filter_mutation.reset();
       refetch();
       return;
     }
-  
+
     const category = value === "" || value === null ? "" : value.split(",")[1];
-    handleFilterChange(selectedBrandId?.split(",")[1],category);
-  }
+    handleFilterChange(selectedBrandId?.split(",")[1], category);
+  };
   const handleSubCategoryChange = (value) => {
-  
     if (value === "" || value === null) {
       filter_mutation.reset();
       refetch();
       return;
     }
-  
+
     const subcategory = value;
-  
-    handleFilterChange(selectedBrandId?.split(",")[1],selectedCatId?.split(",")[1],subcategory);
-  }
-  const displayedData =
-    filter_mutation.data ? [...filter_mutation.data.data ] : isSearching && mutation_search?.data
-      ? [...(mutation_search?.data?.data || [])]
-      : data?.data || [];
+
+    handleFilterChange(
+      selectedBrandId?.split(",")[1],
+      selectedCatId?.split(",")[1],
+      subcategory
+    );
+  };
+  const displayedData = filter_mutation.data
+    ? [...filter_mutation.data.data]
+    : isSearching && mutation_search?.data
+    ? [...(mutation_search?.data?.data || [])]
+    : data?.data || [];
 
   const handleLoadMore = () => {
     setPage((prevPage) => {
@@ -418,7 +449,7 @@ export default function ProductList() {
   };
   const handleClose = () => setOpen(false);
   refetch();
-  const settings = useSelector(state => state.settings)
+  const settings = useSelector((state) => state.settings);
   return (
     <div>
       <Toaster />
@@ -453,7 +484,6 @@ export default function ProductList() {
                 onChange={setColumnKeys}
                 cleanable={true}
               />
-          
             </div>
 
             <div className="flex flex-col gap-2">
@@ -481,7 +511,6 @@ export default function ProductList() {
                   onChange={(value, data) => {
                     SetSelectedBrandId(value);
                     handleCompanyChange(value);
-                    
                   }}
                 />
                 <SelectPicker
@@ -492,7 +521,7 @@ export default function ProductList() {
                   className="w-[12rem] 2xl:w-[14.5rem]"
                   onChange={(value, data) => {
                     SetSelectedCatId(value);
-                    handleCategoryChange(value)
+                    handleCategoryChange(value);
                   }}
                 />
                 <SelectPicker
@@ -526,7 +555,7 @@ export default function ProductList() {
             bordered={settings.bordered}
             cellBordered={settings.bordered}
             headerHeight={settings.compact ? 40 : 30}
-            rowHeight={settings.compact ? 56 : 30}
+            rowHeight={settings.compact ? 76 : 30}
           >
             {columns.map((column) => {
               const { key, label, cellRenderer, ...rest } = column;
@@ -580,20 +609,28 @@ export default function ProductList() {
                   </svg>
                   <p
                     onClick={handleLoadPrevious}
-                    className={`text-sm ml-3 font-medium leading-none ${settings.theme === 'dark' && 'text-white'} `}
+                    className={`text-sm ml-3 font-medium leading-none ${
+                      settings.theme === "dark" && "text-white"
+                    } `}
                   >
                     Previous
                   </p>
                 </div>
                 <div className="sm:flex hidden">
-                  <p className={`text-sm font-bold leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2 ${settings.theme === 'dark' && 'text-white'}`}>
+                  <p
+                    className={`text-sm font-bold leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2 ${
+                      settings.theme === "dark" && "text-white"
+                    }`}
+                  >
                     pages : {page}/{data?.meta?.total_pages}
                   </p>
                 </div>
                 <div className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
                   <p
                     onClick={handleLoadMore}
-                    className={`text-sm font-medium leading-none mr-3 ${settings.theme === 'dark' && 'text-white'}`}
+                    className={`text-sm font-medium leading-none mr-3 ${
+                      settings.theme === "dark" && "text-white"
+                    }`}
                   >
                     Next
                   </p>
