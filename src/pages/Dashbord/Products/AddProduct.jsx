@@ -24,7 +24,7 @@ import { createProduct } from "../../../api/ProductService";
 import { getSubCategoryByCategoryId } from "../../../api/SubCategoryServices";
 import { config } from "../../../configs/api.config";
 import { toolbarConfig } from "../../../configs/toolbar.config";
-import { getUnit } from "../../../api/UnitType";
+import { getUnit, getUnitInfo } from "../../../api/UnitType";
 
 function previewFile(file, callback) {
   const reader = new FileReader();
@@ -66,7 +66,7 @@ export default function AddProduct() {
     data:data_unit,
     status,
     refetch: data_unit_refetch,
-  } = useQuery(["units", user.jwt], getUnit, {
+  } = useQuery(["unit-info", user.jwt], getUnitInfo, {
     cacheTime: 0,
   });
 
@@ -104,9 +104,10 @@ export default function AddProduct() {
     RichTextEditor.createEmptyValue()
   );
 
-  const product_unit_type = data_unit?.data.map(
-    item => ({ label: item.label, value: item.value })
-  );
+  const product_unit_type = [{label : "Pices",value:"Pices"}, ...(data_unit?.data || []).map(
+    item => ({ label: item.quantity+"/"+item.label, value: item.label+"/"+item.quantity })
+  )];
+  console.log(product_unit_type);
 
   const handleChange = (value) => {
     if (value) {

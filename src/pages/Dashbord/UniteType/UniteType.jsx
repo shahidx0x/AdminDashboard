@@ -11,7 +11,6 @@ import {
   Modal,
   SelectPicker,
   Table,
-  TagPicker,
   toaster,
 } from "rsuite";
 
@@ -81,7 +80,6 @@ export default function UniteType() {
   const settings = useSelector((state) => state.settings);
   const [expandedRowKeys] = useState([]);
   const [open, setOpen] = useState(false);
-  const [openUnit, setOpenUnit] = useState(false);
   const [confirm, setConfirm] = useState(false);
   const handleClose = () => setOpen(false);
   const [unitValue, setUnitValue] = useState(null);
