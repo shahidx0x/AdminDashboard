@@ -9,6 +9,7 @@ import {
   Input,
   Message,
   Modal,
+  SelectPicker,
   Table,
   TagPicker,
   toaster,
@@ -93,10 +94,14 @@ export default function UniteType() {
   const {
     data,
     status,
-    refetch: data_refetch,
+    refetch,
   } = useQuery(["units", user.jwt], getUnit, {
     cacheTime: 0,
   });
+
+  const unit_type = data?.data.map(
+    item => ({ label: item.label, value: item.value })
+  );
   const mutation_delete = useMutation(deleteUnit);
   const handleOk = () => {
     mutation_delete.mutate(
@@ -106,15 +111,15 @@ export default function UniteType() {
           toaster.push(
             <Message type="success">Unit deleted successfully</Message>
           );
-          data_refetch();
+          refetch();
         },
         onError: () => {
-          toaster.push(<Message type="error">Brand delete failed !</Message>);
+          toaster.push(<Message type="error">Unit delete failed !</Message>);
         },
       }
     );
     setOpen(false);
-    data_refetch();
+    refetch();
   };
   const mutation_create = useMutation(createUnit);
   const handleAddUnit = () => {
@@ -125,7 +130,7 @@ export default function UniteType() {
           toaster.push(
             <Message type="success">Unit added successfully</Message>
           );
-          data_refetch();
+          refetch();
         },
         onError: (error) => {
           console.log(error);
@@ -134,7 +139,7 @@ export default function UniteType() {
       }
     );
   
-    data_refetch();
+    refetch();
   };
   const CompactCell = (props) => <Cell {...props} style={{ padding: 4 }} />;
   const CompactHeaderCell = (props) => (
@@ -175,8 +180,14 @@ export default function UniteType() {
   const defaultColumns = [
     {
       key: "label",
-      label: "Label",
+      label: "Unit Type",
       cellRenderer: (props) => <TextCell {...props} dataKey="label" />,
+      width: 250,
+    },
+    {
+      key: "value",
+      label: "Value",
+      cellRenderer: (props) => <TextCell {...props} dataKey="quantity" />,
       width: 250,
     },
     {
@@ -187,6 +198,21 @@ export default function UniteType() {
     },
   ];
 
+  const defaultColumnsUnit = [
+    {
+      key: "label",
+      label: "Unit Type",
+      cellRenderer: (props) => <TextCell {...props} dataKey="label" />,
+      width: 140,
+    },
+    {
+      key: "action",
+      label: "Action",
+      cellRenderer: ActionsCell,
+      width: 100,
+    },
+  ];
+
   const [columnKeys, setColumnKeys] = useState(
     defaultColumns.map((column) => column.key)
   );
@@ -194,11 +220,18 @@ export default function UniteType() {
     columnKeys.some((key) => key === column.key)
   );
 
+  const [columnKeysUnit, setColumnKeysUnit] = useState(
+    defaultColumnsUnit.map((column) => column.key)
+  );
+  const columnsUnit = defaultColumnsUnit.filter((column) =>
+    columnKeysUnit.some((key) => key === column.key)
+  );
+
   const CustomCell = settings.compact ? CompactCell : Cell;
   const CustomHeaderCell = settings.compact ? CompactHeaderCell : HeaderCell;
 
   const displayedData = [...(data?.data || [])];
- 
+  refetch();
 
 
   return (
@@ -249,7 +282,7 @@ export default function UniteType() {
           className="mt-5 ml-5 flex flex-col gap-2"
           style={{ height: settings.autoHeight ? "auto" : 700 }}
         >
-          <div className=" w-[32rem]">
+          <div className=" w-[47rem]">
             <Table
               shouldUpdateScroll={true}
               rowKey={rowKey}
@@ -285,10 +318,54 @@ export default function UniteType() {
             </Table>
           </div>
         </div>
+        <div className="mt-5 flex flex-col gap-2 w-60">
+         
+          <Table
+              shouldUpdateScroll={true}
+              rowKey={rowKey}
+              loading={status === "loading" ? true : false}
+              height={600}
+              hover={settings.hover}
+              showHeader={settings.header}
+              autoHeight={false}
+              data={displayedData}
+              bordered={settings.bordered}
+              cellBordered={settings.bordered}
+              headerHeight={settings.compact ? 40 : 30}
+              rowHeight={50}
+              rowExpandedHeight={150}
+              expandedRowKeys={expandedRowKeys}
+              renderRowExpanded={renderRowExpanded}
+            >
+              {columnsUnit.map((column) => {
+                const { key, label, cellRenderer, ...rest } = column;
+                return (
+                  <Column {...rest} key={key}>
+                    <CustomHeaderCell>{label}</CustomHeaderCell>
+                    {cellRenderer ? (
+                      React.createElement(cellRenderer, {
+                        dataKey: key,
+                      })
+                    ) : (
+                      <CustomCell dataKey={key} />
+                    )}
+                  </Column>
+                );
+              })}
+          </Table>
+         
+        </div>
         <div className="mt-5 flex flex-col gap-2">
-          <Input onChange={(value) => setUnitValue(value) } className="w-60" placeholder="Enter Your Unit" />
-          <Button onClick={() => handleAddUnit()} className="bg-blue-500 w-20" appearance="primary">
-            Add Unit
+        <Input onChange={(value) => setUnitValue(value)} className="w-60" placeholder="enter unit type" />
+       
+       <Button onClick={() => handleAddUnit()} className="bg-blue-500 w-full font-bold" appearance="primary">
+         Add Unit Type
+       </Button>
+          <SelectPicker data={unit_type} onChange={(value) => setUnitValue(value)} className="w-60" placeholder="select unit type" />
+          <Input onChange={(value) => setUnitValue(value)} className="w-60" placeholder="enter a value" />
+       
+          <Button onClick={() => handleAddUnit()} className="bg-blue-500 w-full font-bold" appearance="primary">
+            Add New Unit
           </Button>
         </div>
       </div>

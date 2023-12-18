@@ -251,19 +251,19 @@ export default function ProductList() {
       ),
       width: 150,
     },
-    {
-      key: "min_purchease",
-      label: "Min Purchase",
-      cellRenderer: (props) => <TextCell {...props} dataKey="min_purchease" />,
-      width: 100,
-    },
+    // {
+    //   key: "min_purchease",
+    //   label: "Min Purchase",
+    //   cellRenderer: (props) => <TextCell {...props} dataKey="min_purchease" />,
+    //   width: 100,
+    // },
 
-    {
-      key: "max_purchease",
-      label: "Max Purchase",
-      cellRenderer: (props) => <TextCell {...props} dataKey="max_purchease" />,
-      width: 100,
-    },
+    // {
+    //   key: "max_purchease",
+    //   label: "Max Purchase",
+    //   cellRenderer: (props) => <TextCell {...props} dataKey="max_purchease" />,
+    //   width: 100,
+    // },
     // {
     //   key: "product_information",
     //   label: "Description",
@@ -451,7 +451,7 @@ export default function ProductList() {
                 valueKey="key"
                 value={columnKeys}
                 onChange={setColumnKeys}
-                cleanable={false}
+                cleanable={true}
               />
           
             </div>

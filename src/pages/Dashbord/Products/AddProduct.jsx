@@ -69,6 +69,7 @@ export default function AddProduct() {
   } = useQuery(["units", user.jwt], getUnit, {
     cacheTime: 0,
   });
+
   
   const cate_data = category_data?.data?.map((each) => {
     return {
@@ -106,7 +107,7 @@ export default function AddProduct() {
   const product_unit_type = data_unit?.data.map(
     item => ({ label: item.label, value: item.value })
   );
-  console.log(data_unit?.data);
+
   const handleChange = (value) => {
     if (value) {
       setEditorValue(value);
