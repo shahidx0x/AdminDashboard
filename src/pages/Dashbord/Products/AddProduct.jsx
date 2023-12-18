@@ -136,7 +136,8 @@ export default function AddProduct() {
       Error : Product Added Failed !.
     </Message>
   );
-  const [productUnit ,setProductUnit] = useState('Pices')
+  const [productUnit, setProductUnit] = useState('Pices')
+  console.log(productUnit);
   const onSubmit = (data) => {
     const htmlContent = editorValue.toString("html");
     (data.brand_id = selectedBrandId.split(",")[0]),
@@ -144,7 +145,8 @@ export default function AddProduct() {
       (data.category_id = selectedCatId.split(",")[0]),
       (data.fet_image = [...uploadResponse]);
     data.product_image = coverUploadResponse;
-    data.product_unit_type = productUnit;
+    data.product_unit_type = productUnit.split("/")[0];
+    data.product_unit_quantity = productUnit.split("/")[1];
     data.brand_name = brandName;
     data.category_name = categoryName;
     data.subcategory_name = subCategoryName;
