@@ -38,6 +38,7 @@ export default function EditCompany() {
 
   const location = useLocation();
   const myData = location.state?.myData;
+  
 
   const {
     register,

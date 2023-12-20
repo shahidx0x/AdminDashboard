@@ -40,6 +40,7 @@ export default function EditCategory() {
 
   const location = useLocation();
   const myData = location.state?.myData;
+  console.log(myData.brand_id);
 
   const {
     register,
@@ -54,7 +55,7 @@ export default function EditCategory() {
   });
 
   const mutation = useMutation(updateCategory);
-  const [brandId, SetBrandId] = useState(null);
+  const [brandId, SetBrandId] = useState(myData.brand_id);
   const [brandName, SetBrandName] = useState(myData.brand_name);
   const onSubmit = (data) => {
     if (uploadResponse.fileUrl !== "") {
@@ -62,8 +63,8 @@ export default function EditCategory() {
     } else {
       data.image = myData.image;
     }
-    data.brand_id = brandId;
-    data.brand_name = brandName;
+    data.brand_id = brandId || myData.brand_id;
+    data.brand_name = brandName || myData.brand_name;
     data.id = myData?._id;
     let id = myData?._id;
 
