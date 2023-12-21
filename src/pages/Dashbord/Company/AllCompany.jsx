@@ -126,7 +126,7 @@ export default function AllCompany() {
     return (
       <Cell {...props}>
         <p className="flex justify-center items-center">
-          {rowData?.brand_description}
+          {rowData?.brand_address}
         </p>
       </Cell>
     );
