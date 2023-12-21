@@ -64,6 +64,7 @@ export default function AddSubCategory() {
           toaster.push(
             <Message type="success">Category added successfully</Message>
           );
+          navigate(-1);
         },
         onError: (error) => {
           console.log(error);
@@ -76,9 +77,7 @@ export default function AddSubCategory() {
     reset();
   };
 
-  function Return() {
-    navigate(-1);
-  }
+
   return (
     <>
       <Stack
@@ -165,7 +164,7 @@ export default function AddSubCategory() {
                 </div>
 
                 <div className="2xl:mb-4 flex gap-2">
-                  <Button appearance="ghost" onClick={() => Return()}>
+                  <Button appearance="ghost" onClick={() => navigate(-1)}>
                     Cancel
                   </Button>
 

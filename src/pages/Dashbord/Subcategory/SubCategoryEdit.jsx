@@ -37,7 +37,6 @@ export default function EditSubCategory() {
   const navigate = useNavigate();
   const params = useParams();
   const location = useLocation();
-
   console.log(location.state.myData);
 
   const {
@@ -53,7 +52,7 @@ export default function EditSubCategory() {
     if (uploadResponse.fileUrl !== "") {
       data.image = uploadResponse.fileUrl;
     } else {
-      data.image = "";
+      data.image = location.state.myData.image;
     }
     let cat_id = location.state.myData.category_id;
     let sub_cat_id = location.state.myData._id;
@@ -79,9 +78,7 @@ export default function EditSubCategory() {
     reset();
   };
 
-  function Return() {
-    navigate(-1);
-  }
+
 
   return (
     <>
@@ -181,7 +178,7 @@ export default function EditSubCategory() {
                 </div>
 
                 <div className="2xl:mb-4 flex gap-2">
-                  <Button appearance="ghost" onClick={() => Return()}>
+                  <Button appearance="ghost" onClick={() => navigate(-1)}>
                     Cancel
                   </Button>
 
