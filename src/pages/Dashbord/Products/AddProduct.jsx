@@ -69,6 +69,9 @@ export default function AddProduct() {
   } = useQuery(["unit-info", user.jwt], getUnitInfo, {
     cacheTime: 0,
   });
+  const product_unit_type = [{label : "Pices",value:"Pices"}, ...(data_unit?.data || []).map(
+    item => ({ label: item.quantity+"/"+item.label, value: item.label+"/"+item.quantity })
+  )];
 
   
   const cate_data = category_data?.data?.map((each) => {
@@ -104,10 +107,7 @@ export default function AddProduct() {
     RichTextEditor.createEmptyValue()
   );
 
-  const product_unit_type = [{label : "Pices",value:"Pices"}, ...(data_unit?.data || []).map(
-    item => ({ label: item.quantity+"/"+item.label, value: item.label+"/"+item.quantity })
-  )];
-  console.log(product_unit_type);
+ 
 
   const handleChange = (value) => {
     if (value) {
@@ -316,11 +316,7 @@ const settings = useSelector(state => state.settings)
               <div className="col-span-full sm:col-span-3 flex flex-col gap-1">
                 <label className={`font-bold text-sm  ${settings.theme === "dark" && 'text-white'} `}>Product Unit Type</label>
                 <SelectPicker   className="w-[12rem] 2xl:w-[14.5rem]" onChange={(value,data) => setProductUnit(value)} searchable={false} data={product_unit_type} />
-                {/* <Input
-                  required
-                  className="w-[12rem] 2xl:w-[14.5rem]"
-                  {...register("name")}
-                /> */}
+             
                 <div data-lastpass-icon-root="true"></div>
               </div>
               <div className="flex flex-col col-span-full sm:col-span-3 gap-1">

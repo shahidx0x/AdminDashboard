@@ -25,6 +25,7 @@ import { getSubCategoryByCategoryId } from "../../../api/SubCategoryServices";
 import { config } from "../../../configs/api.config";
 import RichTextEditor from "react-rte";
 import { toolbarConfig } from "../../../configs/toolbar.config";
+import { getUnitInfo } from "../../../api/UnitType";
 
 function previewFile(file, callback) {
   const reader = new FileReader();
@@ -39,7 +40,6 @@ export default function EditProduct() {
   const toaster = useToaster();
   const location = useLocation();
   const editData = location.state.myData;
-
   const [uploading, setUploading] = useState(false);
   const [fileInfo, setFileInfo] = useState({
     product_image: editData?.product_image,
@@ -61,7 +61,7 @@ export default function EditProduct() {
   const [subCategoryPlaceholder, setSubCategoryPlaceholder] = useState(
     editData.subCategoryName
   );
-
+  const [productUnit, setProductUnit] = useState("Pices");
   useEffect(() => {
     if (selectedBrandId !== editData.brand_id) {
       setCategoryPlaceholder("Select Category");
@@ -137,9 +137,23 @@ export default function EditProduct() {
   const [subCategoryName, SetSubCategoryName] = useState(
     editData.subcategory_name
   );
-  console.log(editData.product_information);
+  const {
+    data: data_unit,
+    status,
+    refetch: data_unit_refetch,
+  } = useQuery(["unit-info", user.jwt], getUnitInfo, {
+    cacheTime: 0,
+  });
+  const product_unit_type = [
+    { label: "Pices", value: "Pices" },
+    ...(data_unit?.data || []).map((item) => ({
+      label: item.quantity + "/" + item.label,
+      value: item.label + "/" + item.quantity,
+    })),
+  ];
+  const settings = useSelector((state) => state.settings);
   const [editorValue, setEditorValue] = useState(
-    RichTextEditor.createValueFromString(editData.product_information,"html")
+    RichTextEditor.createValueFromString(editData.product_information, "html")
   );
   const handleChange = (value) => {
     if (value) {
@@ -147,15 +161,24 @@ export default function EditProduct() {
     }
   };
   const onSubmit = (data) => {
-    const htmlContent = editorValue.toString('html');
+    const htmlContent = editorValue.toString("html");
     data.fet_image = [...uploadResponse];
     data.product_image = coverUploadResponse || fileInfo.product_image;
     data.brand_name = brandName;
     data.category_name = categoryName;
     data.subcategory_name = subCategoryName;
     data.product_information = htmlContent;
+    if (productUnit === "Pices") {
+      data.product_unit_type = productUnit;
+      data.product_unit_quantity = 1;
+    }
+    data.product_unit_type =
+      productUnit.split("/")[0] || editData.product_unit_type;
+    data.product_unit_quantity =
+      Number(productUnit.split("/")[1]) || editData.product_unit_quantity;
     let id = editData._id;
-
+    console.log(productUnit);
+    console.log(data);
     mutation.mutate(
       { data: data, token: user.jwt, id: id },
       {
@@ -197,21 +220,21 @@ export default function EditProduct() {
       )
       .catch((e) => console.log(e));
   };
-
+ 
   return (
     <>
       <Stack
         justifyContent="center"
         alignItems="center"
         direction="column"
-        className="mt-28 2xl:mt-5 "
+        className=" 2xl:mt-5  "
         style={{
           height: "100vh",
         }}
       >
         <Panel
           bordered
-          className="shadow-sm w-[48.5rem]"
+          className="shadow-sm w-[48.5rem] mt-48  "
           // style={{ background: "#fff" }}
           header={
             <h3 className="font-bold bg-indigo-700 p-8 text-2xl text-white rounded-lg">
@@ -292,6 +315,22 @@ export default function EditProduct() {
                     defaultValue={editData.name}
                     className="w-[14.5rem]"
                     {...register("name")}
+                  />
+                </div>
+
+                <div>
+                  <p className="font-bold">Select Unit</p>
+
+                  <SelectPicker
+                    placeholder={
+                      editData.product_unit_quantity +
+                      "/" +
+                      editData.product_unit_type
+                    }
+                    className="w-[12rem] 2xl:w-[14.5rem]"
+                    onChange={(value, data) => setProductUnit(value)}
+                    searchable={false}
+                    data={product_unit_type}
                   />
                 </div>
                 <div>
@@ -420,11 +459,11 @@ export default function EditProduct() {
                 <p className="font-bold mt-3">Description</p>
 
                 <RichTextEditor
-                      className="mt-2"
-                      toolbarConfig={toolbarConfig}
-                      value={editorValue}
-                      onChange={handleChange}
-                    />
+                  className="mt-2"
+                  toolbarConfig={toolbarConfig}
+                  value={editorValue}
+                  onChange={handleChange}
+                />
               </div>
 
               <div className="mt-10 flex gap-2">
