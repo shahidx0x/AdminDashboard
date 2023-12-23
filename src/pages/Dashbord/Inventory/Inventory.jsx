@@ -149,15 +149,7 @@ export default function Inventory() {
     );
   };
 
-  const TextCellOngoing = ({ rowData, dataKey, ...props }) => {
-    return (
-      <Cell {...props}>
-        <p className="flex justify-center font-bold break-words whitespace-normal">
-          {rowData[dataKey][0].ongoing}
-        </p>
-      </Cell>
-    );
-  };
+
   const TextCellStock = ({ rowData, dataKey, ...props }) => {
     return (
       <Cell {...props}>
