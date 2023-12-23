@@ -102,7 +102,7 @@ export default function NavbarHeader() {
             <Avatar
               circle
               src="https://cdn.pixabay.com/photo/2017/02/23/13/05/avatar-2092113_1280.png"
-              alt="@superman66"
+              alt="avater"
             />
           </MenuComponent>
         </Nav>
