@@ -227,7 +227,7 @@ export default function Inventory() {
       key: "name",
       label: "Product Name",
       cellRenderer: (props) => <TextCell {...props} dataKey="name" />,
-      width: 300,
+      width: 500,
     },
     {
       key: "brand_name",
@@ -239,7 +239,7 @@ export default function Inventory() {
       key: "category_name",
       label: "Category",
       cellRenderer: (props) => <TextCell {...props} dataKey="category_name" />,
-      width: 250,
+      width: 200,
     },
     {
       key: "subcategory_name",
@@ -247,15 +247,15 @@ export default function Inventory() {
       cellRenderer: (props) => (
         <TextCell {...props} dataKey="subcategory_name" />
       ),
-      width: 150,
+      width: 250,
     },
 
-    {
-      key: "ongoing",
-      label: "Ongoing",
-      cellRenderer: (props) => <TextCellOngoing {...props} dataKey="sku" />,
-      width: 150,
-    },
+    // {
+    //   key: "ongoing",
+    //   label: "Ongoing",
+    //   cellRenderer: (props) => <TextCellOngoing {...props} dataKey="sku" />,
+    //   width: 150,
+    // },
     {
       key: "stock",
       label: "Stock",

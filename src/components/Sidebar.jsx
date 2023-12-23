@@ -173,7 +173,7 @@ const CustomSidenav = ({
 export default function SideNavigation() {
   const [activeKey, setActiveKey] = useState("1");
   const [openKeys, setOpenKeys] = useState(["3", "4"]);
-  const [expanded, setExpand] = useState(true);
+  const [expanded, setExpand] = useState(false);
 
   return (
     <div>

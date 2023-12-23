@@ -321,7 +321,7 @@ export default function UserTable() {
         </div>
 
         <hr />
-        <div className="mt-5" style={{ height: settings.autoHeight ? "auto" : 400 }}>
+        <div className="mt-5 ml-5" style={{ height: settings.autoHeight ? "auto" : 400 }}>
           <Table
             className=""
             loading={status === "loading" ? true : false}

@@ -269,7 +269,7 @@ export default function AdminTable() {
         </div>
 
         <hr />
-        <div className="mt-5" style={{ height: settings.autoHeight ? "auto" : 400 }}>
+        <div className="mt-5 ml-5" style={{ height: settings.autoHeight ? "auto" : 400 }}>
           <Table
             loading={status === "loading" ? true : false}
             height={300}

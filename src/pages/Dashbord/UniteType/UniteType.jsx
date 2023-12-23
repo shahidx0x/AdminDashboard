@@ -280,15 +280,11 @@ export default function UniteType() {
     },
   ];
 
-  const [columnKeys, setColumnKeys] = useState(
-    defaultColumnsUnit.map((column) => column.key)
-  );
 
-  const columns = defaultColumnsUnit.filter((column) =>
-    columnKeys.some((key) => key === column.key)
-  );
 
-  const [columnKeysUnit, setColumnKeysUnit] = useState(
+
+
+  const [columnKeysUnit] = useState(
     defaultColumnsUnit.map((column) => column.key)
   );
 
@@ -296,7 +292,7 @@ export default function UniteType() {
     columnKeysUnit.some((key) => key === column.key)
   );
 
-  const [UnitcolumnKeys, setUnitColumnKeys] = useState(
+  const [UnitcolumnKeys] = useState(
     defaultColumns.map((column) => column.key)
   );
 
@@ -304,9 +300,7 @@ export default function UniteType() {
     UnitcolumnKeys.some((key) => key === column.key)
   );
 
-  const [columnKeysUnitInfo, setColumnKeysUnitInfo] = useState(
-    defaultColumns.map((column) => column.key)
-  );
+
 
   const displayedData = [...(data?.data || [])];
   const displayedDataUnitInfo = [...(utinfo?.data || [])];
@@ -426,7 +420,7 @@ export default function UniteType() {
             </Table>
           </div>
         </div>
-        <div className="mt-5 flex flex-col gap-2 w-60">
+        <div className="mt-5 ml-5 flex flex-col gap-2 w-60">
           <Table
             shouldUpdateScroll={true}
             rowKey={rowKey}
