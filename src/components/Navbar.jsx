@@ -101,7 +101,7 @@ export default function NavbarHeader() {
           <MenuComponent placement="bottomEnd" handleOpen={handleOpen}>
             <Avatar
               circle
-              src="https://avatars.githubusercontent.com/u/12592949"
+              src="https://cdn.pixabay.com/photo/2017/02/23/13/05/avatar-2092113_1280.png"
               alt="@superman66"
             />
           </MenuComponent>
