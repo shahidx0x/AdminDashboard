@@ -244,7 +244,7 @@ export default function UserTable() {
     setIsSearching(true);
     toast.promise(
       mutation_search.mutateAsync({
-        queryKey: ["user_search", inputValue, user.jwt],
+        queryKey: ["user_search", inputValue.toLocaleLowerCase(), user.jwt],
       }),
       {
         loading: "Searching...",
