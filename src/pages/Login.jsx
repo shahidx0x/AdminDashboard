@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { config } from "../configs/api.config";
 import { loginUser } from "../redux/slices/user.slices";
-import { setTableAutoHeight, setTableBordered, setTableCompact, setTableHeader, setTableHover, setThemeLight } from "../redux/slices/settings.slice";
 
 export default function Login() {
   const { login } = config.endpoints;
@@ -17,12 +16,7 @@ export default function Login() {
   useEffect(() => {
     if (user) {
       if (user.role === "admin" || user.role === "super-admin") {
-        dispatch(setThemeLight());
-        dispatch(setTableHover());
-        dispatch(setTableAutoHeight());
-        dispatch(setTableCompact());
-        dispatch(setTableBordered());
-        dispatch(setTableHeader());
+       
         toast.success("welcome admin !");
         setTimeout(() => {
           navigate("/dashbord/status");

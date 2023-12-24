@@ -263,7 +263,7 @@ export default function NavbarHeader() {
                         toaster.push(<Message type="error"></Message>);
                       }}
                     >
-                      <button type="button" style={{ width: 350, height: 150 }}>
+                      <button type="button" style={{ width: 350, height: 450 }}>
                         {uploading && <Loader backdrop center />}
                         {fileInfo ? (
                           <img src={fileInfo} width="100%" height="150%" />
@@ -300,7 +300,7 @@ export default function NavbarHeader() {
                         toaster.push(<Message type="error"></Message>);
                       }}
                     >
-                      <button type="button" style={{ width: 350, height: 150 }}>
+                      <button type="button" style={{ width: 350, height: 450 }}>
                         {uploading && <Loader backdrop center />}
                         {fileInfo ? (
                           <img src={fileInfo} width="100%" height="150%" />
