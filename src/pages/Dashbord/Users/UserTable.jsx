@@ -233,7 +233,6 @@ export default function UserTable() {
 
   const handleInputChange = (value) => {
     setInputValue(value);
-
     if (value === "") {
       refetch();
       setIsSearching(false);

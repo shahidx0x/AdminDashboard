@@ -374,6 +374,7 @@ const settings = useSelector(state => state.settings)
                   control={control}
                   render={({ field }) => (
                     <SelectPicker
+                    
                       searchable={true}
                       {...field}
                       size="md"

@@ -3,26 +3,37 @@
 import CollaspedOutlineIcon from "@rsuite/icons/CollaspedOutline";
 import ExpandOutlineIcon from "@rsuite/icons/ExpandOutline";
 import axios from "axios";
-import { Filter, SearchIcon, Settings } from "lucide-react";
+import {
+  Filter,
+  MoreHorizontalIcon,
+  MoreVertical,
+  SearchIcon,
+  Settings,
+} from "lucide-react";
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import {
+  Button,
+  ButtonToolbar,
   Dropdown,
   IconButton,
   Input,
   InputGroup,
   InputPicker,
   Message,
+  Popover,
   Table,
   TagPicker,
   Toggle,
+  Whisper,
   useToaster,
 } from "rsuite";
 import { getOrders, updateOrder } from "../../../api/OrderServices";
 import { config } from "../../../configs/api.config";
+import { Link } from "react-router-dom";
 const { Column, HeaderCell, Cell } = Table;
 const rowKey = "_id";
 const ExpandCell = ({ rowData, expandedRowKeys, onChange, ...props }) => (
@@ -43,7 +54,7 @@ const ExpandCell = ({ rowData, expandedRowKeys, onChange, ...props }) => (
   </Cell>
 );
 const ItemRow = ({ props }) => {
-  const settings = useSelector(state => state.settings)
+  const settings = useSelector((state) => state.settings);
   return (
     <>
       <li className="flex flex-col sm:flex-row sm:justify-between border-b pb-3">
@@ -56,19 +67,35 @@ const ItemRow = ({ props }) => {
           <div className="flex flex-col justify-between w-full pb-4">
             <div className="flex justify-between w-full  ">
               <div className="space-y-1">
-                <h3 className={`text-lg font-semibold  sm:pr-8 ${settings.theme === 'dark' && 'text-white'}`}>
+                <h3
+                  className={`text-lg font-semibold  sm:pr-8 ${
+                    settings.theme === "dark" && "text-white"
+                  }`}
+                >
                   {props.product_name}
                 </h3>
-                <p className={`text-sm text-gray-600 ${settings.theme === 'dark' && 'text-white'}`}>
+                <p
+                  className={`text-sm text-gray-600 ${
+                    settings.theme === "dark" && "text-white"
+                  }`}
+                >
                   Product Id :{props.product_id}
                 </p>
                 {/* <p className="text-sm text-gray-600">Order Time :</p> */}
               </div>
               <div className="text-right mr-[8rem]">
-                <p className={`text-lg font-semibold ${settings.theme === 'dark' && 'text-white'}`}>
+                <p
+                  className={`text-lg font-semibold ${
+                    settings.theme === "dark" && "text-white"
+                  }`}
+                >
                   {props.product_price} x {props.product_quantity} pcs
                 </p>
-                <p className={`text-sm  text-gray-400 ${settings.theme === 'dark' && 'text-white'}`}>
+                <p
+                  className={`text-sm  text-gray-400 ${
+                    settings.theme === "dark" && "text-white"
+                  }`}
+                >
                   {props.product_price * props.product_quantity} USD
                 </p>
               </div>
@@ -95,8 +122,6 @@ export default function Order() {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
 
   const renderRowExpanded = (rowData) => {
-
-
     return (
       <div className="w-full rounded-md p-2">
         <div>
@@ -109,13 +134,24 @@ export default function Order() {
               </ul>
               <div className="flex justify-between">
                 <div>
-                  <p className={`font-bold underline ${settings.theme === 'dark' && 'text-white'} `}>Additional Instruction</p>
-                  <p className={`text-sm text-gray-600 ${settings.theme === 'dark' && 'text-white'}`}>
-                    {rowData.additional_information || "No instruction provided"}
+                  <p
+                    className={`font-bold underline ${
+                      settings.theme === "dark" && "text-white"
+                    } `}
+                  >
+                    Additional Instruction
+                  </p>
+                  <p
+                    className={`text-sm text-gray-600 ${
+                      settings.theme === "dark" && "text-white"
+                    }`}
+                  >
+                    {rowData.additional_information ||
+                      "No instruction provided"}
                   </p>
                 </div>
                 <div className=" mr-[8rem]">
-                  <p className={`${settings.theme === 'dark' && 'text-white'}`}>
+                  <p className={`${settings.theme === "dark" && "text-white"}`}>
                     Total amount:{" "}
                     <span className="font-semibold">
                       {rowData.totalCost || "Not Calculated"} USD
@@ -136,6 +172,7 @@ export default function Order() {
     refetch: data_refetch,
   } = useQuery(["orders", page, user.jwt], getOrders, {
     cacheTime: 0,
+    manual: true,
   });
   const handleExpanded = (rowData, dataKey) => {
     let open = false;
@@ -193,11 +230,8 @@ export default function Order() {
     );
   };
 
-  const ActionsCell = ({ rowData, ...props }) => {
-   
+  const ActionCell = ({ rowData, dataKey, ...props }) => {
     const mutation = useMutation(updateOrder);
-   
-    
     const handleUpdate = (data) => {
       mutation.mutate(
         { data: data, token: user.jwt, id: rowData._id },
@@ -205,7 +239,6 @@ export default function Order() {
           onSuccess: (data) => {
             data_refetch();
           },
-
           onError: (error) => {
             console.log(error);
             toaster.push(
@@ -234,15 +267,19 @@ export default function Order() {
                       body: `Your Order ID#${rowData._id} is approved and ready for shipping 😊`,
                       mutable_content: true,
                       sound: "Tri-tone",
-                      image: rowData.items[0]?.product_image || "https://www.everestkitchenpa.com/assets/images/menuShortCuts/momoShortCut.jpg",
+                      image:
+                        rowData.items[0]?.product_image ||
+                        "https://www.everestkitchenpa.com/assets/images/menuShortCuts/momoShortCut.jpg",
                     },
                     data: {
                       title: "Your Order is Approved",
-                      image: rowData.items[0]?.product_image || "https://www.everestkitchenpa.com/assets/images/menuShortCuts/momoShortCut.jpg",
+                      image:
+                        rowData.items[0]?.product_image ||
+                        "https://www.everestkitchenpa.com/assets/images/menuShortCuts/momoShortCut.jpg",
                       message: `Your Order ID#${rowData._id} is approved and ready for shipping 😊`,
                     },
                   };
-              
+
                   const payload = { ...payloadBase, to: token };
                   axios
                     .post("https://fcm.googleapis.com/fcm/send", payload, {
@@ -253,21 +290,21 @@ export default function Order() {
                     })
                     .then((res) => console.log(res));
                 }
-                 axios.post(config.endpoints.host + `/notifications`, {
-                   message: `Your Order ID#${rowData._id} is Approved ! 😊. Click Here.`,
-                   user_email: rowData.user_email,
-                   category: 'notification',
-                   notify_category:"OrderInformation",
-                   title: `Order Approved`,
-                   data: {
+                axios.post(config.endpoints.host + `/notifications`, {
+                  message: `Your Order ID#${rowData._id} is Approved ! 😊. Click Here.`,
+                  user_email: rowData.user_email,
+                  category: "notification",
+                  notify_category: "OrderInformation",
+                  title: `Order Approved`,
+                  data: {
                     imageUrl: rowData.items[0]?.product_image,
-                    appUrl:`order/${rowData._id}`,
+                    appUrl: `order/${rowData._id}`,
                   },
                   color: "#32CD32",
                   bgColor: "#FFBF00",
                   priority: 3,
                   isRecent: true,
-                  read: false, 
+                  read: false,
                 });
               } catch (error) {
                 toaster.push(
@@ -291,19 +328,19 @@ export default function Order() {
             success: () => {
               axios.post(config.endpoints.host + `/notifications`, {
                 message: `Your Order ID#${rowData._id} is Cancled ! 😓 . Click Here.`,
-                 user_email: rowData.user_email,
-                category: 'notification',
-                notify_category:"OrderInformation",
-                title: 'Order Cancled',
+                user_email: rowData.user_email,
+                category: "notification",
+                notify_category: "OrderInformation",
+                title: "Order Cancled",
                 data: {
                   imageUrl: rowData.items[0]?.product_image,
-                  appUrl:`order/${rowData._id}`,
-                }, 
+                  appUrl: `order/${rowData._id}`,
+                },
                 color: "#fd0e35",
                 bgColor: "#FFBF00",
                 priority: 3,
                 isRecent: true,
-                read: false, 
+                read: false,
               });
               try {
                 for (const token of rowData.user_id.firebaseFCM) {
@@ -313,11 +350,15 @@ export default function Order() {
                       body: `Your Order ID#${rowData._id} is Cancled ! 😓`,
                       mutable_content: true,
                       sound: "Tri-tone",
-                      image: rowData.items[0]?.product_image || "https://cdn-icons-png.flaticon.com/512/391/391045.png",
+                      image:
+                        rowData.items[0]?.product_image ||
+                        "https://cdn-icons-png.flaticon.com/512/391/391045.png",
                     },
                     data: {
                       title: "Your Order is Cancled",
-                      image: rowData.items[0]?.product_image || "https://www.everestkitchenpa.com/assets/images/menuShortCuts/momoShortCut.jpg",
+                      image:
+                        rowData.items[0]?.product_image ||
+                        "https://www.everestkitchenpa.com/assets/images/menuShortCuts/momoShortCut.jpg",
                       message: `Your Order ID#${rowData._id} is Cancled ! 😓`,
                     },
                   };
@@ -331,7 +372,6 @@ export default function Order() {
                     })
                     .then((res) => console.log(res));
                 }
-              
               } catch (error) {
                 toaster.push(
                   <Message type="error">App Notification failed!</Message>
@@ -371,8 +411,8 @@ export default function Order() {
             success: () => {
               axios.post(config.endpoints.host + `/notifications`, {
                 message: `Transaction Successdull`,
-                 user_email: rowData.user_email,
-                 category:'notification'
+                user_email: rowData.user_email,
+                category: "notification",
               });
             },
             error: <b>Something went wrong!</b>,
@@ -381,22 +421,38 @@ export default function Order() {
       }
     };
     data_refetch();
+    const handleOrderDetails = () => {
+      navigate(`/dashbord/order/details/${rowData?._id}`, {
+        state: { rowData },
+      });
+    };
     return (
       <Cell {...props}>
         <div className="flex justify-center gap-3">
+          <p
+            className="text-indigo-500 cursor-pointer font-bold bg-indigo-200 border px-3 py-2 -mt-1 hover:text-indigo-600 hover:bg-indigo-100 rounded-lg"
+            onClick={() => handleOrderDetails()}
+          >
+            Details
+          </p>
           {rowData.order_status === 3 ? (
-            <p className=" fontbold">paid & deliverd</p>
+               <p
+               className="text-green-500 font-bold bg-green-200 border cursor-pointer px-6 flex items-center -mt-1 rounded-full hover:text-green-500 hover:bg-green-100 "
+              
+             >
+               Paid & Deliverd
+             </p>
           ) : rowData?.order_status === 0 ? (
             <>
-              <button
-                className="text-white font-bold bg-indigo-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-900 rounded-lg"
+              <p
+                className="text-green-500 cursor-pointer font-bold bg-green-200 border px-3 py-2 -mt-1 hover:text-green-600 hover:bg-green-100 rounded-lg"
                 onClick={() => handleUpandInv({ order_status: 1 })}
               >
                 Confirm
-              </button>
+              </p>
               <button
                 onClick={() => handleUpandInv({ order_status: 2 })}
-                className="text-white font-bold bg-red-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-red-900 rounded-lg"
+                className="text-red-400 font-bold bg-red-200 border px-3 py-2 -mt-1 hover:text-red-500 hover:bg-red-100 rounded-lg"
               >
                 Cancle
               </button>
@@ -412,17 +468,20 @@ export default function Order() {
             </>
           ) : (
             <>
-              <button
-                className="text-white font-bold bg-indigo-500 border px-3 py-2 -mt-1 hover:text-white hover:bg-indigo-400 rounded-lg"
+              <p
+                className="text-gray-500 font-bold bg-gray-200 border cursor-pointer px-6 py-2 -mt-1 hover:text-gray-500 hover:bg-gray-100 rounded-lg"
                 onClick={() => handleUpandInv({ order_status: 3 })}
               >
                 Mark as Deliverd
-              </button>
+              </p>
             </>
           )}
         </div>
       </Cell>
     );
+  };
+  const ActionsCell = ({ rowData, ...props }) => {
+    return <Cell {...props}></Cell>;
   };
   const OrderStatusCell = ({ rowData, dataKey, ...props }) => {
     return (
@@ -430,20 +489,20 @@ export default function Order() {
         <p className="flex justify-center">
           <span>
             {rowData[dataKey] === 3 ? (
-              <span className="px-5 py-1 font-bold text-xs rounded-full border-1 bg-gray-400 text-white">
+              <span className="px-5 py-1 font-bold text-xs rounded-full border-1 bg-gray-200 text-gray-500">
                 Deliverd
               </span>
             ) : rowData[dataKey] === 0 ? (
-              <span className="px-5 py-1 font-bold text-xs rounded-full border-1 bg-yellow-400 text-white">
+              <span className="px-5 py-1 font-bold text-xs rounded-full border-1 bg-yellow-200 text-yellow-500">
                 Pending
               </span>
             ) : rowData[dataKey] === 1 ? (
-              <span className="px-5 py-1 font-bold text-xs rounded-full border-1 bg-green-400 text-white">
+              <span className="px-5 py-1 font-bold text-xs rounded-full border-1 bg-green-200 text-green-500">
                 Shipping
               </span>
             ) : (
               rowData[dataKey] === 2 && (
-                <span className="px-5 py-1 font-bold text-xs rounded-full border-1 bg-red-400 text-white">
+                <span className="px-5 py-1 font-bold text-xs rounded-full border-1 bg-red-200 text-red-500">
                   Cancled
                 </span>
               )
@@ -453,12 +512,13 @@ export default function Order() {
       </Cell>
     );
   };
+
   const defaultColumns = [
     {
       key: "user_name",
       label: "Name",
       cellRenderer: (props) => <TextCell {...props} dataKey="user_name" />,
-      width: 190,
+      width: 250,
     },
     {
       key: "company",
@@ -478,7 +538,7 @@ export default function Order() {
       cellRenderer: (props) => (
         <AddressCell {...props} dataKey="user_address" />
       ),
-      width: 250,
+      width: 350,
     },
     {
       key: "order_status",
@@ -488,20 +548,18 @@ export default function Order() {
       ),
       width: 150,
     },
-    {
-      key: "pickup_time",
-      label: "Pickup Time",
-      cellRenderer: (props) => <TextCell {...props} dataKey="pickup_time" />,
-      width: 250,
-    },
+    // {
+    //   key: "pickup_time",
+    //   label: "Pickup Time",
+    //   cellRenderer: (props) => <TextCell {...props} dataKey="pickup_time" />,
+    //   width: 350,
+    // },
 
     {
       key: "actions",
-      label: "Actions",
-      cellRenderer: (props) => (
-        <ActionsCell {...props} dataKey="actions" refetch={data_refetch} />
-      ),
-      width: 200,
+      label: "",
+      cellRenderer: (props) => <ActionCell {...props} dataKey="actions" />,
+      width: 260,
     },
   ];
   const [columnKeys, setColumnKeys] = useState(
@@ -511,14 +569,13 @@ export default function Order() {
   const columns = defaultColumns.filter((column) =>
     columnKeys.some((key) => key === column.key)
   );
-  const CustomCell =settings.compact ? CompactCell : Cell;
+  const CustomCell = settings.compact ? CompactCell : Cell;
   const CustomHeaderCell = settings.compact ? CompactHeaderCell : HeaderCell;
 
   const mutation_search = useMutation(getOrders);
 
   const handleInputChange = (value, event) => {
     setInputValue(value);
-
     if (value === "") {
       data_refetch();
       setIsSearching(false);
@@ -543,7 +600,6 @@ export default function Order() {
     (item) => ({ label: item, value: item })
   );
   const handleChnage = (value, event) => {
-   
     handleFilterChange(value);
   };
 
@@ -570,7 +626,10 @@ export default function Order() {
     setPage((prevPage) => Math.max(prevPage - 1, 1));
     data_refetch();
   };
-  data_refetch();
+
+  setTimeout(() => {
+    data_refetch();
+  }, 30000);
 
   return (
     <div>
@@ -587,7 +646,6 @@ export default function Order() {
               onChange={setColumnKeys}
               cleanable={false}
             />
-       
           </div>
 
           <div>
@@ -611,9 +669,13 @@ export default function Order() {
         </div>
       </div>
 
-      <div className="mt-5 ml-5" style={{ height: settings.autoHeight ? "auto" : 400 }}>
+      <div
+        className="mt-5 ml-5"
+        style={{ height: settings.autoHeight ? "auto" : 400 }}
+      >
         <Table
-          shouldUpdateScroll={true}
+          virtualized
+          shouldUpdateScroll={false}
           rowKey={rowKey}
           loading={status === "loading" ? true : false}
           height={600}
@@ -629,14 +691,6 @@ export default function Order() {
           expandedRowKeys={expandedRowKeys}
           renderRowExpanded={renderRowExpanded}
         >
-          <Column width={70} align="center">
-            <HeaderCell>#</HeaderCell>
-            <ExpandCell
-              dataKey="id"
-              expandedRowKeys={expandedRowKeys}
-              onChange={handleExpanded}
-            />
-          </Column>
           {columns.map((column) => {
             const { key, label, cellRenderer, ...rest } = column;
             return (
@@ -654,7 +708,6 @@ export default function Order() {
           })}
         </Table>
       </div>
-    
     </div>
   );
 }
