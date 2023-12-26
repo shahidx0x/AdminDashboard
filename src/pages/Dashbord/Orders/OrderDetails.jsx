@@ -2,20 +2,23 @@ import axios from "axios";
 import {
   Building,
   CalendarRangeIcon,
+  Car,
   ListOrdered,
   Printer,
   User2Icon,
 } from "lucide-react";
 
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
-import { Breadcrumb, Divider, Input, Panel, SelectPicker } from "rsuite";
+import { Breadcrumb, Divider, Input, Panel } from "rsuite";
 import { config } from "../../../configs/api.config";
 import { useEffect, useState } from "react";
+import { FaFileInvoice, FaJediOrder } from "react-icons/fa";
 
 export const OrderDetails = () => {
   const location = useLocation();
   const data = location.state.rowData;
+  const navigate = useNavigate();
   const [companyInfo, setCompanyInfo] = useState(null);
   useEffect(() => {
     axios
@@ -45,9 +48,6 @@ export const OrderDetails = () => {
 
     return originalDate.toLocaleString("en-US", options);
   }
-  const data_picker = ["Confirm", "Cancle", "Shipped", "Deliverd"].map(
-    (item) => ({ label: item, value: item })
-  );
 
   return (
     <div>
@@ -82,18 +82,28 @@ export const OrderDetails = () => {
           </p>
 
           <div className="flex gap-2 flex-row-reverse">
-            <button className="p-2 bg-red-200 text-gray-500 rounded-md font-bold hover:bg-red-100">
-              <Printer />
+            <button
+              onClick={() =>
+                navigate(`/dashbord/order/details/invoice/${data._id}`, {
+                  state: { data:{data,companyInfo} },
+                })
+              }
+              className="p-2 bg-indigo-200 flex gap-2 items-center text-gray-500  font-bold hover:bg-red-100"
+            >
+              <FaFileInvoice className="text-indigo-500" />
+              <span className="text-indigo-500">Invoice</span>
             </button>
-            <button className="p-2 -ml-2 bg-green-200 text-green-500  font-bold hover:bg-green-100">
-              Save
+            <button
+              onClick={() =>
+                navigate(`/dashbord/order/details/track/order/${data._id}`, {
+                  state: { data },
+                })
+              }
+              className="p-2 flex gap-2 items-center -ml-2 bg-green-200 text-green-500  font-bold hover:bg-green-100"
+            >
+              <Car className="text-green-500" />{" "}
+              <span className="text-green-500">Track Order</span>
             </button>
-            <SelectPicker
-              size="lg"
-              searchable={false}
-              data={data_picker}
-              style={{ width: 224 }}
-            />
           </div>
         </div>
         <Divider />
@@ -127,7 +137,14 @@ export const OrderDetails = () => {
               </p>
               <p className="-mt-0">{data.user_id.email}</p>
               <p className="-mt-0">{data.user_id.phoneNumber}</p>
-              <p className="font-bold font-mono text-blue-400 underline -mt-0">
+              <p
+                onClick={() => {
+                  navigate(
+                    `dashbord/order/details/${data.user_id.email}/${data._id}`
+                  );
+                }}
+                className="font-bold font-mono text-blue-400 underline -mt-0"
+              >
                 view previous orders
               </p>
             </div>
@@ -285,7 +302,6 @@ export const OrderDetails = () => {
           >
             <Input
               className="-mt-5"
-          
               value={data.additional_information}
               as="textarea"
               rows={6}

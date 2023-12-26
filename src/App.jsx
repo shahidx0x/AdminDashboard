@@ -17,6 +17,9 @@ import { CustomProvider } from "rsuite";
 import { useSelector } from "react-redux";
 import UniteType from "./pages/Dashbord/UniteType/UniteType";
 import { OrderDetails } from "./pages/Dashbord/Orders/OrderDetails";
+import TrackOrder from "./pages/Dashbord/Orders/TrackOrder";
+import Invoice from "./pages/Dashbord/Orders/Invoice";
+import SingleUserOrderList from "./pages/Dashbord/Orders/SingleUserOrderList";
 
 // Lazy load the components
 const AddCategory = lazy(() => import("./pages/Dashbord/Category/AddCategory"));
@@ -250,6 +253,18 @@ function App() {
         {
           path: "order/details/:id",
           element:<OrderDetails/>
+        },
+        {
+          path: "order/details/track/order/:id",
+          element:<TrackOrder/>
+        },
+        {
+          path: "order/details/invoice/:id",
+          element:<Invoice/>
+        },
+        {
+          path: "order/details/:user/:id",
+          element:<SingleUserOrderList/>
         }
       ],
     },
