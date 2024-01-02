@@ -4,7 +4,6 @@ import {
   CalendarRangeIcon,
   Car,
   ListOrdered,
-  Printer,
   User2Icon,
 } from "lucide-react";
 
@@ -13,7 +12,8 @@ import { Link } from "react-router-dom";
 import { Breadcrumb, Divider, Input, Panel } from "rsuite";
 import { config } from "../../../configs/api.config";
 import { useEffect, useState } from "react";
-import { FaFileInvoice, FaJediOrder } from "react-icons/fa";
+import { FaFileInvoice } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 export const OrderDetails = () => {
   const location = useLocation();
@@ -48,6 +48,8 @@ export const OrderDetails = () => {
 
     return originalDate.toLocaleString("en-US", options);
   }
+  const settings = useSelector((state) => state.settings);
+  console.log(settings);
 
   return (
     <div>
@@ -85,7 +87,7 @@ export const OrderDetails = () => {
             <button
               onClick={() =>
                 navigate(`/dashbord/order/details/invoice/${data._id}`, {
-                  state: { data:{data,companyInfo} },
+                  state: { data: { data, companyInfo } },
                 })
               }
               className="p-2 bg-indigo-200 flex gap-2 items-center text-gray-500  font-bold hover:bg-red-100"
@@ -111,17 +113,17 @@ export const OrderDetails = () => {
           <div className="flex justify-evenly gap-52 ">
             <div className="-mt-14">
               {companyInfo?.brand_image ? (
-                <img src={companyInfo.brand_image}></img>
+                <img className="" src={companyInfo.brand_image}></img>
               ) : (
                 <Building size={40} className="bg-gray-200 p-2 rounded-full" />
               )}
               <div className="flex justify-center flex-col items-center -mt-10">
-                <p className="mt-1 ">
+                <p className={settings.theme === "dark" && "text-black"}>
                   <span className="font-bold "></span>
                   {companyInfo?.brand_label || "loading"}
                 </p>
 
-                <p className="mt-1">
+                <p className={settings.theme === "dark" && "text-black mt-1"}>
                   <span className="font-bold font-mono"> </span>
                   <span className="font-bold">
                     {companyInfo?.brand_address || "loading"}
@@ -140,10 +142,10 @@ export const OrderDetails = () => {
               <p
                 onClick={() => {
                   navigate(
-                    `dashbord/order/details/${data.user_id.email}/${data._id}`
+                    `/dashbord/order/details/${data.user_id.email}/${data._id}`
                   );
                 }}
-                className="font-bold font-mono text-blue-400 underline -mt-0"
+                className="font-bold font-mono text-blue-400 underline -mt-0 cursor-pointer"
               >
                 view previous orders
               </p>
@@ -204,12 +206,42 @@ export const OrderDetails = () => {
                     <col className="w-32  " />
                     <col className="w-20" />
                   </colgroup>
-                  <thead className="bg-gray-300">
+                  <thead
+                    className={
+                      settings.theme === "dark" ? "bg-black" : "bg-gray-300"
+                    }
+                  >
                     <tr className="text-left">
-                      <th className="p-3 ">Product</th>
-                      <th className="p-3 ">Unit Price</th>
-                      <th className="p-3 ">Quantity</th>
-                      <th className="p-3  text-right">Total</th>
+                      <th
+                        className={
+                          settings.theme === "dark" ? "text-white" : "p-3 "
+                        }
+                      >
+                        Product
+                      </th>
+                      <th
+                        className={
+                          settings.theme === "dark" ? "text-white" : "p-3 "
+                        }
+                      >
+                        Unit Price
+                      </th>
+                      <th
+                        className={
+                          settings.theme === "dark" ? "text-white" : "p-3 "
+                        }
+                      >
+                        Quantity
+                      </th>
+                      <th
+                        className={
+                          settings.theme === "dark"
+                            ? "text-white text-right p-3"
+                            : "p-3  text-right"
+                        }
+                      >
+                        Total
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -217,7 +249,11 @@ export const OrderDetails = () => {
                       <>
                         <tr
                           key={index}
-                          className="border-b border-opacity-20 border-gray-300 bg-gray-50"
+                          className={
+                            settings.theme === "dark"
+                              ? "border-b border-opacity-20 border-gray-300 bg-black-50 text-white"
+                              : "border-b border-opacity-20 border-gray-300 bg-gray-50"
+                          }
                         >
                           <td className="p-3">
                             <div className="flex gap-2  items-center">

@@ -16,6 +16,7 @@ import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import {
+  Breadcrumb,
   Button,
   ButtonToolbar,
   Dropdown,
@@ -24,6 +25,7 @@ import {
   InputGroup,
   InputPicker,
   Message,
+  Panel,
   Popover,
   Table,
   TagPicker,
@@ -436,12 +438,9 @@ export default function Order() {
             Details
           </p>
           {rowData.order_status === 3 ? (
-               <p
-               className="text-green-500 font-bold bg-green-200 border cursor-pointer px-6 flex items-center -mt-1 rounded-full hover:text-green-500 hover:bg-green-100 "
-              
-             >
-               Paid & Deliverd
-             </p>
+            <p className="text-green-500 font-bold bg-green-200 border cursor-pointer px-6 flex items-center -mt-1 rounded-full hover:text-green-500 hover:bg-green-100 ">
+              Paid & Deliverd
+            </p>
           ) : rowData?.order_status === 0 ? (
             <>
               <p
@@ -557,7 +556,7 @@ export default function Order() {
 
     {
       key: "actions",
-      label: "",
+      label: "Actions",
       cellRenderer: (props) => <ActionCell {...props} dataKey="actions" />,
       width: 260,
     },
@@ -603,11 +602,21 @@ export default function Order() {
     handleFilterChange(value);
   };
 
+  const pending = data?.data.filter((i) => i.order_status === 0);
+  const approved = data?.data.filter((i) => i.order_status === 1);
+  const cancled = data?.data.filter((i) => i.order_status === 2);
+  const deliverd = data?.data.filter((i) => i.order_status === 3);
+
   const displayedData =
     currentFilter && mutation_search?.data
       ? // eslint-disable-next-line no-unsafe-optional-chaining
         [...mutation_search?.data?.data]
-      : [...(data?.data || [])];
+      : [
+          ...(pending || []),
+          ...(approved || []),
+          ...(cancled || []),
+          ...(deliverd || []),
+        ];
 
   const handleButtonClick = () => {
     handleFilterChange();
@@ -632,9 +641,25 @@ export default function Order() {
   }, 30000);
 
   return (
-    <div>
+    <Panel
+      header={
+        <div>
+          <Breadcrumb className="text-sm font-mono">
+            <Breadcrumb.Item as={Link} to="/dashbord">
+              dashbord / Manage
+            </Breadcrumb.Item>
+          
+            <Breadcrumb.Item active className="text-blue-400">
+              orders
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <h2 className="text-4xl font-bold">Orders</h2>
+        </div>
+      }
+      bordered
+    >
       <Toaster />
-      <div className="p-5">
+      <div className="">
         <div className="flex gap-3 flex-col 2xl:flex-row 2xl:justify-between">
           <div className="">
             <TagPicker
@@ -708,6 +733,6 @@ export default function Order() {
           })}
         </Table>
       </div>
-    </div>
+    </Panel>
   );
 }
