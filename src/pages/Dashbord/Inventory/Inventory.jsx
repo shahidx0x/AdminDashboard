@@ -7,10 +7,12 @@ import toast, { Toaster } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import {
+  Breadcrumb,
   IconButton,
   Input,
   InputGroup,
   Message,
+  Panel,
   Table,
   TagPicker,
   useToaster,
@@ -21,6 +23,7 @@ import {
   updateProductStatus,
   updateSku,
 } from "../../../api/ProductService";
+import { Link } from "react-router-dom";
 const { Column, HeaderCell, Cell } = Table;
 const rowKey = "_id";
 const ExpandCell = ({ rowData, expandedRowKeys, onChange, ...props }) => (
@@ -322,7 +325,21 @@ export default function Inventory() {
   data_refetch();
  
   return (
-    <div>
+    <Panel   header={
+      <div>
+        <Breadcrumb className="text-sm font-mono">
+          <Breadcrumb.Item as={Link} to="/dashbord/status">
+            dashbord / Manage
+          </Breadcrumb.Item>
+
+          <Breadcrumb.Item active className="text-blue-400">
+            inventory
+          </Breadcrumb.Item>
+        </Breadcrumb>
+        <h2 className="text-4xl font-bold">Inventory </h2>
+      </div>
+    }
+    bordered>
       <Toaster />
 
       <div className="p-5">
@@ -487,6 +504,6 @@ export default function Inventory() {
               </div>
             </div>
           </div>
-    </div>
+    </Panel>
   );
 }

@@ -1,9 +1,10 @@
 /* eslint-disable react/prop-types */
 import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
-import { FlexboxGrid } from "rsuite";
+import { Breadcrumb, FlexboxGrid, Panel } from "rsuite";
 import { getInventoryStatus } from "../../api/DashbordService";
 import Notification from "./Notification/Notification";
+import { Link } from "react-router-dom";
 
 // const style = {
 //   width: 120,
@@ -49,7 +50,7 @@ export default function MainDashbord() {
   // refetch();
 
   return (
-    <>
+    <Panel>
       <FlexboxGrid justify="space-between">
         <FlexboxGrid.Item colspan={12}>
           {" "}
@@ -143,7 +144,7 @@ export default function MainDashbord() {
           </div>
         </FlexboxGrid.Item>
       </FlexboxGrid>
-    </>
+    </Panel>
   );
 }
 

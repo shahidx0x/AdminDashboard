@@ -8,14 +8,17 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import {
   Avatar,
+  Breadcrumb,
   Dropdown,
   Input,
   InputGroup,
+  Panel,
   Table,
   TagPicker,
   Toggle,
 } from "rsuite";
 import { getUsers, getUsersByEmail } from "../../../api/UserServices";
+import { Link } from "react-router-dom";
 
 function previewFile(file, callback) {
   const reader = new FileReader();
@@ -26,12 +29,10 @@ function previewFile(file, callback) {
 }
 
 export default function UserTable() {
-  const settings = useSelector(state => state.settings);
-
+  const settings = useSelector((state) => state.settings);
 
   const [noData, setNoData] = useState(false);
   const [page, setPage] = useState(1);
-
 
   const [fillHeight, setFillHeight] = useState(false);
 
@@ -281,9 +282,24 @@ export default function UserTable() {
     refetch();
   };
 
-
   return (
-    <div className="">
+    <Panel
+      header={
+        <div>
+          <Breadcrumb className="text-sm font-mono">
+            <Breadcrumb.Item as={Link} to="/dashbord">
+              dashbord / Manage
+            </Breadcrumb.Item>
+
+            <Breadcrumb.Item active className="text-blue-400">
+              users-information
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <h2 className="text-4xl font-bold">Users Information</h2>
+        </div>
+      }
+      bordered
+    >
       <Toaster />
       <div>
         <hr />
@@ -299,12 +315,10 @@ export default function UserTable() {
                 onChange={setColumnKeys}
                 cleanable={false}
               />
-           
             </div>
 
             <div>
               <div className=" ">
-            
                 <InputGroup>
                   <Input
                     placeholder="Search by User Email"
@@ -320,7 +334,10 @@ export default function UserTable() {
         </div>
 
         <hr />
-        <div className="mt-5 ml-5" style={{ height: settings.autoHeight ? "auto" : 400 }}>
+        <div
+          className="mt-5 ml-5"
+          style={{ height: settings.autoHeight ? "auto" : 400 }}
+        >
           <Table
             className=""
             loading={status === "loading" ? true : false}
@@ -387,20 +404,28 @@ export default function UserTable() {
                   </svg>
                   <p
                     onClick={handleLoadPrevious}
-                    className={`text-sm ml-3 font-medium leading-none ${settings.theme === 'dark' && 'text-white'} `}
+                    className={`text-sm ml-3 font-medium leading-none ${
+                      settings.theme === "dark" && "text-white"
+                    } `}
                   >
                     Previous
                   </p>
                 </div>
                 <div className="sm:flex hidden">
-                  <p className={`text-sm font-bold leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2 ${settings.theme === 'dark' && 'text-white'}`}>
+                  <p
+                    className={`text-sm font-bold leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2 ${
+                      settings.theme === "dark" && "text-white"
+                    }`}
+                  >
                     pages : {page}/{data?.meta?.total_page}
                   </p>
                 </div>
                 <div className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
                   <p
                     onClick={handleLoadMore}
-                    className={`text-sm font-medium leading-none mr-3 ${settings.theme === 'dark' && 'text-white'}`}
+                    className={`text-sm font-medium leading-none mr-3 ${
+                      settings.theme === "dark" && "text-white"
+                    }`}
                   >
                     Next
                   </p>
@@ -439,6 +464,6 @@ export default function UserTable() {
           </div>
         </div>
       </div>
-    </div>
+    </Panel>
   );
 }

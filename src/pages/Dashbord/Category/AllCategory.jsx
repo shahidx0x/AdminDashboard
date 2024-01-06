@@ -8,18 +8,21 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import {
   Avatar,
+  Breadcrumb,
   Button,
   Dropdown,
   Input,
   InputGroup,
   Message,
   Modal,
+  Panel,
   Table,
   TagPicker,
   Toggle,
   useToaster,
 } from "rsuite";
 import { deleteCategory, getAllCategory } from "../../../api/CategoryService";
+import { Link } from "react-router-dom";
 
 export default function AllCategory() {
   const [loading, setLoading] = useState(false);
@@ -292,7 +295,21 @@ export default function AllCategory() {
   };
   const settings = useSelector(state => state.settings);
   return (
-    <div>
+    <Panel   header={
+      <div>
+        <Breadcrumb className="text-sm font-mono">
+          <Breadcrumb.Item as={Link} to="/dashbord/status">
+            dashbord
+          </Breadcrumb.Item>
+
+          <Breadcrumb.Item active className="text-blue-400">
+            Brands
+          </Breadcrumb.Item>
+        </Breadcrumb>
+        <h2 className="text-4xl font-bold">Brands</h2>
+      </div>
+    }
+    bordered>
       <Toaster />
       <Modal open={open} onClose={handleClose}>
         <Modal.Header className="p-5">
@@ -483,6 +500,6 @@ export default function AllCategory() {
           </div>
         </div>
       </div>
-    </div>
+    </Panel>
   );
 }

@@ -1,15 +1,15 @@
 /* eslint-disable react/prop-types */
 
 import React, { useState } from "react";
-import  { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
-import {  Panel, Table } from "rsuite";
+import { Breadcrumb, Panel, Table } from "rsuite";
 
 import { getTransaction } from "../../../api/TransactionService";
+import { Link } from "react-router-dom";
 const { Column, HeaderCell, Cell } = Table;
 const rowKey = "_id";
-
 
 const renderRowExpanded = (rowData) => {
   return (
@@ -62,7 +62,6 @@ const renderRowExpanded = (rowData) => {
 };
 
 export default function Transaction() {
-
   const [page, setPage] = useState(1);
   const user = useSelector((state) => state.user.user);
   const settings = useSelector((state) => state.settings);
@@ -111,8 +110,6 @@ export default function Transaction() {
     );
   };
   const ItemCell = ({ rowData, ...props }) => {
-   
-
     return (
       <Cell {...props}>
         <p className="flex justify-center font-bold font-mono">
@@ -123,7 +120,6 @@ export default function Transaction() {
   };
 
   const defaultColumns = [
-
     {
       key: "name",
       label: "Reciver Info",
@@ -156,7 +152,6 @@ export default function Transaction() {
   const CustomCell = settings.compact ? CompactCell : Cell;
   const CustomHeaderCell = settings.compact ? CompactHeaderCell : HeaderCell;
 
-
   const displayedData = [...(data?.data || [])];
 
   const handleLoadMore = () => {
@@ -175,7 +170,23 @@ export default function Transaction() {
   };
 
   return (
-    <div>
+    <Panel
+      header={
+        <div>
+          <Breadcrumb className="text-sm font-mono">
+            <Breadcrumb.Item as={Link} to="/dashbord/status">
+              dashbord / Manage
+            </Breadcrumb.Item>
+
+            <Breadcrumb.Item active className="text-blue-400">
+              transaction
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <h2 className="text-4xl font-bold">Transaction</h2>
+        </div>
+      }
+      bordered
+    >
       <Toaster />
 
       <div className="p-5">
@@ -269,8 +280,6 @@ export default function Transaction() {
             </div>
           </div>
         </div>
-
-      
       </div>
 
       <div
@@ -295,7 +304,6 @@ export default function Transaction() {
             expandedRowKeys={expandedRowKeys}
             renderRowExpanded={renderRowExpanded}
           >
-          
             {columns.map((column) => {
               const { key, label, cellRenderer, ...rest } = column;
               return (
@@ -407,6 +415,6 @@ export default function Transaction() {
           </div>
         </div>
       </div>
-    </div>
+    </Panel>
   );
 }

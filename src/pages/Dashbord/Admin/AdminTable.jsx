@@ -6,9 +6,10 @@ import toast, { Toaster } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import { Avatar, Button, Dropdown, Table, TagPicker, Toggle } from "rsuite";
+import { Avatar, Breadcrumb, Button, Dropdown, Panel, Table, TagPicker, Toggle } from "rsuite";
 import { getAdmins } from "../../../api/AdminSignUp";
 import { getUsersByEmail, removeUser } from "../../../api/UserServices";
+import { Link } from "react-router-dom";
 
 function previewFile(file, callback) {
   const reader = new FileReader();
@@ -234,7 +235,21 @@ export default function AdminTable() {
   refetch();
 
   return (
-    <div>
+    <Panel   header={
+      <div>
+        <Breadcrumb className="text-sm font-mono">
+          <Breadcrumb.Item as={Link} to="/dashbord">
+            dashbord / Manage
+          </Breadcrumb.Item>
+
+          <Breadcrumb.Item active className="text-blue-400">
+            admins
+          </Breadcrumb.Item>
+        </Breadcrumb>
+        <h2 className="text-4xl font-bold">Admins Information</h2>
+      </div>
+    }
+    bordered>
       <Toaster />
       <div>
         <hr />
@@ -388,6 +403,6 @@ export default function AdminTable() {
           </div>
         </div>
       </div>
-    </div>
+    </Panel>
   );
 }

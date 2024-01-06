@@ -9,12 +9,14 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import {
   Avatar,
+  Breadcrumb,
   Button,
   Dropdown,
   Input,
   InputGroup,
   Message,
   Modal,
+  Panel,
   SelectPicker,
   Table,
   TagPicker,
@@ -30,6 +32,7 @@ import {
   searchProduct,
 } from "../../../api/ProductService";
 import { getSubCategoryByCategoryId } from "../../../api/SubCategoryServices";
+import { Link } from "react-router-dom";
 
 function previewFile(file, callback) {
   const reader = new FileReader();
@@ -451,7 +454,21 @@ export default function ProductList() {
   refetch();
   const settings = useSelector((state) => state.settings);
   return (
-    <div>
+    <Panel   header={
+      <div>
+        <Breadcrumb className="text-sm font-mono">
+          <Breadcrumb.Item as={Link} to="/dashbord/status">
+            dashbord
+          </Breadcrumb.Item>
+
+          <Breadcrumb.Item active className="text-blue-400">
+            products
+          </Breadcrumb.Item>
+        </Breadcrumb>
+        <h2 className="text-4xl font-bold">Products</h2>
+      </div>
+    }
+    bordered>
       <Toaster />
       <Modal open={open} onClose={handleClose}>
         <Modal.Header className="p-5">
@@ -669,6 +686,6 @@ export default function ProductList() {
           </div>
         </div>
       </div>
-    </div>
+    </Panel>
   );
 }

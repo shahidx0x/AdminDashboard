@@ -5,10 +5,12 @@ import { Toaster } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import {
+  Breadcrumb,
   Button,
   Input,
   Message,
   Modal,
+  Panel,
   SelectPicker,
   Table,
   toaster,
@@ -22,6 +24,7 @@ import {
   getUnit,
   getUnitInfo,
 } from "../../../api/UnitType";
+import { Link } from "react-router-dom";
 const { Column, HeaderCell, Cell } = Table;
 const rowKey = "_id";
 
@@ -101,12 +104,13 @@ export default function UniteType() {
     cacheTime: 0,
   });
 
-  const {
-    data: utinfo,
-    refetch: utinfo_refetch,
-  } = useQuery(["unit-info", user.jwt], getUnitInfo, {
-    cacheTime: 0,
-  });
+  const { data: utinfo, refetch: utinfo_refetch } = useQuery(
+    ["unit-info", user.jwt],
+    getUnitInfo,
+    {
+      cacheTime: 0,
+    }
+  );
 
   const unit_type = data?.data.map((item) => ({
     label: item.label,
@@ -133,9 +137,6 @@ export default function UniteType() {
     setOpen(false);
     utinfo_refetch();
   };
-
-
-
 
   const mutation_create = useMutation(createUnit);
   const handleAddUnit = () => {
@@ -230,12 +231,14 @@ export default function UniteType() {
       console.log("btn-1");
       setDeleteId(rowData._id);
       handleOpenUnit();
-      
     };
 
     return (
       <Cell {...props}>
-        <div onClick={() => handleDelete()} className="flex justify-center gap-3">
+        <div
+          onClick={() => handleDelete()}
+          className="flex justify-center gap-3"
+        >
           <div className="text-red-500 border w-36 font-bold border-red-500 px-3 py-2 -mt-1 hover:text-white hover:bg-red-500 rounded-lg cursor-pointer">
             Delete
           </div>
@@ -280,10 +283,6 @@ export default function UniteType() {
     },
   ];
 
-
-
-
-
   const [columnKeysUnit] = useState(
     defaultColumnsUnit.map((column) => column.key)
   );
@@ -292,15 +291,11 @@ export default function UniteType() {
     columnKeysUnit.some((key) => key === column.key)
   );
 
-  const [UnitcolumnKeys] = useState(
-    defaultColumns.map((column) => column.key)
-  );
+  const [UnitcolumnKeys] = useState(defaultColumns.map((column) => column.key));
 
   const columnsUnitInfo = defaultColumns.filter((column) =>
     UnitcolumnKeys.some((key) => key === column.key)
   );
-
-
 
   const displayedData = [...(data?.data || [])];
   const displayedDataUnitInfo = [...(utinfo?.data || [])];
@@ -308,7 +303,23 @@ export default function UniteType() {
   utinfo_refetch();
 
   return (
-    <div>
+    <Panel
+      header={
+        <div>
+          <Breadcrumb className="text-sm font-mono">
+            <Breadcrumb.Item as={Link} to="/dashbord">
+              dashbord / Manage
+            </Breadcrumb.Item>
+
+            <Breadcrumb.Item active className="text-blue-400">
+              unite-types
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <h2 className="text-4xl font-bold">Unit Types</h2>
+        </div>
+      }
+      bordered
+    >
       <Toaster />
       {/* <Modal open={openUnit} onClose={handleClose}>
         <Modal.Header className="p-5">
@@ -347,7 +358,8 @@ export default function UniteType() {
           </Modal.Title>
           <div className="flex flex-col gap-2">
             <p className="mt-2">
-              All Category and Product will be deleted under this unit information
+              All Category and Product will be deleted under this unit
+              information
             </p>
             <Input
               onChange={(value, event) => handleConfirm(event)}
@@ -490,6 +502,6 @@ export default function UniteType() {
           </Button>
         </div>
       </div>
-    </div>
+    </Panel>
   );
 }
