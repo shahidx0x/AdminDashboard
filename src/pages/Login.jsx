@@ -16,7 +16,6 @@ export default function Login() {
   useEffect(() => {
     if (user) {
       if (user.role === "admin" || user.role === "super-admin") {
-       
         toast.success("welcome admin !");
         setTimeout(() => {
           navigate("/dashbord/status");

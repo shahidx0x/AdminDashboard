@@ -11,7 +11,7 @@ import Notification from "./pages/Dashbord/Notification/Notification";
 import Order from "./pages/Dashbord/Orders/Order";
 import Transaction from "./pages/Dashbord/Transaction/Transaction";
 import Login from "./pages/Login";
-import { CustomProvider } from "rsuite";
+import { CustomProvider, Message } from "rsuite";
 
 import { useSelector } from "react-redux";
 import UniteType from "./pages/Dashbord/UniteType/UniteType";
@@ -336,6 +336,9 @@ function Dashbord() {
         `}
         </style>
       )}
+      <Message className={settings.maintain ? 'flex font-bold' : 'hidden font-bold'} showIcon type="warning">
+        warning apps is in maintainance mode 
+      </Message>
       <NavbarHeader />
       <div style={containerStyle}>
         <div

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Breadcrumb,
@@ -7,6 +7,7 @@ import {
   Input,
   Loader,
   Message,
+  Modal,
   Panel,
   Toggle,
   Uploader,
@@ -14,6 +15,8 @@ import {
 } from "rsuite";
 
 import {
+  disableMaintain,
+  enableMaintain,
   setTableAutoHeight,
   setTableBordered,
   setTableCompact,
@@ -22,6 +25,7 @@ import {
 } from "../../../redux/slices/settings.slice";
 import { useDispatch, useSelector } from "react-redux";
 import { config } from "../../../configs/api.config";
+import axios from "axios";
 function previewFile(file, callback) {
   const reader = new FileReader();
   reader.onloadend = () => {
@@ -33,11 +37,51 @@ function previewFile(file, callback) {
 const Settings = () => {
   const settings = useSelector((state) => state.settings);
   const dispatch = useDispatch();
+  const [maintain, SetMaintain] = useState(false);
 
   const [uploading, setUploading] = useState(false);
   const [fileInfo, setFileInfo] = useState(null);
   const [uploadResponse, setUploadResponse] = useState({ fileUrl: "" });
   const [uploadResponseTwo, setUploadResponseTwo] = useState({ fileUrl: "" });
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleDone = () => {
+    axios
+      .patch(config.endpoints.host + "/app/settings", {
+        app_maintenance: true,
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          dispatch(enableMaintain());
+          setOpen(false);
+        } else {
+          toaster.push("something went wrong .try again !");
+        }
+      });
+  };
+  useEffect(() => {
+    if (maintain) {
+      handleOpen();
+    } else {
+      axios
+        .patch(config.endpoints.host + "/app/settings", {
+          app_maintenance: false,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            dispatch(disableMaintain());
+            setOpen(false);
+          } else {
+            toaster.push("something went wrong .try again !");
+          }
+        });
+    }
+  }, [maintain, dispatch]);
+  const handleClose = () => {
+    SetMaintain(false);
+    setOpen(false);
+  };
+
   return (
     <Panel
       header={
@@ -55,6 +99,34 @@ const Settings = () => {
       }
       bordered
     >
+      <Modal
+        backdrop="static"
+        role="alertdialog"
+        open={open}
+        onClose={handleClose}
+        size="xs"
+      >
+        <Modal.Body>
+          Once maintainance mode enabled app users cant access the app. Are you
+          sure ?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            className="bg-indigo-200 text-indigo-500 "
+            onClick={handleDone}
+            appearance="primary"
+          >
+            Confirm
+          </Button>
+          <Button
+            className="bg-red-200 text-red-500 "
+            onClick={handleClose}
+            appearance="subtle"
+          >
+            Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <div>
         <div className="">
           <div>
@@ -142,8 +214,8 @@ const Settings = () => {
                 <Toggle
                   checkedChildren="On"
                   unCheckedChildren="Off"
-                  checked={settings.bordered}
-                  onChange={() => dispatch(setTableBordered())}
+                  checked={maintain}
+                  onChange={() => SetMaintain((prev) => !prev)}
                 />
               </span>
             </div>

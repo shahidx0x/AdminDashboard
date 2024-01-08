@@ -8,6 +8,7 @@ const initialState = {
   compact: true,
   autoHeight: true,
   bordered: true,
+  maintain: false,
 };
 
 const settingsSlice = createSlice({
@@ -41,6 +42,12 @@ const settingsSlice = createSlice({
     setTableBordered: (state) => {
       state.bordered = !state.bordered;
     },
+    enableMaintain: (state) => {
+      state.maintain = true;
+    },
+    disableMaintain: (state) => {
+      state.maintain = false;
+    },
   },
 });
 
@@ -54,6 +61,8 @@ export const {
   setTableCompact,
   setTableHeader,
   setTableHover,
+  enableMaintain,
+  disableMaintain,
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

@@ -19,7 +19,6 @@ import {
 } from "rsuite";
 import { logOut } from "../redux/slices/user.slices";
 
-
 import { Icon } from "@rsuite/icons";
 
 import { MdOutlineNightlight, MdOutlineLightMode } from "react-icons/md";
@@ -34,12 +33,13 @@ export default function NavbarHeader() {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user.user);
 
-  const {
-    data,
-    refetch
-  } = useQuery(["notification", user.jwt], getUnreadNotification, {
-    cacheTime: 0,
-  });
+  const { data, refetch } = useQuery(
+    ["notification-unread", user.jwt],
+    getUnreadNotification,
+    {
+      cacheTime: 0,
+    }
+  );
   refetch();
 
   const [open, setOpen] = useState(false);
@@ -103,7 +103,6 @@ export default function NavbarHeader() {
           />
         </Nav>
 
-
         <Nav pullRight className="mt-4 ">
           <IconButton
             icon={
@@ -123,7 +122,6 @@ export default function NavbarHeader() {
             }}
           />
         </Nav>
-      
       </Navbar>
     </>
   );
