@@ -11,6 +11,7 @@ import { BsListUl } from "react-icons/bs";
 import { FaRegMoneyBillAlt } from "react-icons/fa";
 import { HiOutlineUsers } from "react-icons/hi";
 import { PiUniteLight } from "react-icons/pi";
+import SettingIcon from "@rsuite/icons/Setting";
 import {
   MdOutlineAdminPanelSettings,
   MdOutlineInventory,
@@ -40,7 +41,6 @@ const CustomSidenav = ({
           <Sidenav.Toggle onToggle={onExpand} />
           <Nav {...navProps}>
             <Nav.Item
-           
               as={Link}
               to="/dashbord/status"
               className="font-bold  "
@@ -49,7 +49,6 @@ const CustomSidenav = ({
             >
               <p className="w-[13rem]  "> Dashboard</p>
             </Nav.Item>
-
             <Nav.Menu
               eventKey="3"
               className="font-bold"
@@ -104,9 +103,7 @@ const CustomSidenav = ({
                   <p className="font-bold">Transactions</p>
                 </div>
               </Nav.Item>
-             
             </Nav.Menu>
-            {/* */}
             <Nav.Menu
               eventKey="4"
               className="font-bold"
@@ -164,6 +161,27 @@ const CustomSidenav = ({
                 </div>
               </Nav.Item>
             </Nav.Menu>
+            {/* <Nav.Menu
+              eventKey="7"
+              className="font-bold"
+              title="Settings"
+              icon={<SettingIcon />}
+            >
+              <Nav.Item as={Link} to="/dashbord/settings" eventKey="7-1">
+                <div className="flex gap-2">
+                  <FaSitemap className="text-xl font-bold" />
+                  <p className="font-bold ">Admin Panel</p>
+                </div>
+              </Nav.Item>
+              <Nav.Item as={Link} to="/dashbord/product/add" eventKey="7-2">
+                <div className="flex gap-2">
+                  <BsApple className="text-xl  font-bold" />
+                  <p className="font-bold">Application(ios/android)</p>
+                </div>
+              </Nav.Item>
+            </Nav.Menu> */}
+            <Nav.Item eventKey="7" as={Link} to="/dashbord/settings" className="font-bold" icon={<SettingIcon/>}>Settings</Nav.Item>
+            
           </Nav>
         </Sidenav.Body>
       </Sidenav>

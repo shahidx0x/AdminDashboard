@@ -136,18 +136,18 @@ export default function ProductList() {
     );
   };
   const TextCellPerPrice = ({ rowData, icon, dataKey, ...props }) => {
-    const perPrice  = rowData.price / rowData.product_unit_quantity
+    const perPrice = rowData.price / rowData.product_unit_quantity;
     return (
       <Cell {...props}>
-     
         <p
           className={`flex flex-col justify-center items-center  font-mono font-bold`}
         >
           <p className="font-bold flex justify-center">
-           ( {rowData?.product_unit_type} )
+            ( {rowData?.product_unit_type} )
           </p>
           <p className="font-bold">
-            $ {rowData?.product_unit_type === "Pices"
+            ${" "}
+            {rowData?.product_unit_type === "Pices"
               ? rowData.price
               : perPrice.toFixed(2)}
           </p>
@@ -454,21 +454,23 @@ export default function ProductList() {
   refetch();
   const settings = useSelector((state) => state.settings);
   return (
-    <Panel   header={
-      <div>
-        <Breadcrumb className="text-sm font-mono">
-          <Breadcrumb.Item as={Link} to="/dashbord/status">
-            dashbord
-          </Breadcrumb.Item>
+    <Panel
+      header={
+        <div>
+          <Breadcrumb className="text-sm font-mono">
+            <Breadcrumb.Item as={Link} to="/dashbord/status">
+              dashbord
+            </Breadcrumb.Item>
 
-          <Breadcrumb.Item active className="text-blue-400">
-            products
-          </Breadcrumb.Item>
-        </Breadcrumb>
-        <h2 className="text-4xl font-bold">Products</h2>
-      </div>
-    }
-    bordered>
+            <Breadcrumb.Item active className="text-blue-400">
+              products
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <h2 className="text-4xl font-bold">Products</h2>
+        </div>
+      }
+      bordered
+    >
       <Toaster />
       <Modal open={open} onClose={handleClose}>
         <Modal.Header className="p-5">

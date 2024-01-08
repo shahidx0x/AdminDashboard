@@ -13,13 +13,13 @@ import Transaction from "./pages/Dashbord/Transaction/Transaction";
 import Login from "./pages/Login";
 import { CustomProvider } from "rsuite";
 
-
 import { useSelector } from "react-redux";
 import UniteType from "./pages/Dashbord/UniteType/UniteType";
 import { OrderDetails } from "./pages/Dashbord/Orders/OrderDetails";
 import TrackOrder from "./pages/Dashbord/Orders/TrackOrder";
 import Invoice from "./pages/Dashbord/Orders/Invoice";
 import SingleUserOrderList from "./pages/Dashbord/Orders/SingleUserOrderList";
+import Settings from "./pages/Dashbord/Settings/Settings";
 
 // Lazy load the components
 const AddCategory = lazy(() => import("./pages/Dashbord/Category/AddCategory"));
@@ -252,20 +252,44 @@ function App() {
         },
         {
           path: "order/details/:id",
-          element:<OrderDetails/>
+          element: (
+            <Suspense fallback={<Loading />}>
+              <OrderDetails />
+            </Suspense>
+          ),
         },
         {
           path: "order/details/track/order/:id",
-          element:<TrackOrder/>
+          element: (
+            <Suspense fallback={<Loading />}>
+              <TrackOrder />
+            </Suspense>
+          ),
         },
         {
           path: "order/details/invoice/:id",
-          element:<Invoice/>
+          element: (
+            <Suspense fallback={<Loading />}>
+              <Invoice />
+            </Suspense>
+          ),
         },
         {
           path: "order/details/:user/:id",
-          element:<SingleUserOrderList/>
-        }
+          element: (
+            <Suspense fallback={<Loading />}>
+              <SingleUserOrderList />
+            </Suspense>
+          ),
+        },
+        {
+          path: "settings",
+          element: (
+            <Suspense fallback={<Loading />}>
+              <Settings />
+            </Suspense>
+          ),
+        },
       ],
     },
   ]);
