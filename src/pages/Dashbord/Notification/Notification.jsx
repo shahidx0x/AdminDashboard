@@ -55,7 +55,7 @@ export default function Notification() {
               .then((res) => console.log(res.data));
           }}
           className={
-            rowData.isRecent && !rowData.read
+            !rowData.read
               ? `bg-indigo-500 text-white font-mono font-bold rounded-lg ${settings.theme === 'dark' && 'text-white'}`
               : ` border-b-indigo-100 text-gray-500 font-mono rounded-lg border-1 font-bold ${settings.theme === 'dark' && 'text-gray-300'}`
           }

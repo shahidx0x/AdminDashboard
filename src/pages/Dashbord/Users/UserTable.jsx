@@ -33,9 +33,7 @@ export default function UserTable() {
 
   const [noData, setNoData] = useState(false);
   const [page, setPage] = useState(1);
-
   const [fillHeight, setFillHeight] = useState(false);
-
   const user = useSelector((state) => state.user.user);
   const [inputValue, setInputValue] = useState("");
   const [isSearching, setIsSearching] = useState(false);

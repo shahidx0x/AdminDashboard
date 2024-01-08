@@ -2,9 +2,11 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import NoticeIcon from "@rsuite/icons/Notice";
 import { useNavigate } from "react-router";
 import {
   Avatar,
+  Badge,
   Button,
   Divider,
   IconButton,
@@ -17,16 +19,28 @@ import {
 } from "rsuite";
 import { logOut } from "../redux/slices/user.slices";
 
+
 import { Icon } from "@rsuite/icons";
 
 import { MdOutlineNightlight, MdOutlineLightMode } from "react-icons/md";
 import { setThemeDark, setThemeLight } from "../redux/slices/settings.slice";
+import { Link } from "react-router-dom";
+import { useQuery } from "react-query";
+import { getUnreadNotification } from "../api/Notification";
 
 export default function NavbarHeader() {
   const settings = useSelector((state) => state.settings);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user.user);
+
+  const {
+    data,
+    refetch
+  } = useQuery(["notification", user.jwt], getUnreadNotification, {
+    cacheTime: 0,
+  });
+  refetch();
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -79,6 +93,16 @@ export default function NavbarHeader() {
             />
           </MenuComponent>
         </Nav>
+        <Nav as={Link} to="/dashbord/status" pullRight className="mt-4 ">
+          <IconButton
+            icon={
+              <Badge content={data?.unread} className="">
+                <NoticeIcon style={{ fontSize: 25, fontWeight: "bolder" }} />{" "}
+              </Badge>
+            }
+          />
+        </Nav>
+
 
         <Nav pullRight className="mt-4 ">
           <IconButton
@@ -99,6 +123,7 @@ export default function NavbarHeader() {
             }}
           />
         </Nav>
+      
       </Navbar>
     </>
   );
