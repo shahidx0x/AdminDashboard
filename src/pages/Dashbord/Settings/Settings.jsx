@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import {
   Breadcrumb,
   Button,
+  Checkbox,
   Divider,
   Input,
   Loader,
@@ -11,7 +12,7 @@ import {
   Panel,
   Toggle,
   Uploader,
-  toaster,
+  useToaster,
 } from "rsuite";
 
 import {
@@ -26,6 +27,8 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { config } from "../../../configs/api.config";
 import axios from "axios";
+import { getSettings } from "../../../api/Settings";
+import { useQuery } from "react-query";
 function previewFile(file, callback) {
   const reader = new FileReader();
   reader.onloadend = () => {
@@ -36,13 +39,59 @@ function previewFile(file, callback) {
 
 const Settings = () => {
   const settings = useSelector((state) => state.settings);
+  const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
   const [maintain, SetMaintain] = useState(false);
-
+  const toaster = useToaster();
   const [uploading, setUploading] = useState(false);
+  const [uploadingOfferBanner, setUploadingOfferBanner] = useState(false);
+  const [offerText, SetOfferText] = useState(null);
+  const { data } = useQuery(["settings", user.jwt], getSettings, {
+    cacheTime: 0,
+  });
+
   const [fileInfo, setFileInfo] = useState(null);
-  const [uploadResponse, setUploadResponse] = useState({ fileUrl: "" });
-  const [uploadResponseTwo, setUploadResponseTwo] = useState({ fileUrl: "" });
+  const [fileInfoTwo, setFileInfoTwo] = useState(null);
+  const [uploadResponse, setUploadResponse] = useState({
+    fileUrl: data?.data[0].popup_image,
+  });
+  const [uploadResponseTwo, setUploadResponseTwo] = useState({
+    fileUrl: data?.data[0].offer_banner,
+  });
+
+  const [popup, setPopup] = useState(data?.data[0].adv_popup);
+  const [banner, setBanner] = useState(data?.data[0].adv_banner);
+
+  const handleUpdate = () => {
+    let payload = {};
+    if (uploadResponse) {
+      payload.popup_image = uploadResponse.fileUrl;
+    }
+    if (uploadResponseTwo) {
+      payload.offer_banner = uploadResponseTwo.fileUrl;
+    }
+    if (offerText) {
+      payload.offer_text = offerText;
+    }
+    if (popup) {
+      payload.adv_popup = true;
+    } else {
+      payload.adv_popup = false;
+    }
+    if (banner) {
+      payload.adv_banner = true;
+    } else {
+      payload.adv_banner = false;
+    }
+    axios
+      .patch(config.endpoints.host + "/app/settings", payload)
+      .then((res) =>
+        res.status === 200
+          ? toaster.push(<Message type="success">settings updated</Message>)
+          : toaster.push(<Message type="error">something went wrong</Message>)
+      );
+  };
+
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleDone = () => {
@@ -55,7 +104,7 @@ const Settings = () => {
           dispatch(enableMaintain());
           setOpen(false);
         } else {
-          toaster.push("something went wrong .try again !");
+          toaster.push(<Message type="error">Something went wrong</Message>);
         }
       });
   };
@@ -72,14 +121,37 @@ const Settings = () => {
             dispatch(disableMaintain());
             setOpen(false);
           } else {
-            toaster.push("something went wrong .try again !");
+            toaster.push(<Message type="error">Something went wrong</Message>);
           }
         });
     }
-  }, [maintain, dispatch]);
+    data?.data[0].adv_popup ? setPopup(true) : setPopup(false);
+    data?.data[0].adv_banner ? setBanner(true) : setBanner(false);
+  }, [maintain, dispatch, data?.data]);
   const handleClose = () => {
     SetMaintain(false);
     setOpen(false);
+  };
+  const handleRemove = (event) => {
+    if (event === "popup") {
+      axios
+        .patch(config.endpoints.host + "/app/settings", { popup_image: null })
+        .then((res) =>
+          res.status === 200
+            ? toaster.push(<Message type="success">Popup removed</Message>)
+            : toaster.push(<Message type="error">Something went wrong</Message>)
+        );
+    }
+    if (event === "offer") {
+      axios
+        .patch(config.endpoints.host + "/app/settings", { offer_banner: null })
+        .then((res) =>
+          res.status === 200
+            ? toaster.push(<Message type="success">Banner removed</Message>)
+            : toaster.push(<Message type="error">Something went wrong</Message>)
+        );
+    }
+    window.location.reload();
   };
 
   return (
@@ -220,7 +292,11 @@ const Settings = () => {
               </span>
             </div>
             <Divider />
-            <form action="">
+            <div>
+              <div>
+                <p className="font-bold text-lg">Offer / Banner Settings</p>
+                <Divider />
+              </div>
               <div className="flex gap-2">
                 <div className="flex flex-col">
                   <p>Popup Image :</p>
@@ -249,15 +325,27 @@ const Settings = () => {
                     <button type="button" style={{ width: 350, height: 450 }}>
                       {uploading && <Loader backdrop center />}
                       {fileInfo ? (
-                        <img src={fileInfo} width="100%" height="150%" />
+                        <img
+                          src={fileInfo || data?.data[0].popup_image}
+                          width="100%"
+                          height="150%"
+                        />
                       ) : (
                         <img
-                          src={uploadResponse?.profilePicture}
+                          src={
+                            uploadResponse?.fileUrl || data?.data[0].popup_image
+                          }
                           alt="popup image"
                         />
                       )}
                     </button>
                   </Uploader>
+                  <Button
+                    onClick={() => handleRemove("popup")}
+                    className="bg-red-200 text-red-500"
+                  >
+                    Remove
+                  </Button>
                 </div>
                 <div className="flex flex-col">
                   <p>Offer Banner :</p>
@@ -267,47 +355,87 @@ const Settings = () => {
                     listType="picture"
                     action={`${config.endpoints.host}/upload`}
                     onUpload={(file) => {
-                      setUploading(true);
+                      setUploadingOfferBanner(true);
                       previewFile(file.blobFile, (value) => {
-                        setFileInfo(value);
+                        setFileInfoTwo(value);
                       });
                     }}
                     onSuccess={(response) => {
-                      setUploading(false);
+                      setUploadingOfferBanner(false);
                       toaster.push(<Message type="success"></Message>);
                       setUploadResponseTwo(response);
                     }}
                     onError={() => {
-                      setFileInfo(null);
-                      setUploading(false);
+                      setFileInfoTwo(null);
+                      setUploadingOfferBanner(false);
                       toaster.push(<Message type="error"></Message>);
                     }}
                   >
                     <button type="button" style={{ width: 350, height: 450 }}>
-                      {uploading && <Loader backdrop center />}
-                      {fileInfo ? (
-                        <img src={fileInfo} width="100%" height="150%" />
+                      {uploadingOfferBanner && <Loader backdrop center />}
+                      {fileInfoTwo ? (
+                        <img
+                          src={fileInfoTwo || data?.data[0].offer_banner}
+                          width="100%"
+                          height="150%"
+                        />
                       ) : (
                         <img
-                          src={uploadResponseTwo?.profilePicture}
-                          alt="popup image"
+                          src={
+                            uploadResponseTwo?.fileUrl ||
+                            data?.data[0].offer_banner
+                          }
+                          alt="offer image"
                         />
                       )}
                     </button>
                   </Uploader>
+                  <Button
+                    onClick={() => handleRemove("offer")}
+                    className="bg-red-200 text-red-500"
+                  >
+                    Remove
+                  </Button>
                 </div>
               </div>
               <div className="flex flex-col">
+                <div></div>
+                <Checkbox
+                  checked={popup}
+                  onChange={(value, event) => setPopup(event)}
+                >
+                  <span className="font-bold">
+                    Advertise Popup image to user ?
+                  </span>
+                </Checkbox>
+
+                <Checkbox
+                  checked={banner}
+                  onChange={(value, event) => setBanner(event)}
+                >
+                  <span className="font-bold">
+                    Advertise Offer banner to user ?
+                  </span>
+                </Checkbox>
+              </div>
+
+              <div className="flex flex-col mt-2">
                 <p>Offer Text :</p>
-                <Input as="textarea" rows={3} placeholder="" />
+                <Input
+                  value={data?.data[0].offer_text}
+                  onChange={(text) => SetOfferText(text)}
+                  as="textarea"
+                  rows={3}
+                  placeholder=""
+                />
               </div>
               <Button
-                type="submit"
+                onClick={() => handleUpdate()}
                 className="bg-blue-700 font-bold text-white mt-2"
               >
-                Update
+                Update Banner / Offer settings
               </Button>
-            </form>
+            </div>
           </div>
 
           <Divider />

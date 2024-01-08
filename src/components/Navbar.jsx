@@ -26,6 +26,7 @@ import { setThemeDark, setThemeLight } from "../redux/slices/settings.slice";
 import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
 import { getUnreadNotification } from "../api/Notification";
+import { Settings } from "lucide-react";
 
 export default function NavbarHeader() {
   const settings = useSelector((state) => state.settings);
@@ -93,15 +94,7 @@ export default function NavbarHeader() {
             />
           </MenuComponent>
         </Nav>
-        <Nav as={Link} to="/dashbord/status" pullRight className="mt-4 ">
-          <IconButton
-            icon={
-              <Badge content={data?.unread} className="">
-                <NoticeIcon style={{ fontSize: 25, fontWeight: "bolder" }} />{" "}
-              </Badge>
-            }
-          />
-        </Nav>
+
 
         <Nav pullRight className="mt-4 ">
           <IconButton
@@ -120,6 +113,27 @@ export default function NavbarHeader() {
                 ? dispatch(setThemeDark())
                 : dispatch(setThemeLight());
             }}
+          />
+        </Nav>
+        <Nav as={Link} to="/dashbord/status" pullRight className="mt-4 ">
+          <IconButton
+            icon={
+              <Badge content={data?.unread} className="">
+                <NoticeIcon style={{ fontSize: 25, fontWeight: "bolder" }} />{" "}
+              </Badge>
+            }
+          />
+        </Nav>
+  
+        <Nav as={Link} to="/dashbord/settings" pullRight className="mt-4 ">
+          <IconButton
+            icon={
+              <Settings
+
+                style={{ fontSize: 25, fontWeight: "bolder" }}
+              />
+            }
+      
           />
         </Nav>
       </Navbar>

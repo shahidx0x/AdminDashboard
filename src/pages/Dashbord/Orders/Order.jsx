@@ -459,7 +459,7 @@ export default function Order() {
           ) : rowData.order_status === 2 ? (
             <>
               <p
-                className="text-red-500 font-bold  rounded-lg"
+                className="text-red-500  bg-red-200 font-bold px-9 py-2 -mt-1 hover:text-gray-500 hover:bg-gray-100 rounded-lg"
                 onClick={() => handleUpandInv({ order_status: 3 })}
               >
                 order cancled
@@ -648,7 +648,7 @@ export default function Order() {
             <Breadcrumb.Item as={Link} to="/dashbord">
               dashbord / Manage
             </Breadcrumb.Item>
-          
+
             <Breadcrumb.Item active className="text-blue-400">
               orders
             </Breadcrumb.Item>
