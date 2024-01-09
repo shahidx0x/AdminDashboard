@@ -23,6 +23,8 @@ import {
 } from "rsuite";
 import { deleteCategory, getAllCategory } from "../../../api/CategoryService";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { config } from "../../../configs/api.config";
 
 export default function AllCategory() {
   const [loading, setLoading] = useState(false);
@@ -106,7 +108,8 @@ export default function AllCategory() {
       <div className="flex justify-center -mt-2">
         <Avatar
           src={
-            rowData?.image || "https://universalele.websites.co.in/obaju-turquoise/img/product-placeholder.png"
+            rowData?.image ||
+            "https://universalele.websites.co.in/obaju-turquoise/img/product-placeholder.png"
           }
           alt="P"
         />
@@ -293,23 +296,72 @@ export default function AllCategory() {
       setConfirm(false);
     }
   };
-  const settings = useSelector(state => state.settings);
-  return (
-    <Panel   header={
-      <div>
-        <Breadcrumb className="text-sm font-mono">
-          <Breadcrumb.Item as={Link} to="/dashbord/status">
-            dashbord
-          </Breadcrumb.Item>
+  const settings = useSelector((state) => state.settings);
+  const [file, setFile] = useState(null);
 
-          <Breadcrumb.Item active className="text-blue-400">
-            Brands
-          </Breadcrumb.Item>
-        </Breadcrumb>
-        <h2 className="text-4xl font-bold">Brands</h2>
-      </div>
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+  };
+  const handleSubmitFile = async () => {
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      toast.promise(
+        axios.post(config.endpoints.host + "/import/companys", formData),
+        {
+          loading: "Importing Companys...",
+          success: <b>Successfully Imported</b>,
+          error: (e) => <p>{e.response.data.message}</p>,
+        }
+      );
+    } else {
+      console.log("No xlsx file sected");
+      toast.error("No xlsx file sected");
     }
-    bordered>
+  };
+  return (
+    <Panel
+      header={
+        <div>
+          <Breadcrumb className="text-sm font-mono">
+            <Breadcrumb.Item as={Link} to="/dashbord/status">
+              dashbord
+            </Breadcrumb.Item>
+
+            <Breadcrumb.Item active className="text-blue-400">
+              Brands
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <div className="flex justify-between">
+            <h2 className="text-4xl font-bold">Brands</h2>
+            <div className="flex gap-5">
+              <div className="flex">
+                <input
+                  onChange={handleFileChange}
+                  accept=".xlsx"
+                  type="file"
+                  className="border"
+                ></input>
+                <Button
+                  onClick={handleSubmitFile}
+                  className="bg-indigo-200 text-indigo-500 font-bold"
+                >
+                  Import Brands
+                </Button>
+              </div>
+
+              <Button className="bg-indigo-200 text-indigo-500 font-bold">
+                <Link to={config.endpoints.host + "/export/brands"}>
+                  Export Brands
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      }
+      bordered
+    >
       <Toaster />
       <Modal open={open} onClose={handleClose}>
         <Modal.Header className="p-5">
@@ -356,7 +408,6 @@ export default function AllCategory() {
                 onChange={setColumnKeys}
                 cleanable={false}
               />
-            
             </div>
 
             <div>
@@ -448,20 +499,28 @@ export default function AllCategory() {
                   </svg>
                   <p
                     onClick={handleLoadPrevious}
-                    className={`text-sm ml-3 font-medium leading-none ${settings.theme === 'dark' && 'text-white'} `}
+                    className={`text-sm ml-3 font-medium leading-none ${
+                      settings.theme === "dark" && "text-white"
+                    } `}
                   >
                     Previous
                   </p>
                 </div>
                 <div className="sm:flex hidden">
-                  <p className={`text-sm font-bold leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2 ${settings.theme === 'dark' && 'text-white'}`}>
+                  <p
+                    className={`text-sm font-bold leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2 ${
+                      settings.theme === "dark" && "text-white"
+                    }`}
+                  >
                     pages : {page}/{data?.meta?.total_pages}
                   </p>
                 </div>
                 <div className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
                   <p
                     onClick={handleLoadMore}
-                    className={`text-sm font-medium leading-none mr-3 ${settings.theme === 'dark' && 'text-white'}`}
+                    className={`text-sm font-medium leading-none mr-3 ${
+                      settings.theme === "dark" && "text-white"
+                    }`}
                   >
                     Next
                   </p>

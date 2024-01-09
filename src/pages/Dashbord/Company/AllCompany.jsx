@@ -385,7 +385,7 @@ export default function AllCompany() {
               </div>
 
               <Button className="bg-indigo-200 text-indigo-500 font-bold">
-                <Link to={config.endpoints.host + "/export/brands"}>
+                <Link to={config.endpoints.host + "/export/companys"}>
                   Export Companys
                 </Link>
               </Button>
