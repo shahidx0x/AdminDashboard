@@ -29,6 +29,8 @@ import {
 } from "../../../api/BrandServices";
 import { updateUser } from "../../../api/UserServices";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { config } from "../../../configs/api.config";
 
 function previewFile(file, callback) {
   const reader = new FileReader();
@@ -204,13 +206,6 @@ export default function AllCompany() {
       width: 200,
     },
 
-    // {
-    //   key: "_id",
-    //   label: "Company Id",
-    //   cellRenderer: BrandIdCell,
-    //   width: 300,
-    // },
-
     {
       key: "brand_label",
       label: "Company Name",
@@ -332,24 +327,74 @@ export default function AllCompany() {
       setConfirm(false);
     }
   };
-  refetch();
-  const settings = useSelector(state => state.settings);
-  return (
-    <Panel   header={
-      <div>
-        <Breadcrumb className="text-sm font-mono">
-          <Breadcrumb.Item as={Link} to="/dashbord">
-            dashbord / company
-          </Breadcrumb.Item>
 
-          <Breadcrumb.Item active className="text-blue-400">
-            companys
-          </Breadcrumb.Item>
-        </Breadcrumb>
-        <h2 className="text-4xl font-bold">Companys</h2>
-      </div>
+  const settings = useSelector((state) => state.settings);
+  const [file, setFile] = useState(null);
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+  };
+  const handleSubmitFile = async () => {
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      toast.promise(
+        axios.post(config.endpoints.host + "/import/companys", formData),
+        {
+          loading: "Importing Companys...",
+          success: <b>Successfully Imported</b>,
+          error: (e) => <p>{e.response.data.message}</p>,
+        }
+      );
+    } else {
+      console.log("No xlsx file sected");
+      toast.error("No xlsx file sected");
     }
-    bordered>
+  };
+  refetch();
+  return (
+    <Panel
+      header={
+        <div>
+          <Breadcrumb className="text-sm font-mono">
+            <Breadcrumb.Item as={Link} to="/dashbord">
+              dashbord / company
+            </Breadcrumb.Item>
+
+            <Breadcrumb.Item active className="text-blue-400">
+              companys
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <div className="flex justify-between">
+            <h2 className="text-4xl font-bold">Companys</h2>
+            <div className="flex gap-5">
+              <div className="flex">
+                <input
+                  onChange={handleFileChange}
+                  accept=".xlsx"
+                  type="file"
+                  className="border"
+                ></input>
+                <Button
+                  onClick={handleSubmitFile}
+                  className="bg-indigo-200 text-indigo-500 font-bold"
+                >
+                  Import Companys
+                </Button>
+              </div>
+
+              <Button className="bg-indigo-200 text-indigo-500 font-bold">
+                <Link to={config.endpoints.host + "/export/brands"}>
+                  Export Companys
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      }
+      bordered
+    >
       <Toaster />
       <Modal open={open} onClose={handleClose}>
         <Modal.Header className="p-5">
@@ -393,7 +438,6 @@ export default function AllCompany() {
                 onChange={setColumnKeys}
                 cleanable={false}
               />
-           
             </div>
 
             <div>
@@ -416,7 +460,10 @@ export default function AllCompany() {
         </div>
 
         <hr />
-        <div className="mt-5" style={{ height: settings.autoHeight ? "auto" : 400 }}>
+        <div
+          className="mt-5"
+          style={{ height: settings.autoHeight ? "auto" : 400 }}
+        >
           <Table
             loading={status === "loading" ? true : false}
             height={300}
@@ -482,20 +529,28 @@ export default function AllCompany() {
                   </svg>
                   <p
                     onClick={handleLoadPrevious}
-                    className={`text-sm ml-3 font-medium leading-none ${settings.theme === 'dark' && 'text-white'} `}
+                    className={`text-sm ml-3 font-medium leading-none ${
+                      settings.theme === "dark" && "text-white"
+                    } `}
                   >
                     Previous
                   </p>
                 </div>
                 <div className="sm:flex hidden">
-                  <p className={`text-sm font-bold leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2 ${settings.theme === 'dark' && 'text-white'}`}>
+                  <p
+                    className={`text-sm font-bold leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2 ${
+                      settings.theme === "dark" && "text-white"
+                    }`}
+                  >
                     pages : {page}/{data?.data?.meta?.total_page}
                   </p>
                 </div>
                 <div className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
                   <p
                     onClick={handleLoadMore}
-                    className={`text-sm font-medium leading-none mr-3 ${settings.theme === 'dark' && 'text-white'}`}
+                    className={`text-sm font-medium leading-none mr-3 ${
+                      settings.theme === "dark" && "text-white"
+                    }`}
                   >
                     Next
                   </p>

@@ -228,7 +228,6 @@ export default function UniteType() {
   };
   const UnitActionsCell = ({ rowData, ...props }) => {
     const handleDelete = () => {
-      console.log("btn-1");
       setDeleteId(rowData._id);
       handleOpenUnit();
     };
@@ -239,7 +238,7 @@ export default function UniteType() {
           onClick={() => handleDelete()}
           className="flex justify-center gap-3"
         >
-          <div className="text-red-500 border w-36 font-bold border-red-500 px-3 py-2 -mt-1 hover:text-white hover:bg-red-500 rounded-lg cursor-pointer">
+          <div className="text-red-500 border  font-bold border-red-500 px-3 py-2 -mt-1 hover:text-white hover:bg-red-500 rounded-lg cursor-pointer">
             Delete
           </div>
         </div>
