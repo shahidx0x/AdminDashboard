@@ -397,7 +397,7 @@ export default function SubcategoryList() {
               {columns.map((column) => {
                 const { key, label, cellRenderer, ...rest } = column;
                 return (
-                  <Column {...rest} key={key}>
+                  <Column {...rest} key={key} fullText>
                     <CustomHeaderCell>{label}</CustomHeaderCell>
                     {cellRenderer ? (
                       React.createElement(cellRenderer, {
